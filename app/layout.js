@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Cellar AI — Coming Soon',
+  title: 'Wine Butler AI — Coming Soon',
   description: 'Your personal wine inventory tracker and AI sommelier.',
 }
 

@@ -1,8 +1,9 @@
-# Cellar AI — CLAUDE.md
+# Wine Butler AI — CLAUDE.md
 
 ## Project Overview
 Wine inventory tracker and AI sommelier for personal collectors.
-PRD: `C:\Users\amand\ClaudeWorkspace\Projects\OneOff\cellar-ai\CellarAI_PRD_v1.1.docx`
+Domain: winebutlerai.com
+PRD: `C:\Users\amand\ClaudeWorkspace\Projects\OneOff\cellar-ai\CellarAI_PRD_v1.1.docx` (rename to WineButlerAI_PRD_v1.1.docx when convenient)
 
 ## Paths
 - **Project root:** `C:\Users\amand\ClaudeWorkspace\Projects\OneOff\cellar-ai`
@@ -17,7 +18,7 @@ PRD: `C:\Users\amand\ClaudeWorkspace\Projects\OneOff\cellar-ai\CellarAI_PRD_v1.1
 - **AI:** Anthropic Claude API (`claude-sonnet-4-20250514`)
 - **Email:** Resend
 - **Deployment:** Vercel — auto-deploys on push to `main`
-- **Repo:** https://github.com/ambailey75/Cellar-ai
+- **Repo:** https://github.com/ambailey75/wine-butler-ai (rename on GitHub — see external steps below)
 
 ## Environment Variables
 Add these to `C:\Users\amand\.claude\session-env\.env` and to Vercel dashboard:
@@ -116,11 +117,19 @@ git push   # triggers auto-deploy on Vercel
 For manual deploy: `vercel --prod`
 
 ## Vercel
-- Project: `ai-agent-workshop-prj-s-projects/cellar-ai`
-- Production URL: `https://cellar-ai-black.vercel.app`
+- Project: `ai-agent-workshop-prj-s-projects/wine-butler-ai` (rename in Vercel dashboard)
+- Production URL: `https://winebutlerai.com` (custom domain — add in Vercel dashboard)
+- Vercel default URL: `https://cellar-ai-black.vercel.app` (will change after project rename)
 - Dashboard: https://vercel.com/ai-agent-workshop-prj-s-projects/cellar-ai
 - Framework preset: Next.js (set in dashboard — do not override in vercel.json)
 - Cron jobs (to add): nightly alert evaluation, weekly enrichment refresh
+
+## External Setup Steps (one-time, do manually)
+1. **GitHub** — Go to https://github.com/ambailey75/Cellar-ai > Settings > rename repo to `wine-butler-ai`
+2. **Git remote** — After GitHub rename, run: `git remote set-url origin https://github.com/ambailey75/wine-butler-ai`
+3. **Vercel project rename** — Vercel dashboard > Project Settings > rename from `cellar-ai` to `wine-butler-ai`
+4. **Custom domain** — Vercel dashboard > Domains > add `winebutlerai.com` and follow DNS instructions
+5. **Rename folder** (optional) — Rename `cellar-ai/` to `wine-butler-ai/` and update this file's paths
 
 ## Installation Commands (run once when starting build)
 ```powershell

@@ -21,7 +21,7 @@ export default function Home() {
         marginBottom: '1rem',
         letterSpacing: '0.05em',
       }}>
-        Cellar AI
+        Wine Butler AI
       </h1>
 
       <p style={{

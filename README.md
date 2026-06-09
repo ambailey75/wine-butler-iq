@@ -1,10 +1,10 @@
-# Cellar AI
+# Wine Butler AI
 
 **Your personal wine inventory tracker and AI sommelier.**
 
 Track your collection, discover drinking windows, get expert pairing recommendations, and import your existing cellar from Excel, invoices, or label photos — all in one place.
 
-> 🚧 Currently in pre-development. Coming soon.
+> 🚧 Currently in pre-development. Coming soon at [winebutlerai.com](https://winebutlerai.com).
 
 ## Tech Stack
 
