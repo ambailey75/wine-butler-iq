@@ -1,0 +1,5332 @@
+[
+  {
+    "producer": "Château Lafite Rothschild",
+    "wineName": "Château Lafite Rothschild",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lafite Rothschild",
+    "wineName": "Carruades de Lafite",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Latour",
+    "wineName": "Château Latour",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Latour",
+    "wineName": "Les Forts de Latour",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Latour",
+    "wineName": "Pauillac de Latour",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Mouton Rothschild",
+    "wineName": "Château Mouton Rothschild",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Mouton Rothschild",
+    "wineName": "Le Petit Mouton de Mouton Rothschild",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Margaux",
+    "wineName": "Château Margaux",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Margaux",
+    "wineName": "Pavillon Rouge du Château Margaux",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Margaux",
+    "wineName": "Pavillon Blanc du Château Margaux",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Haut-Brion",
+    "wineName": "Château Haut-Brion",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Haut-Brion",
+    "wineName": "Le Clarence de Haut-Brion",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Premier Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Rauzan-Ségla",
+    "wineName": "Château Rauzan-Ségla",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Rauzan-Gassies",
+    "wineName": "Château Rauzan-Gassies",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Léoville Las Cases",
+    "wineName": "Château Léoville Las Cases",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Léoville Poyferré",
+    "wineName": "Château Léoville Poyferré",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Léoville Barton",
+    "wineName": "Château Léoville Barton",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Durfort-Vivens",
+    "wineName": "Château Durfort-Vivens",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Gruaud Larose",
+    "wineName": "Château Gruaud Larose",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lascombes",
+    "wineName": "Château Lascombes",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Brane-Cantenac",
+    "wineName": "Château Brane-Cantenac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pichon Baron",
+    "wineName": "Château Pichon Baron",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pichon Lalande",
+    "wineName": "Château Pichon Longueville Comtesse de Lalande",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Ducru-Beaucaillou",
+    "wineName": "Château Ducru-Beaucaillou",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Cos d'Estournel",
+    "wineName": "Château Cos d'Estournel",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Montrose",
+    "wineName": "Château Montrose",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Giscours",
+    "wineName": "Château Giscours",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Kirwan",
+    "wineName": "Château Kirwan",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château d'Issan",
+    "wineName": "Château d'Issan",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lagrange",
+    "wineName": "Château Lagrange",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Langoa Barton",
+    "wineName": "Château Langoa Barton",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Malescot St. Exupéry",
+    "wineName": "Château Malescot St. Exupéry",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Cantenac Brown",
+    "wineName": "Château Cantenac Brown",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Palmer",
+    "wineName": "Château Palmer",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Palmer",
+    "wineName": "Alter Ego de Palmer",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Lagune",
+    "wineName": "Château La Lagune",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Haut-Médoc",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Desmirail",
+    "wineName": "Château Desmirail",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Calon-Ségur",
+    "wineName": "Château Calon-Ségur",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Ferrière",
+    "wineName": "Château Ferrière",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Marquis d'Alesme Becker",
+    "wineName": "Château Marquis d'Alesme Becker",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Boyd-Cantenac",
+    "wineName": "Château Boyd-Cantenac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Troisième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Saint-Pierre",
+    "wineName": "Château Saint-Pierre",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Talbot",
+    "wineName": "Château Talbot",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Branaire-Ducru",
+    "wineName": "Château Branaire-Ducru",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Duhart-Milon",
+    "wineName": "Château Duhart-Milon",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pouget",
+    "wineName": "Château Pouget",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Tour Carnet",
+    "wineName": "Château La Tour Carnet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Haut-Médoc",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lafon-Rochet",
+    "wineName": "Château Lafon-Rochet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Beychevelle",
+    "wineName": "Château Beychevelle",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Prieuré-Lichine",
+    "wineName": "Château Prieuré-Lichine",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Marquis de Terme",
+    "wineName": "Château Marquis de Terme",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Quatrième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pontet-Canet",
+    "wineName": "Château Pontet-Canet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Batailley",
+    "wineName": "Château Batailley",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Haut-Batailley",
+    "wineName": "Château Haut-Batailley",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Grand-Puy-Lacoste",
+    "wineName": "Château Grand-Puy-Lacoste",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Grand-Puy Ducasse",
+    "wineName": "Château Grand-Puy Ducasse",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lynch-Bages",
+    "wineName": "Château Lynch-Bages",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lynch-Moussas",
+    "wineName": "Château Lynch-Moussas",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Dauzac",
+    "wineName": "Château Dauzac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château d'Armailhac",
+    "wineName": "Château d'Armailhac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château du Tertre",
+    "wineName": "Château du Tertre",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Haut-Bages Libéral",
+    "wineName": "Château Haut-Bages Libéral",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pédesclaux",
+    "wineName": "Château Pédesclaux",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Belgrave",
+    "wineName": "Château Belgrave",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Haut-Médoc",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Camensac",
+    "wineName": "Château de Camensac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Haut-Médoc",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Cos Labory",
+    "wineName": "Château Cos Labory",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Clerc Milon",
+    "wineName": "Château Clerc Milon",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Croizet-Bages",
+    "wineName": "Château Croizet-Bages",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pauillac",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Cantemerle",
+    "wineName": "Château Cantemerle",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Haut-Médoc",
+    "classification": "Cinquième Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château d'Yquem",
+    "wineName": "Château d'Yquem",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Sauternes",
+    "classification": "Premier Cru Supérieur",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Climens",
+    "wineName": "Château Climens",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Barsac",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Coutet",
+    "wineName": "Château Coutet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Barsac",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Rieussec",
+    "wineName": "Château Rieussec",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Sauternes",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Suduiraut",
+    "wineName": "Château Suduiraut",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Sauternes",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Tour Blanche",
+    "wineName": "Château La Tour Blanche",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Sauternes",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Guiraud",
+    "wineName": "Château Guiraud",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Sauternes",
+    "classification": "Premier Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Fargues",
+    "wineName": "Château de Fargues",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Sauternes",
+    "classification": null,
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Doisy-Daëne",
+    "wineName": "Château Doisy-Daëne",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Barsac",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Doisy-Védrines",
+    "wineName": "Château Doisy-Védrines",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Barsac",
+    "classification": "Deuxième Cru Classé",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Pétrus",
+    "wineName": "Pétrus",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Le Pin",
+    "wineName": "Le Pin",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lafleur",
+    "wineName": "Château Lafleur",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vieux Château Certan",
+    "wineName": "Vieux Château Certan",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château L'Évangile",
+    "wineName": "Château L'Évangile",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Trotanoy",
+    "wineName": "Château Trotanoy",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Conseillante",
+    "wineName": "Château La Conseillante",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Clinet",
+    "wineName": "Château Clinet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Gazin",
+    "wineName": "Château Gazin",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Certan de May",
+    "wineName": "Château Certan de May",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Le Bon Pasteur",
+    "wineName": "Château Le Bon Pasteur",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Beauregard",
+    "wineName": "Château Beauregard",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Nenin",
+    "wineName": "Château Nenin",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Clos l'Église",
+    "wineName": "Clos l'Église",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Fleur-Pétrus",
+    "wineName": "Château La Fleur-Pétrus",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Hosanna",
+    "wineName": "Château Hosanna",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Gombaude-Guillot",
+    "wineName": "Château Gombaude-Guillot",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "La Violette",
+    "wineName": "La Violette",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Rouget",
+    "wineName": "Château Rouget",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Croix de Gay",
+    "wineName": "Château La Croix de Gay",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pomerol",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Cheval Blanc",
+    "wineName": "Château Cheval Blanc",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé A",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Ausone",
+    "wineName": "Château Ausone",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé A",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pavie",
+    "wineName": "Château Pavie",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé A",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Angélus",
+    "wineName": "Château Angélus",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé A",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Figeac",
+    "wineName": "Château Figeac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Canon",
+    "wineName": "Château Canon",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Beau-Séjour Bécot",
+    "wineName": "Château Beau-Séjour Bécot",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Beauséjour Duffau-Lagarrosse",
+    "wineName": "Château Beauséjour Duffau-Lagarrosse",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Belair-Monange",
+    "wineName": "Château Belair-Monange",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Canon-La-Gaffelière",
+    "wineName": "Château Canon-La-Gaffelière",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Clos Fourtet",
+    "wineName": "Château Clos Fourtet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Gaffelière",
+    "wineName": "Château La Gaffelière",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Larcis Ducasse",
+    "wineName": "Château Larcis Ducasse",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pavie Macquin",
+    "wineName": "Château Pavie Macquin",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Troplong Mondot",
+    "wineName": "Château Troplong Mondot",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Trottevieille",
+    "wineName": "Château Trottevieille",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Premier Grand Cru Classé B",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Valandraud",
+    "wineName": "Château Valandraud",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Tertre Roteboeuf",
+    "wineName": "Château Tertre Roteboeuf",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Mondotte",
+    "wineName": "Château La Mondotte",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Quinault l'Enclos",
+    "wineName": "Château Quinault l'Enclos",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Fonplégade",
+    "wineName": "Château Fonplégade",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Grand Mayne",
+    "wineName": "Château Grand Mayne",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Larmande",
+    "wineName": "Château Larmande",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Soutard",
+    "wineName": "Château Soutard",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Émilion",
+    "classification": "Grand Cru Classé",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Mission Haut-Brion",
+    "wineName": "Château La Mission Haut-Brion",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Pape Clément",
+    "wineName": "Château Pape Clément",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Smith Haut Lafitte",
+    "wineName": "Château Smith Haut Lafitte Rouge",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Smith Haut Lafitte",
+    "wineName": "Château Smith Haut Lafitte Blanc",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de Chevalier",
+    "wineName": "Domaine de Chevalier Rouge",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de Chevalier",
+    "wineName": "Domaine de Chevalier Blanc",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Haut-Bailly",
+    "wineName": "Château Haut-Bailly",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Carbonnieux",
+    "wineName": "Château Carbonnieux Rouge",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Carbonnieux",
+    "wineName": "Château Carbonnieux Blanc",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Malartic-Lagravière",
+    "wineName": "Château Malartic-Lagravière",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Fieuzal",
+    "wineName": "Château de Fieuzal",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Bouscaut",
+    "wineName": "Château Bouscaut",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Pessac-Léognan",
+    "classification": "Cru Classé de Graves",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Sociando-Mallet",
+    "wineName": "Château Sociando-Mallet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Haut-Médoc",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Phélan Ségur",
+    "wineName": "Château Phélan Ségur",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Les Ormes de Pez",
+    "wineName": "Château Les Ormes de Pez",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Pez",
+    "wineName": "Château de Pez",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Potensac",
+    "wineName": "Château Potensac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Médoc",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Chasse-Spleen",
+    "wineName": "Château Chasse-Spleen",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Moulis",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Poujeaux",
+    "wineName": "Château Poujeaux",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Moulis",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Greysac",
+    "wineName": "Château Greysac",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Médoc",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Lilian Ladouys",
+    "wineName": "Château Lilian Ladouys",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Meyney",
+    "wineName": "Château Meyney",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Estèphe",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Gloria",
+    "wineName": "Château Gloria",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "St-Julien",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Siran",
+    "wineName": "Château Siran",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Labégorce",
+    "wineName": "Château Labégorce",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château d'Angludet",
+    "wineName": "Château d'Angludet",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Margaux",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Tour de By",
+    "wineName": "Château La Tour de By",
+    "country": "France",
+    "region": "Bordeaux",
+    "subRegion": "Médoc",
+    "classification": "Cru Bourgeois",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Romanée-Conti",
+    "wineName": "Romanée-Conti",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Romanée-Conti",
+    "wineName": "La Tâche",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Romanée-Conti",
+    "wineName": "Richebourg",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Romanée-Conti",
+    "wineName": "Romanée-St-Vivant",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Romanée-Conti",
+    "wineName": "Grands-Échezeaux",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Romanée-Conti",
+    "wineName": "Échezeaux",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leroy",
+    "wineName": "Romanée-St-Vivant",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leroy",
+    "wineName": "Richebourg",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leroy",
+    "wineName": "Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Armand Rousseau",
+    "wineName": "Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Armand Rousseau",
+    "wineName": "Chambertin-Clos de Bèze",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Armand Rousseau",
+    "wineName": "Clos de la Roche",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Armand Rousseau",
+    "wineName": "Charmes-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leflaive",
+    "wineName": "Bâtard-Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leflaive",
+    "wineName": "Chevalier-Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leflaive",
+    "wineName": "Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Comte Georges de Vogüé",
+    "wineName": "Musigny",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Comte Georges de Vogüé",
+    "wineName": "Bonnes-Mares",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Comte Georges de Vogüé",
+    "wineName": "Chambolle-Musigny Les Amoureuses",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Dujac",
+    "wineName": "Clos de la Roche",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Dujac",
+    "wineName": "Clos Saint-Denis",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Dujac",
+    "wineName": "Bonnes-Mares",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Ponsot",
+    "wineName": "Clos de la Roche",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Ponsot",
+    "wineName": "Griotte-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Méo-Camuzet",
+    "wineName": "Richebourg",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Méo-Camuzet",
+    "wineName": "Clos de Vougeot",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Méo-Camuzet",
+    "wineName": "Corton",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine du Comte Liger-Belair",
+    "wineName": "La Romanée",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine du Comte Liger-Belair",
+    "wineName": "Vosne-Romanée Aux Reignots",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Bonneau du Martray",
+    "wineName": "Corton-Charlemagne",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Bonneau du Martray",
+    "wineName": "Corton",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Coche-Dury",
+    "wineName": "Corton-Charlemagne",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Coche-Dury",
+    "wineName": "Meursault Les Perrières",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Georges Roumier",
+    "wineName": "Bonnes-Mares",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Georges Roumier",
+    "wineName": "Musigny",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Georges Roumier",
+    "wineName": "Ruchottes-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Faiveley",
+    "wineName": "Chambertin-Clos de Bèze",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Faiveley",
+    "wineName": "Mazis-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Faiveley",
+    "wineName": "Corton Clos des Cortons",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Jean Grivot",
+    "wineName": "Richebourg",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Jean Grivot",
+    "wineName": "Clos de Vougeot",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Anne Gros",
+    "wineName": "Richebourg",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Anne Gros",
+    "wineName": "Clos de Vougeot",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Joseph Drouhin",
+    "wineName": "Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Joseph Drouhin",
+    "wineName": "Grands-Échezeaux",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Joseph Drouhin",
+    "wineName": "Musigny",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Bouchard Père et Fils",
+    "wineName": "Le Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Bouchard Père et Fils",
+    "wineName": "Chevalier-Montrachet La Cabotte",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Ramonet",
+    "wineName": "Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Ramonet",
+    "wineName": "Bâtard-Montrachet",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Ramonet",
+    "wineName": "Chassagne-Montrachet Les Ruchottes",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine d'Auvenay",
+    "wineName": "Bonnes-Mares",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine d'Auvenay",
+    "wineName": "Mazis-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de la Tour",
+    "wineName": "Clos de Vougeot",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Mugneret-Gibourg",
+    "wineName": "Clos de Vougeot",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Mugneret-Gibourg",
+    "wineName": "Échezeaux",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Mugneret-Gibourg",
+    "wineName": "Ruchottes-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Sylvain Cathiard",
+    "wineName": "Romanée-St-Vivant",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Sylvain Cathiard",
+    "wineName": "Vosne-Romanée Aux Malconsorts",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Robert Groffier",
+    "wineName": "Chambertin-Clos de Bèze",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Robert Groffier",
+    "wineName": "Bonnes-Mares",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Hubert Lignier",
+    "wineName": "Clos de la Roche",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Hubert Lignier",
+    "wineName": "Charmes-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Perrot-Minot",
+    "wineName": "Charmes-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Perrot-Minot",
+    "wineName": "Mazoyères-Chambertin",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine William Fèvre",
+    "wineName": "Chablis Grand Cru Les Clos",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Chablis",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine William Fèvre",
+    "wineName": "Chablis Grand Cru Bougros",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Chablis",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine William Fèvre",
+    "wineName": "Chablis Premier Cru Vaillons",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Chablis",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Raveneau",
+    "wineName": "Chablis Grand Cru Valmur",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Chablis",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Raveneau",
+    "wineName": "Chablis Premier Cru Montée de Tonnerre",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Chablis",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Louis Jadot",
+    "wineName": "Beaune Premier Cru Clos des Ursules",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Louis Jadot",
+    "wineName": "Gevrey-Chambertin Clos Saint-Jacques",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Nuits",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Louis Jadot",
+    "wineName": "Corton-Charlemagne",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Marquis d'Angerville",
+    "wineName": "Volnay Premier Cru Champans",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Marquis d'Angerville",
+    "wineName": "Volnay Premier Cru Clos des Ducs",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de Montille",
+    "wineName": "Pommard Les Rugiens",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de Montille",
+    "wineName": "Volnay Taillepieds",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Michel Lafarge",
+    "wineName": "Volnay Clos du Château des Ducs",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leflaive",
+    "wineName": "Puligny-Montrachet Premier Cru Les Pucelles",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Leflaive",
+    "wineName": "Puligny-Montrachet Premier Cru Clavoillon",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Etienne Sauzet",
+    "wineName": "Puligny-Montrachet Premier Cru Les Combettes",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Paul Pernot",
+    "wineName": "Puligny-Montrachet Premier Cru Les Folatières",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Jean-Marc Boillot",
+    "wineName": "Pommard Les Rugiens",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Louis Latour",
+    "wineName": "Corton-Charlemagne",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Comte Senard",
+    "wineName": "Corton Clos des Meix",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Tollot-Beaut",
+    "wineName": "Corton Bressandes",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Grand Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Rapet Père et Fils",
+    "wineName": "Pernand-Vergelesses Premier Cru Île des Vergelesses",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Roulot",
+    "wineName": "Meursault Premier Cru Charmes",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Arnaud Ente",
+    "wineName": "Meursault Clos des Ambres",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Pierre-Yves Colin-Morey",
+    "wineName": "Chassagne-Montrachet Premier Cru En Remilly",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Marc Colin et Fils",
+    "wineName": "Saint-Aubin Premier Cru En Remilly",
+    "country": "France",
+    "region": "Burgundy",
+    "subRegion": "Côte de Beaune",
+    "classification": "Premier Cru",
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Screaming Eagle",
+    "wineName": "Screaming Eagle Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Harlan Estate",
+    "wineName": "Harlan Estate",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Harlan Estate",
+    "wineName": "The Maiden",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Opus One",
+    "wineName": "Opus One",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dominus Estate",
+    "wineName": "Dominus",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Yountville",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dominus Estate",
+    "wineName": "Napanook",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Yountville",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Caymus Vineyards",
+    "wineName": "Caymus Special Selection Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Caymus Vineyards",
+    "wineName": "Caymus Napa Valley Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Shafer Vineyards",
+    "wineName": "Shafer Hillside Select Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Stags Leap District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Shafer Vineyards",
+    "wineName": "Shafer One Point Five Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Stags Leap District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Ridge Vineyards",
+    "wineName": "Ridge Monte Bello",
+    "country": "United States",
+    "region": "Santa Cruz Mountains",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Heitz Cellar",
+    "wineName": "Heitz Martha's Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Stag's Leap Wine Cellars",
+    "wineName": "Stag's Leap Wine Cellars Cask 23",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Stags Leap District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Stag's Leap Wine Cellars",
+    "wineName": "Stag's Leap Wine Cellars Fay Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Stags Leap District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Stag's Leap Wine Cellars",
+    "wineName": "Stag's Leap Wine Cellars SLV Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Stags Leap District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Robert Mondavi Winery",
+    "wineName": "Robert Mondavi Reserve Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Joseph Phelps Vineyards",
+    "wineName": "Insignia",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Spottswoode Estate",
+    "wineName": "Spottswoode Estate Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Diamond Creek Vineyards",
+    "wineName": "Diamond Creek Volcanic Hill Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Diamond Mountain District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Diamond Creek Vineyards",
+    "wineName": "Diamond Creek Red Rock Terrace Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Diamond Mountain District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Mayacamas Vineyards",
+    "wineName": "Mayacamas Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Mount Veeder",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dunn Vineyards",
+    "wineName": "Dunn Howell Mountain Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Howell Mountain",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Chateau Montelena",
+    "wineName": "Chateau Montelena Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Calistoga",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Far Niente",
+    "wineName": "Far Niente Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Silver Oak",
+    "wineName": "Silver Oak Napa Valley Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Silver Oak",
+    "wineName": "Silver Oak Alexander Valley Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Alexander Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Beringer Vineyards",
+    "wineName": "Beringer Private Reserve Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Cakebread Cellars",
+    "wineName": "Cakebread Cellars Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Duckhorn Vineyards",
+    "wineName": "Duckhorn Three Palms Vineyard Merlot",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Frog's Leap",
+    "wineName": "Frog's Leap Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Trefethen Family Vineyards",
+    "wineName": "Trefethen Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oak Knoll District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Grgich Hills Estate",
+    "wineName": "Grgich Hills Estate Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Chimney Rock Winery",
+    "wineName": "Chimney Rock Elevage",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Stags Leap District",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Quintessa",
+    "wineName": "Quintessa",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vineyard 29",
+    "wineName": "Vineyard 29 Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Hundred Acre",
+    "wineName": "Hundred Acre Ark Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bryant Family Vineyard",
+    "wineName": "Bryant Family Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Pritchard Hill",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Colgin Cellars",
+    "wineName": "Colgin IX Estate Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Pritchard Hill",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Colgin Cellars",
+    "wineName": "Colgin Cariad",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Pritchard Hill",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Araujo Estate / Eisele Vineyard",
+    "wineName": "Eisele Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Calistoga",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Abreu Vineyards",
+    "wineName": "Abreu Madrona Ranch Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Scarecrow",
+    "wineName": "Scarecrow Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Continuum Estate",
+    "wineName": "Continuum",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Pritchard Hill",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Schrader Cellars",
+    "wineName": "Schrader Old Sparky Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Realm Cellars",
+    "wineName": "Realm The Bard",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Promontory",
+    "wineName": "Promontory",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Sloan Estate",
+    "wineName": "Sloan Estate Proprietary Red",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vineyard 7 & 8",
+    "wineName": "Vineyard 7 & 8 Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Spring Mountain District",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Cardinale",
+    "wineName": "Cardinale",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Lokoya",
+    "wineName": "Lokoya Mount Veeder Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Mount Veeder",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Paul Hobbs",
+    "wineName": "Paul Hobbs Beckstoffer To Kalon Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Corison Winery",
+    "wineName": "Corison Kronos Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "St. Helena",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Staglin Family Vineyard",
+    "wineName": "Staglin Family Vineyard Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vine Hill Ranch",
+    "wineName": "Vine Hill Ranch Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Lewis Cellars",
+    "wineName": "Lewis Cellars Reserve Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Hourglass",
+    "wineName": "Hourglass Blueline Estate Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Calistoga",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Larkmead Vineyards",
+    "wineName": "Larkmead Solari Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Calistoga",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Beaulieu Vineyard",
+    "wineName": "Beaulieu Vineyard Georges de Latour Private Reserve",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Mount Veeder Winery",
+    "wineName": "Mount Veeder Winery Reserve Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Mount Veeder",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Sequoia Grove",
+    "wineName": "Sequoia Grove Cambium Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "PlumpJack",
+    "wineName": "PlumpJack Estate Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Williams Selyem",
+    "wineName": "Williams Selyem Russian River Valley Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Williams Selyem",
+    "wineName": "Williams Selyem Westside Road Neighbors Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Kistler Vineyards",
+    "wineName": "Kistler Vineyards Chardonnay",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Marcassin",
+    "wineName": "Marcassin Vineyard Chardonnay",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Sonoma Coast",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Aubert Wines",
+    "wineName": "Aubert UV-SL Vineyard Chardonnay",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Kosta Browne",
+    "wineName": "Kosta Browne Russian River Valley Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dehlinger Winery",
+    "wineName": "Dehlinger Russian River Valley Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Hartford Court",
+    "wineName": "Hartford Court Sevens Bench Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Flowers Vineyard & Winery",
+    "wineName": "Flowers Sonoma Coast Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Sonoma Coast",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Littorai",
+    "wineName": "Littorai Sonoma Coast Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Sonoma Coast",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Failla Wines",
+    "wineName": "Failla Sonoma Coast Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Sonoma Coast",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Peay Vineyards",
+    "wineName": "Peay Sonoma Coast Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Sonoma Coast",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Ramey Wine Cellars",
+    "wineName": "Ramey Russian River Valley Chardonnay",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Sonoma-Cutrer",
+    "wineName": "Sonoma-Cutrer Russian River Ranches Chardonnay",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Gary Farrell Winery",
+    "wineName": "Gary Farrell Russian River Valley Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Merry Edwards Winery",
+    "wineName": "Merry Edwards Russian River Valley Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Rochioli Vineyards",
+    "wineName": "Rochioli Estate Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Joseph Swan Vineyards",
+    "wineName": "Joseph Swan Russian River Valley Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma County",
+    "subRegion": "Russian River Valley",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Biondi-Santi",
+    "wineName": "Biondi-Santi Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Casanova di Neri",
+    "wineName": "Casanova di Neri Brunello di Montalcino Tenuta Nuova",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Case Basse di Gianfranco Soldera",
+    "wineName": "Case Basse Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Poggio di Sotto",
+    "wineName": "Poggio di Sotto Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Salvioni",
+    "wineName": "Salvioni Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Il Marroneto",
+    "wineName": "Il Marroneto Brunello di Montalcino Madonna delle Grazie",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Gianni Brunelli",
+    "wineName": "Gianni Brunelli Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Conti Costanti",
+    "wineName": "Conti Costanti Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Pertimali (Livio Sassetti)",
+    "wineName": "Pertimali Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Valdicava",
+    "wineName": "Valdicava Brunello di Montalcino Madonna del Piano",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Ciacci Piccolomini d'Aragona",
+    "wineName": "Ciacci Piccolomini d'Aragona Brunello di Montalcino",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Castello Banfi",
+    "wineName": "Banfi Brunello di Montalcino Poggio alle Mura",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Altesino",
+    "wineName": "Altesino Brunello di Montalcino Montosoli",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montalcino",
+    "classification": "DOCG",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tenuta San Guido",
+    "wineName": "Sassicaia",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Bolgheri",
+    "classification": "IGT Toscana",
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tenuta dell'Ornellaia",
+    "wineName": "Ornellaia",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Bolgheri",
+    "classification": "IGT Toscana",
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tenuta dell'Ornellaia",
+    "wineName": "Masseto",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Bolgheri",
+    "classification": "IGT Toscana",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Marchesi Antinori",
+    "wineName": "Tignanello",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Marchesi Antinori",
+    "wineName": "Solaia",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tenuta di Trinoro",
+    "wineName": "Tenuta di Trinoro",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Val d'Orcia",
+    "classification": "IGT Toscana",
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Le Macchiole",
+    "wineName": "Le Macchiole Messorio",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Bolgheri",
+    "classification": "IGT Toscana",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Le Macchiole",
+    "wineName": "Le Macchiole Paleo Rosso",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Bolgheri",
+    "classification": "IGT Toscana",
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Castello di Ama",
+    "wineName": "Castello di Ama L'Apparita",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Fontodi",
+    "wineName": "Fontodi Flaccianello della Pieve",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Isole e Olena",
+    "wineName": "Isole e Olena Cepparello",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Sangiovese",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tua Rita",
+    "wineName": "Tua Rita Redigaffi",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Suvereto",
+    "classification": "IGT Toscana",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Petrolo",
+    "wineName": "Petrolo Galatrona",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Val d'Arno di Sopra",
+    "classification": "IGT Toscana",
+    "varietal": "Merlot",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Avignonesi",
+    "wineName": "Avignonesi Desiderio",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Montepulciano",
+    "classification": "IGT Toscana",
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Querciabella",
+    "wineName": "Querciabella Camartina",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "San Felice",
+    "wineName": "San Felice Vigorello",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Castello dei Rampolla",
+    "wineName": "Castello dei Rampolla Sammarco",
+    "country": "Italy",
+    "region": "Tuscany",
+    "subRegion": "Chianti Classico",
+    "classification": "IGT Toscana",
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Giacomo Conterno",
+    "wineName": "Giacomo Conterno Barolo Monfortino Riserva",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Giacomo Conterno",
+    "wineName": "Giacomo Conterno Barolo Cascina Francia",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bruno Giacosa",
+    "wineName": "Bruno Giacosa Barolo Falletto Riserva",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bruno Giacosa",
+    "wineName": "Bruno Giacosa Barbaresco Asili Riserva",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barbaresco",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Giuseppe Rinaldi",
+    "wineName": "Giuseppe Rinaldi Barolo Brunate-Le Coste",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bartolo Mascarello",
+    "wineName": "Bartolo Mascarello Barolo",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Roberto Voerzio",
+    "wineName": "Roberto Voerzio Barolo Cerequio",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Elio Altare",
+    "wineName": "Elio Altare Barolo Vigneto Arborina",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Luciano Sandrone",
+    "wineName": "Luciano Sandrone Barolo Cannubi Boschis",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Paolo Scavino",
+    "wineName": "Paolo Scavino Barolo Bric del Fiasc",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Marchesi di Barolo",
+    "wineName": "Marchesi di Barolo Barolo Cannubi",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Cavallotto",
+    "wineName": "Cavallotto Barolo Bricco Boschis Riserva",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vietti",
+    "wineName": "Vietti Barolo Rocche di Castiglione",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Poderi Aldo Conterno",
+    "wineName": "Aldo Conterno Barolo Bussia",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Gaja",
+    "wineName": "Gaja Barbaresco",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barbaresco",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Gaja",
+    "wineName": "Gaja Sperss",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Ceretto",
+    "wineName": "Ceretto Barolo Bricco Rocche",
+    "country": "Italy",
+    "region": "Piedmont",
+    "subRegion": "Barolo",
+    "classification": "DOCG",
+    "varietal": "Nebbiolo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "M. Chapoutier",
+    "wineName": "Chapoutier Hermitage Le Pavillon",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Hermitage",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "M. Chapoutier",
+    "wineName": "Chapoutier Ermitage Le Méal",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Hermitage",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Jean-Louis Chave",
+    "wineName": "Jean-Louis Chave Hermitage",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Hermitage",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Paul Jaboulet Aîné",
+    "wineName": "Paul Jaboulet Aîné Hermitage La Chapelle",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Hermitage",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "E. Guigal",
+    "wineName": "Guigal Côte-Rôtie La Mouline",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "E. Guigal",
+    "wineName": "Guigal Côte-Rôtie La Landonne",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "E. Guigal",
+    "wineName": "Guigal Côte-Rôtie La Turque",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "E. Guigal",
+    "wineName": "Guigal Châteauneuf-du-Pape",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "René Rostaing",
+    "wineName": "René Rostaing Côte-Rôtie La Landonne",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Jamet",
+    "wineName": "Jamet Côte-Rôtie",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Beaucastel",
+    "wineName": "Château de Beaucastel Châteauneuf-du-Pape",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Beaucastel",
+    "wineName": "Château de Beaucastel Hommage à Jacques Perrin",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine du Vieux Télégraphe",
+    "wineName": "Vieux Télégraphe Châteauneuf-du-Pape La Crau",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château Rayas",
+    "wineName": "Château Rayas Châteauneuf-du-Pape",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Grenache",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Clos des Papes",
+    "wineName": "Clos des Papes Châteauneuf-du-Pape",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Henri Bonneau",
+    "wineName": "Henri Bonneau Châteauneuf-du-Pape Réserve des Célestins",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine de la Janasse",
+    "wineName": "Domaine de la Janasse Châteauneuf-du-Pape Vieilles Vignes",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine du Pegau",
+    "wineName": "Domaine du Pegau Châteauneuf-du-Pape Cuvée Da Capo",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tardieu-Laurent",
+    "wineName": "Tardieu-Laurent Côte-Rôtie",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Georges Vernay",
+    "wineName": "Georges Vernay Condrieu Coteau de Vernon",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Condrieu",
+    "classification": null,
+    "varietal": "Viognier",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Yves Cuilleron",
+    "wineName": "Yves Cuilleron Côte-Rôtie Madinière",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Côte-Rôtie",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Auguste Clape",
+    "wineName": "Auguste Clape Cornas",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Cornas",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Thierry Allemand",
+    "wineName": "Thierry Allemand Cornas Reynard",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Cornas",
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine du Vieux Lazaret",
+    "wineName": "Vieux Lazaret Châteauneuf-du-Pape",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Santa Duc",
+    "wineName": "Santa Duc Gigondas",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Gigondas",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château La Nerthe",
+    "wineName": "Château La Nerthe Châteauneuf-du-Pape",
+    "country": "France",
+    "region": "Rhône Valley",
+    "subRegion": "Châteauneuf-du-Pape",
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Krug",
+    "wineName": "Krug Grande Cuvée",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Krug",
+    "wineName": "Krug Vintage Brut",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Krug",
+    "wineName": "Krug Clos du Mesnil",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dom Pérignon",
+    "wineName": "Dom Pérignon Vintage Brut",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dom Pérignon",
+    "wineName": "Dom Pérignon Rosé",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dom Pérignon",
+    "wineName": "Dom Pérignon P2",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Louis Roederer",
+    "wineName": "Cristal",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Louis Roederer",
+    "wineName": "Cristal Rosé",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Louis Roederer",
+    "wineName": "Louis Roederer Collection 244",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Salon",
+    "wineName": "Salon Le Mesnil Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bollinger",
+    "wineName": "Bollinger La Grande Année",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bollinger",
+    "wineName": "Bollinger Special Cuvée",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bollinger",
+    "wineName": "Bollinger R.D.",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Pol Roger",
+    "wineName": "Pol Roger Sir Winston Churchill",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Pol Roger",
+    "wineName": "Pol Roger Brut Réserve",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Taittinger",
+    "wineName": "Taittinger Comtes de Champagne Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Taittinger",
+    "wineName": "Taittinger Brut Réserve",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Veuve Clicquot",
+    "wineName": "Veuve Clicquot La Grande Dame",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Veuve Clicquot",
+    "wineName": "Veuve Clicquot Yellow Label Brut",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Moët & Chandon",
+    "wineName": "Moët & Chandon Grand Vintage",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Moët & Chandon",
+    "wineName": "Moët Impérial Brut",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Ruinart",
+    "wineName": "Ruinart Dom Ruinart Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Ruinart",
+    "wineName": "Ruinart Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Philipponnat",
+    "wineName": "Philipponnat Clos des Goisses",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Montagne de Reims",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Jacques Selosse",
+    "wineName": "Jacques Selosse Substance",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Jacques Selosse",
+    "wineName": "Jacques Selosse Initial",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Pierre Péters",
+    "wineName": "Pierre Péters Cuvée Spéciale Les Chetillons",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Egly-Ouriet",
+    "wineName": "Egly-Ouriet Grand Cru Brut Tradition",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Montagne de Reims",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Henri Giraud",
+    "wineName": "Henri Giraud Hommage à François Hémart",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Montagne de Reims",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Charles Heidsieck",
+    "wineName": "Charles Heidsieck Blanc des Millénaires",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Perrier-Jouët",
+    "wineName": "Perrier-Jouët Belle Epoque",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "G.H. Mumm",
+    "wineName": "G.H. Mumm Cordon Rouge",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "G.H. Mumm",
+    "wineName": "Mumm R. Lalou",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Laurent-Perrier",
+    "wineName": "Laurent-Perrier Grand Siècle",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Laurent-Perrier",
+    "wineName": "Laurent-Perrier Cuvée Rosé",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Armand de Brignac",
+    "wineName": "Armand de Brignac Ace of Spades Brut Gold",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Delamotte",
+    "wineName": "Delamotte Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Billecart-Salmon",
+    "wineName": "Billecart-Salmon Cuvée Nicolas François",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Billecart-Salmon",
+    "wineName": "Billecart-Salmon Brut Rosé",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Henriot",
+    "wineName": "Henriot Cuvée des Enchanteleurs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Pierre Gimonnet et Fils",
+    "wineName": "Pierre Gimonnet Fleuron Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Agrapart & Fils",
+    "wineName": "Agrapart Minéral Blanc de Blancs",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Larmandier-Bernier",
+    "wineName": "Larmandier-Bernier Terre de Vertus",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Côte des Blancs",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vilmart & Cie",
+    "wineName": "Vilmart Coeur de Cuvée",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Montagne de Reims",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Tarlant",
+    "wineName": "Tarlant Cuvée Louis",
+    "country": "France",
+    "region": "Champagne",
+    "subRegion": "Vallée de la Marne",
+    "classification": null,
+    "varietal": "Champagne / Sparkling Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Penfolds",
+    "wineName": "Penfolds Grange",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Penfolds",
+    "wineName": "Penfolds RWT Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Penfolds",
+    "wineName": "Penfolds St Henri Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Penfolds",
+    "wineName": "Penfolds Bin 28 Kalimna Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Henschke",
+    "wineName": "Henschke Hill of Grace",
+    "country": "Australia",
+    "region": "Eden Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Henschke",
+    "wineName": "Henschke Mount Edelstone",
+    "country": "Australia",
+    "region": "Eden Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Torbreck Vintners",
+    "wineName": "Torbreck The Factor",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Torbreck Vintners",
+    "wineName": "Torbreck RunRig",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Torbreck Vintners",
+    "wineName": "Torbreck Descendant",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Two Hands Wines",
+    "wineName": "Two Hands Ares Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Two Hands Wines",
+    "wineName": "Two Hands Bella's Garden Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Rockford Wines",
+    "wineName": "Rockford Basket Press Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Yalumba",
+    "wineName": "Yalumba The Octavius Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Yalumba",
+    "wineName": "Yalumba The Signature Cabernet Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Elderton Wines",
+    "wineName": "Elderton Command Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Chris Ringland",
+    "wineName": "Chris Ringland Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Greenock Creek",
+    "wineName": "Greenock Creek Roennfeldt Road Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Glaetzer Wines",
+    "wineName": "Glaetzer Amon-Ra Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "John Duval Wines",
+    "wineName": "John Duval Eligo Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Charles Melton Wines",
+    "wineName": "Charles Melton Nine Popes",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Rhône Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Spinifex",
+    "wineName": "Spinifex Bête Noir Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "The Standish Wine Company",
+    "wineName": "Standish The Relic Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Turkey Flat",
+    "wineName": "Turkey Flat Shiraz",
+    "country": "Australia",
+    "region": "Barossa Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Syrah / Shiraz",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Egon Müller - Scharzhof",
+    "wineName": "Egon Müller Scharzhofberger Riesling Auslese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Auslese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Egon Müller - Scharzhof",
+    "wineName": "Egon Müller Scharzhofberger Riesling Kabinett",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Auslese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Joh. Jos. Prüm",
+    "wineName": "J.J. Prüm Wehlener Sonnenuhr Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Joh. Jos. Prüm",
+    "wineName": "J.J. Prüm Graacher Himmelreich Riesling Auslese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Auslese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Weingut Fritz Haag",
+    "wineName": "Fritz Haag Brauneberger Juffer-Sonnenuhr Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dr. Loosen",
+    "wineName": "Dr. Loosen Erdener Prälat Riesling Auslese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Auslese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dr. Loosen",
+    "wineName": "Dr. Loosen Ürziger Würzgarten Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Markus Molitor",
+    "wineName": "Markus Molitor Zeltinger Sonnenuhr Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Weingut Willi Schaefer",
+    "wineName": "Willi Schaefer Graacher Domprobst Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Selbach-Oster",
+    "wineName": "Selbach-Oster Zeltinger Sonnenuhr Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Schloss Lieser",
+    "wineName": "Schloss Lieser Niederberg Helden Riesling Spätlese",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": "Spätlese",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Van Volxem",
+    "wineName": "Van Volxem Scharzhofberg Riesling",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": "Saar",
+    "classification": null,
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Heymann-Löwenstein",
+    "wineName": "Heymann-Löwenstein Uhlen Riesling",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Clemens Busch",
+    "wineName": "Clemens Busch Marienburg Riesling",
+    "country": "Germany",
+    "region": "Mosel",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vega Sicilia",
+    "wineName": "Vega Sicilia Único",
+    "country": "Spain",
+    "region": "Ribera del Duero",
+    "subRegion": null,
+    "classification": "Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Vega Sicilia",
+    "wineName": "Vega Sicilia Valbuena 5°",
+    "country": "Spain",
+    "region": "Ribera del Duero",
+    "subRegion": null,
+    "classification": "Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dominio de Pingus",
+    "wineName": "Dominio de Pingus",
+    "country": "Spain",
+    "region": "Ribera del Duero",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dominio de Pingus",
+    "wineName": "Pingus Flor de Pingus",
+    "country": "Spain",
+    "region": "Ribera del Duero",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "R. López de Heredia",
+    "wineName": "López de Heredia Viña Tondonia Gran Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Gran Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "R. López de Heredia",
+    "wineName": "López de Heredia Viña Tondonia Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "La Rioja Alta",
+    "wineName": "La Rioja Alta Gran Reserva 904",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Gran Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "La Rioja Alta",
+    "wineName": "La Rioja Alta Viña Ardanza Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Marqués de Murrieta",
+    "wineName": "Marqués de Murrieta Castillo Ygay Gran Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Gran Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "CVNE",
+    "wineName": "CVNE Imperial Gran Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Gran Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bodegas Muga",
+    "wineName": "Muga Prado Enea Gran Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Gran Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bodegas Muga",
+    "wineName": "Muga Aro",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Artadi",
+    "wineName": "Artadi Viña El Pisón",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Roda",
+    "wineName": "Roda I Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Remírez de Ganuza",
+    "wineName": "Remírez de Ganuza Reserva",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": "Reserva",
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bodegas Contino",
+    "wineName": "Contino Viña del Olivo",
+    "country": "Spain",
+    "region": "Rioja",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Aalto",
+    "wineName": "Aalto Ribera del Duero",
+    "country": "Spain",
+    "region": "Ribera del Duero",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bodegas Hermanos Sastre",
+    "wineName": "Sastre Pesus Ribera del Duero",
+    "country": "Spain",
+    "region": "Ribera del Duero",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Tempranillo",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Clos Mogador",
+    "wineName": "Clos Mogador Priorat",
+    "country": "Spain",
+    "region": "Priorat",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Red Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Alvaro Palacios",
+    "wineName": "Alvaro Palacios L'Ermita Priorat",
+    "country": "Spain",
+    "region": "Priorat",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Grenache",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Alvaro Palacios",
+    "wineName": "Alvaro Palacios Finca Dofí",
+    "country": "Spain",
+    "region": "Priorat",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Grenache",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Taylor Fladgate",
+    "wineName": "Taylor Fladgate Vintage Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Taylor Fladgate",
+    "wineName": "Taylor Fladgate 20 Year Old Tawny Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Graham's",
+    "wineName": "Graham's Vintage Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Fonseca",
+    "wineName": "Fonseca Vintage Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Niepoort",
+    "wineName": "Niepoort Vintage Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Quinta do Noval",
+    "wineName": "Quinta do Noval Nacional Vintage Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Dow's",
+    "wineName": "Dow's Vintage Port",
+    "country": "Portugal",
+    "region": "Douro",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Port",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Wynns Coonawarra Estate",
+    "wineName": "Wynns Coonawarra Estate John Riddoch Cabernet Sauvignon",
+    "country": "Australia",
+    "region": "Coonawarra",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bowen Estate",
+    "wineName": "Bowen Estate Cabernet Sauvignon",
+    "country": "Australia",
+    "region": "Coonawarra",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Cloudy Bay",
+    "wineName": "Cloudy Bay Sauvignon Blanc",
+    "country": "New Zealand",
+    "region": "Marlborough",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Sauvignon Blanc",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Felton Road",
+    "wineName": "Felton Road Bannockburn Pinot Noir",
+    "country": "New Zealand",
+    "region": "Central Otago",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Te Mata Estate",
+    "wineName": "Te Mata Coleraine",
+    "country": "New Zealand",
+    "region": "Hawke's Bay",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Quilceda Creek",
+    "wineName": "Quilceda Creek Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Columbia Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Leonetti Cellar",
+    "wineName": "Leonetti Cellar Reserve",
+    "country": "United States",
+    "region": "Columbia Valley",
+    "subRegion": "Walla Walla Valley",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Chateau Ste. Michelle",
+    "wineName": "Chateau Ste. Michelle Ethos Reserve Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Columbia Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Drouhin Oregon",
+    "wineName": "Domaine Drouhin Oregon Pinot Noir",
+    "country": "United States",
+    "region": "Willamette Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Cristom Vineyards",
+    "wineName": "Cristom Mt. Jefferson Cuvée Pinot Noir",
+    "country": "United States",
+    "region": "Willamette Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Bergström Wines",
+    "wineName": "Bergström Shea Vineyard Pinot Noir",
+    "country": "United States",
+    "region": "Willamette Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Kanonkop",
+    "wineName": "Kanonkop Paul Sauer",
+    "country": "South Africa",
+    "region": "Stellenbosch",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Klein Constantia",
+    "wineName": "Klein Constantia Vin de Constance",
+    "country": "South Africa",
+    "region": "Constantia",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Catena Zapata",
+    "wineName": "Catena Zapata Nicolás Catena Zapata",
+    "country": "Argentina",
+    "region": "Mendoza",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Malbec",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Catena Zapata",
+    "wineName": "Catena Zapata Adrianna Vineyard Malbec",
+    "country": "Argentina",
+    "region": "Mendoza",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Malbec",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Achaval Ferrer",
+    "wineName": "Achaval Ferrer Finca Altamira Malbec",
+    "country": "Argentina",
+    "region": "Mendoza",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Malbec",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Almaviva",
+    "wineName": "Almaviva",
+    "country": "Chile",
+    "region": "Maipo Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Concha y Toro",
+    "wineName": "Don Melchor Cabernet Sauvignon",
+    "country": "Chile",
+    "region": "Maipo Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Viña Seña",
+    "wineName": "Seña",
+    "country": "Chile",
+    "region": "Aconcagua Valley",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Bordeaux Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Zind-Humbrecht",
+    "wineName": "Zind-Humbrecht Clos Saint Urbain Riesling",
+    "country": "France",
+    "region": "Alsace",
+    "subRegion": null,
+    "classification": "Grand Cru",
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Zind-Humbrecht",
+    "wineName": "Zind-Humbrecht Rangen de Thann Pinot Gris",
+    "country": "France",
+    "region": "Alsace",
+    "subRegion": null,
+    "classification": "Grand Cru",
+    "varietal": "Pinot Grigio / Pinot Gris",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Weinbach",
+    "wineName": "Domaine Weinbach Riesling Schlossberg",
+    "country": "France",
+    "region": "Alsace",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Marcel Deiss",
+    "wineName": "Marcel Deiss Altenberg de Bergheim",
+    "country": "France",
+    "region": "Alsace",
+    "subRegion": null,
+    "classification": "Grand Cru",
+    "varietal": "White Blend",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Maison Trimbach",
+    "wineName": "Trimbach Riesling Clos Sainte Hune",
+    "country": "France",
+    "region": "Alsace",
+    "subRegion": null,
+    "classification": null,
+    "varietal": "Riesling",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Huet",
+    "wineName": "Domaine Huet Le Mont Vouvray Sec",
+    "country": "France",
+    "region": "Loire Valley",
+    "subRegion": "Vouvray",
+    "classification": null,
+    "varietal": "Chenin Blanc",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Huet",
+    "wineName": "Domaine Huet Clos du Bourg Moelleux",
+    "country": "France",
+    "region": "Loire Valley",
+    "subRegion": "Vouvray",
+    "classification": null,
+    "varietal": "Chenin Blanc",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Didier Dagueneau",
+    "wineName": "Didier Dagueneau Silex",
+    "country": "France",
+    "region": "Loire Valley",
+    "subRegion": "Pouilly-Fumé",
+    "classification": null,
+    "varietal": "Sauvignon Blanc",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Didier Dagueneau",
+    "wineName": "Didier Dagueneau Pur Sang",
+    "country": "France",
+    "region": "Loire Valley",
+    "subRegion": "Pouilly-Fumé",
+    "classification": null,
+    "varietal": "Sauvignon Blanc",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Château de Tracy",
+    "wineName": "Château de Tracy Pouilly-Fumé",
+    "country": "France",
+    "region": "Loire Valley",
+    "subRegion": "Pouilly-Fumé",
+    "classification": null,
+    "varietal": "Sauvignon Blanc",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Domaine Vacheron",
+    "wineName": "Domaine Vacheron Sancerre Les Romains",
+    "country": "France",
+    "region": "Loire Valley",
+    "subRegion": "Sancerre",
+    "classification": null,
+    "varietal": "Sauvignon Blanc",
+    "format": "750mL (Standard)"
+  }
+]

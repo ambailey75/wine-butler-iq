@@ -14,8 +14,11 @@ import {
 import { COUNTRIES, WINE_FORMATS, COMMON_REGIONS, COMMON_VARIETALS } from '@/lib/wines/constants'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { createWine, updateWine, searchCellarWines, type WineSuggestion } from '@/lib/wines/actions'
+import { searchStaticWines, type StaticWineEntry } from '@/lib/wines/staticWineSearch'
+import type { WineLookupResult } from '@/lib/wines/types'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Calendar } from '@/components/ui/calendar'
@@ -218,6 +221,46 @@ function PurchaseDateField({ value, onChange }: PurchaseDateFieldProps) {
   )
 }
 
+interface MergedSuggestion {
+  source: 'cellar' | 'static' | 'api'
+  producer: string
+  wineName: string
+  vintage: number | null
+  country: string | null
+  region: string | null
+  subRegion: string | null
+  classification: string | null
+  varietal: string | null
+  format: string | null
+}
+
+function fromCellar(suggestion: WineSuggestion): MergedSuggestion {
+  return { source: 'cellar', ...suggestion }
+}
+
+function fromStatic(entry: StaticWineEntry): MergedSuggestion {
+  return { source: 'static', vintage: null, ...entry }
+}
+
+function fromApi(result: WineLookupResult): MergedSuggestion {
+  return { source: 'api', subRegion: null, classification: null, format: null, ...result }
+}
+
+function mergeSuggestions(...lists: MergedSuggestion[][]): MergedSuggestion[] {
+  const seen = new Set<string>()
+  const merged: MergedSuggestion[] = []
+  for (const list of lists) {
+    for (const item of list) {
+      const key = `${item.producer.toLowerCase()}|${item.wineName.toLowerCase()}`
+      if (seen.has(key)) continue
+      seen.add(key)
+      merged.push(item)
+      if (merged.length >= 6) return merged
+    }
+  }
+  return merged
+}
+
 interface WineFormProps {
   mode: 'create' | 'edit'
   wine?: SerializedWine
@@ -275,7 +318,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
     }
   }
 
-  const [suggestions, setSuggestions] = useState<WineSuggestion[]>([])
+  const [suggestions, setSuggestions] = useState<MergedSuggestion[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const suggestionsRef = useRef<HTMLDivElement>(null)
   const producerValue = form.watch('producer')
@@ -293,14 +336,37 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
       return
     }
 
-    const timeout = setTimeout(() => {
-      searchCellarWines({ producer, wineName }).then((results) => {
-        setSuggestions(results)
-        setShowSuggestions(results.length > 0)
-      })
+    let cancelled = false
+    const query = [producer, wineName].filter(Boolean).join(' ')
+
+    const timeout = setTimeout(async () => {
+      const [cellarResults, staticResults] = await Promise.all([
+        searchCellarWines({ producer, wineName }),
+        searchStaticWines(query),
+      ])
+      if (cancelled) return
+
+      const merged = mergeSuggestions(cellarResults.map(fromCellar), staticResults.map(fromStatic))
+      setSuggestions(merged)
+      setShowSuggestions(merged.length > 0)
+
+      const apiResults = await Promise.race([
+        fetch(`/api/wines/lookup?q=${encodeURIComponent(query)}`)
+          .then((res) => (res.ok ? res.json() : []))
+          .catch(() => []),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 800)),
+      ])
+      if (cancelled || !apiResults) return
+
+      const withApi = mergeSuggestions(merged, (apiResults as WineLookupResult[]).map(fromApi))
+      setSuggestions(withApi)
+      setShowSuggestions(withApi.length > 0)
     }, 350)
 
-    return () => clearTimeout(timeout)
+    return () => {
+      cancelled = true
+      clearTimeout(timeout)
+    }
   }, [producerValue, wineNameValue, mode])
 
   useEffect(() => {
@@ -313,7 +379,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  function applySuggestion(suggestion: WineSuggestion) {
+  function applySuggestion(suggestion: MergedSuggestion) {
     form.setValue('producer', suggestion.producer)
     form.setValue('wineName', suggestion.wineName)
     if (suggestion.vintage != null) form.setValue('vintage', suggestion.vintage)
@@ -365,7 +431,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
               {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute left-0 right-0 top-full z-20 mt-1 overflow-hidden rounded-md border border-border bg-popover shadow-md">
                   <div className="border-b border-border px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                    From your cellar — select to fill in details
+                    Suggestions — select to fill in details
                   </div>
                   <ul className="max-h-60 overflow-auto">
                     {suggestions.map((suggestion, index) => (
@@ -374,16 +440,28 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
                           type="button"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => applySuggestion(suggestion)}
-                          className="flex w-full flex-col items-start gap-0.5 px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
+                          className="flex w-full items-start justify-between gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
                         >
-                          <span className="font-medium">
-                            {suggestion.producer} — {suggestion.wineName}
-                            {suggestion.vintage ? ` (${suggestion.vintage})` : ''}
+                          <span className="flex flex-col items-start gap-0.5">
+                            <span className="font-medium">
+                              {suggestion.producer} — {suggestion.wineName}
+                              {suggestion.vintage ? ` (${suggestion.vintage})` : ''}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {[suggestion.region, suggestion.country].filter(Boolean).join(', ') ||
+                                'No region or country on file'}
+                            </span>
                           </span>
-                          <span className="text-xs text-muted-foreground">
-                            {[suggestion.region, suggestion.country].filter(Boolean).join(', ') ||
-                              'No region or country on file'}
-                          </span>
+                          {suggestion.source === 'cellar' && (
+                            <Badge variant="secondary" className="shrink-0 text-[10px] font-normal">
+                              Your cellar
+                            </Badge>
+                          )}
+                          {suggestion.source === 'api' && (
+                            <Badge variant="outline" className="shrink-0 text-[10px] font-normal">
+                              Live
+                            </Badge>
+                          )}
                         </button>
                       </li>
                     ))}
