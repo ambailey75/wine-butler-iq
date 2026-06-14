@@ -16,6 +16,7 @@ import type { SerializedWine } from '@/lib/wines/queries'
 import { createWine, updateWine, searchCellarWines, type WineSuggestion } from '@/lib/wines/actions'
 import { searchStaticWines, type StaticWineEntry } from '@/lib/wines/staticWineSearch'
 import type { WineLookupResult } from '@/lib/wines/types'
+import { ProducerThumbnail } from '@/components/cellar/ProducerThumbnail'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -440,28 +441,31 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
                           type="button"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => applySuggestion(suggestion)}
-                          className="flex w-full items-start justify-between gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
+                          className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
                         >
-                          <span className="flex flex-col items-start gap-0.5">
-                            <span className="font-medium">
-                              {suggestion.producer} — {suggestion.wineName}
-                              {suggestion.vintage ? ` (${suggestion.vintage})` : ''}
+                          <ProducerThumbnail producer={suggestion.producer} size={32} />
+                          <span className="flex flex-1 items-start justify-between gap-2">
+                            <span className="flex flex-col items-start gap-0.5">
+                              <span className="font-medium">
+                                {suggestion.producer} — {suggestion.wineName}
+                                {suggestion.vintage ? ` (${suggestion.vintage})` : ''}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {[suggestion.region, suggestion.country].filter(Boolean).join(', ') ||
+                                  'No region or country on file'}
+                              </span>
                             </span>
-                            <span className="text-xs text-muted-foreground">
-                              {[suggestion.region, suggestion.country].filter(Boolean).join(', ') ||
-                                'No region or country on file'}
-                            </span>
+                            {suggestion.source === 'cellar' && (
+                              <Badge variant="secondary" className="shrink-0 text-[10px] font-normal">
+                                Your cellar
+                              </Badge>
+                            )}
+                            {suggestion.source === 'api' && (
+                              <Badge variant="outline" className="shrink-0 text-[10px] font-normal">
+                                Live
+                              </Badge>
+                            )}
                           </span>
-                          {suggestion.source === 'cellar' && (
-                            <Badge variant="secondary" className="shrink-0 text-[10px] font-normal">
-                              Your cellar
-                            </Badge>
-                          )}
-                          {suggestion.source === 'api' && (
-                            <Badge variant="outline" className="shrink-0 text-[10px] font-normal">
-                              Live
-                            </Badge>
-                          )}
                         </button>
                       </li>
                     ))}

@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DeleteWineButton } from '@/components/cellar/DeleteWineButton'
+import { LabelPhoto } from '@/components/cellar/LabelPhoto'
+import { LabelPhotoUpload } from '@/components/cellar/LabelPhotoUpload'
 
 interface WineDetailPageProps {
   params: { id: string }
@@ -51,32 +53,42 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold text-foreground">
-              {wine.producer} {wine.wineName}
-            </h1>
-            {wine.vintage && <Badge variant="secondary">{wine.vintage}</Badge>}
-            {wine.format && <Badge variant="outline">{wine.format}</Badge>}
-          </div>
-          {(wine.region || wine.country) && (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {[wine.region, wine.country].filter(Boolean).join(', ')}
-            </p>
-          )}
-        </div>
-        <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link href={`/dashboard/cellar/${wine.id}/edit`}>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit
-            </Link>
-          </Button>
-          <DeleteWineButton
-            wineId={wine.id}
-            wineLabel={`${wine.producer} ${wine.wineName}`}
+      <div className="flex flex-wrap items-start gap-6">
+        <div className="flex flex-col items-center gap-2">
+          <LabelPhoto
+            src={wine.labelPhotoUrl}
+            alt={`${wine.producer} ${wine.wineName} label`}
+            initial={wine.producer.charAt(0).toUpperCase()}
           />
+          <LabelPhotoUpload wineId={wine.id} hasPhoto={Boolean(wine.labelPhotoUrl)} />
+        </div>
+        <div className="flex flex-1 flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-bold text-foreground">
+                {wine.producer} {wine.wineName}
+              </h1>
+              {wine.vintage && <Badge variant="secondary">{wine.vintage}</Badge>}
+              {wine.format && <Badge variant="outline">{wine.format}</Badge>}
+            </div>
+            {(wine.region || wine.country) && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                {[wine.region, wine.country].filter(Boolean).join(', ')}
+              </p>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <Link href={`/dashboard/cellar/${wine.id}/edit`}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </Link>
+            </Button>
+            <DeleteWineButton
+              wineId={wine.id}
+              wineLabel={`${wine.producer} ${wine.wineName}`}
+            />
+          </div>
         </div>
       </div>
 
