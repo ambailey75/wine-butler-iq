@@ -16,7 +16,7 @@ export const ALLOWED_MIME_TYPES: Record<ImportSourceType, string[]> = {
   ],
   CSV: ['text/csv', 'application/csv', 'application/vnd.ms-excel'],
   PDF: ['application/pdf'],
-  IMAGE: ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'],
+  IMAGE: ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'text/html'],
 }
 
 const EXTENSION_SOURCE_TYPES: Record<string, ImportSourceType> = {
@@ -30,6 +30,8 @@ const EXTENSION_SOURCE_TYPES: Record<string, ImportSourceType> = {
   webp: 'IMAGE',
   heic: 'IMAGE',
   heif: 'IMAGE',
+  html: 'IMAGE',
+  htm: 'IMAGE',
 }
 
 export function detectSourceType(filename: string, mimeType: string): ImportSourceType | null {
@@ -39,6 +41,7 @@ export function detectSourceType(filename: string, mimeType: string): ImportSour
   }
   if (mimeType === 'application/pdf') return 'PDF'
   if (mimeType.startsWith('image/')) return 'IMAGE'
+  if (mimeType === 'text/html') return 'IMAGE'
   if (mimeType === 'text/csv') return 'CSV'
   if (mimeType.includes('spreadsheet') || mimeType === 'application/vnd.ms-excel') return 'EXCEL'
   return null
@@ -54,12 +57,20 @@ export interface MappedWineData {
   classification?: string
   varietal?: string
   format?: string
+  style?: string
   quantity?: number
   purchasePrice?: number
   purchaseDate?: string
   vendor?: string
   storageLocation?: string
   notes?: string
+  tastingNotes?: string
+  pairingNotes?: string
+  rating?: number
+  drinkWindowStart?: number
+  drinkWindowEnd?: number
+  currentEstValue?: number
+  wineId?: string
 }
 
 export type ConfidenceScores = Partial<Record<keyof MappedWineData, number>>
@@ -81,10 +92,34 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
   { key: 'classification', label: 'Classification', type: 'string' },
   { key: 'varietal', label: 'Varietal', type: 'string' },
   { key: 'format', label: 'Format', type: 'string' },
+  { key: 'style', label: 'Style', type: 'string' },
   { key: 'quantity', label: 'Quantity', type: 'number' },
   { key: 'purchasePrice', label: 'Purchase Price', type: 'number' },
   { key: 'purchaseDate', label: 'Purchase Date', type: 'date' },
   { key: 'vendor', label: 'Vendor', type: 'string' },
   { key: 'storageLocation', label: 'Storage Location', type: 'string' },
+  { key: 'currentEstValue', label: 'Current Est. Value', type: 'number' },
+  { key: 'rating', label: 'Rating', type: 'number' },
+  { key: 'drinkWindowStart', label: 'Drink Window Start', type: 'number' },
+  { key: 'drinkWindowEnd', label: 'Drink Window End', type: 'number' },
+  { key: 'tastingNotes', label: 'Tasting Notes', type: 'string' },
+  { key: 'pairingNotes', label: 'Pairing Notes', type: 'string' },
+  { key: 'wineId', label: 'Wine ID', type: 'string' },
   { key: 'notes', label: 'Notes', type: 'string' },
 ]
+
+// Maps common CSV column header variants (normalized: lowercase, alphanumeric
+// only) to a target field key, or `null` to force-skip a computed column.
+// Checked before the generic key/label match in ColumnMappingForm so e.g. a
+// plain "Notes" column lands on tastingNotes (per-bottle notes) rather than
+// the cellar-management notes field, and "Total Cost"/"Total Est. Value"
+// (computed at query time) are never offered as import targets.
+export const HEADER_ALIASES: Record<string, keyof MappedWineData | null> = {
+  notes: 'tastingNotes',
+  appellation: 'subRegion',
+  bottlesize: 'format',
+  drinkingwindowstart: 'drinkWindowStart',
+  drinkingwindowend: 'drinkWindowEnd',
+  totalcost: null,
+  totalestvalue: null,
+}

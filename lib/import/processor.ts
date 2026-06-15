@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma/client'
 import { parseSpreadsheet } from './excel'
 import { extractPdfPages } from './pdf'
 import { fileToBase64 } from './image'
-import { extractWinesFromPdf, extractWineFromImage, suggestColumnMapping } from './claude-extractor'
+import { extractWinesFromPdf, extractWinesFromImage, extractWinesFromText, suggestColumnMapping } from './claude-extractor'
 import { PDF_PAGE_BATCH_SIZE } from './constants'
 
 export interface ProcessResult {
@@ -102,6 +102,41 @@ async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResu
 }
 
 async function processImage(importId: string, file: File): Promise<ProcessResult> {
+  const isHtml = file.type === 'text/html' || /\.html?$/i.test(file.name)
+
+  if (isHtml) {
+    const html = await file.text()
+    const extracted = await extractWinesFromText(html)
+
+    if (extracted.length === 0) {
+      await prisma.import.update({
+        where: { id: importId },
+        data: {
+          status: 'FAILED',
+          errorMessage: 'Could not find any wine line items in this file',
+          completedAt: new Date(),
+        },
+      })
+      return {}
+    }
+
+    await prisma.importRow.createMany({
+      data: extracted.map((row) => ({
+        importId,
+        rawData: row.mappedData as unknown as Prisma.InputJsonValue,
+        mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
+        confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
+      })),
+    })
+
+    await prisma.import.update({
+      where: { id: importId },
+      data: { status: 'REVIEW', recordCount: extracted.length },
+    })
+
+    return {}
+  }
+
   const { base64, mimeType } = await fileToBase64(file)
 
   if (mimeType !== 'image/jpeg' && mimeType !== 'image/png' && mimeType !== 'image/webp') {
@@ -112,28 +147,38 @@ async function processImage(importId: string, file: File): Promise<ProcessResult
     return {}
   }
 
-  const extracted = await extractWineFromImage(base64, mimeType)
+  const extracted = await extractWinesFromImage(base64, mimeType)
 
-  await prisma.importRow.create({
-    data: {
+  if (extracted.length === 0) {
+    await prisma.importRow.create({
+      data: { importId, rawData: {}, mappedData: {}, confidenceScores: {} },
+    })
+
+    await prisma.import.update({
+      where: { id: importId },
+      data: {
+        status: 'REVIEW',
+        recordCount: 1,
+        errorMessage:
+          'Could not identify wine details from this image — fill in the fields manually before confirming.',
+      },
+    })
+
+    return {}
+  }
+
+  await prisma.importRow.createMany({
+    data: extracted.map((row) => ({
       importId,
-      rawData: extracted.mappedData as unknown as Prisma.InputJsonValue,
-      mappedData: extracted.mappedData as unknown as Prisma.InputJsonValue,
-      confidenceScores: extracted.confidenceScores as unknown as Prisma.InputJsonValue,
-    },
+      rawData: row.mappedData as unknown as Prisma.InputJsonValue,
+      mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
+      confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
+    })),
   })
-
-  const noFieldsFound = Object.keys(extracted.mappedData).length === 0
 
   await prisma.import.update({
     where: { id: importId },
-    data: {
-      status: 'REVIEW',
-      recordCount: 1,
-      errorMessage: noFieldsFound
-        ? 'Could not identify wine details from this photo — fill in the fields manually before confirming.'
-        : null,
-    },
+    data: { status: 'REVIEW', recordCount: extracted.length },
   })
 
   return {}

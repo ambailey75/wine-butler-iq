@@ -40,6 +40,15 @@ export const COUNTRIES: string[] = [
   'Other',
 ]
 
+export const WINE_STYLES: string[] = [
+  'Red',
+  'White',
+  'Rosé',
+  'Sparkling',
+  'Dessert',
+  'Fortified',
+]
+
 export const WINE_FORMATS: string[] = [
   '375mL (Half)',
   '750mL (Standard)',

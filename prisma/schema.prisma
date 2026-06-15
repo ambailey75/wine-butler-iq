@@ -36,12 +36,20 @@ model Wine {
   classification  String?
   varietal        String?
   format          String?
+  style           String?
   quantity        Int       @default(1)
   purchasePrice   Decimal?  @db.Decimal(10, 2)
   purchaseDate    DateTime?
   vendor          String?
   storageLocation String?
   notes           String?
+  tastingNotes    String?
+  pairingNotes    String?
+  rating          Decimal?  @db.Decimal(4, 1)
+  drinkWindowStart Int?
+  drinkWindowEnd   Int?
+  currentEstValue Decimal?  @db.Decimal(10, 2)
+  wineId          String?
   labelPhotoUrl   String?
   importId        String?
   createdAt       DateTime  @default(now())

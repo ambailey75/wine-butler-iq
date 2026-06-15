@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { IMPORT_TARGET_FIELDS, type MappedWineData } from '@/lib/import/constants'
+import { HEADER_ALIASES, IMPORT_TARGET_FIELDS, type MappedWineData } from '@/lib/import/constants'
 
 const SKIP_VALUE = '__skip__'
 
@@ -43,9 +43,24 @@ function guessTargetKey(header: string): string | null {
   return match?.key ?? null
 }
 
+// Common CSV column names with a known target field (or known-skip, like
+// "Total Cost") take priority over Claude's suggestion and the generic guess.
+function aliasTargetKey(header: string): { matched: boolean; key: string | null } {
+  const normalized = header.trim().toLowerCase().replace(/[^a-z0-9]/g, '')
+  if (normalized in HEADER_ALIASES) {
+    return { matched: true, key: HEADER_ALIASES[normalized] }
+  }
+  return { matched: false, key: null }
+}
+
 function buildInitialMapping(headers: string[], suggestion: Record<string, string | null>) {
   const mapping: Record<string, string> = {}
   for (const header of headers) {
+    const alias = aliasTargetKey(header)
+    if (alias.matched) {
+      mapping[header] = alias.key ?? SKIP_VALUE
+      continue
+    }
     const suggested = suggestion[header]
     const key = suggested && TARGET_KEYS.has(suggested) ? suggested : guessTargetKey(header)
     mapping[header] = key ?? SKIP_VALUE

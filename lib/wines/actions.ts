@@ -16,12 +16,20 @@ function toWineData(values: WineFormValues) {
     classification: values.classification ?? null,
     varietal: values.varietal ?? null,
     format: values.format ?? null,
+    style: values.style ?? null,
     quantity: values.quantity,
     purchasePrice: values.purchasePrice ?? null,
     purchaseDate: values.purchaseDate ?? null,
     vendor: values.vendor ?? null,
     storageLocation: values.storageLocation ?? null,
     notes: values.notes ?? null,
+    tastingNotes: values.tastingNotes ?? null,
+    pairingNotes: values.pairingNotes ?? null,
+    rating: values.rating ?? null,
+    drinkWindowStart: values.drinkWindowStart ?? null,
+    drinkWindowEnd: values.drinkWindowEnd ?? null,
+    currentEstValue: values.currentEstValue ?? null,
+    wineId: values.wineId ?? null,
   }
 }
 

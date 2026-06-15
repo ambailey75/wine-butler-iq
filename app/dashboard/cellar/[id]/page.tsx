@@ -29,6 +29,17 @@ function formatDate(date: Date) {
   }).format(date)
 }
 
+function formatRating(value: number) {
+  return `${value}/100`
+}
+
+function formatDrinkWindow(start: number | null, end: number | null) {
+  if (start && end) return `${start}–${end}`
+  if (start) return `${start} onward`
+  if (end) return `Through ${end}`
+  return null
+}
+
 function DetailField({ label, value }: { label: string; value?: string | null }) {
   return (
     <div>
@@ -50,6 +61,13 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
   if (!wine) {
     notFound()
   }
+
+  const purchasePrice = wine.purchasePrice ? wine.purchasePrice.toNumber() : null
+  const currentEstValue = wine.currentEstValue ? wine.currentEstValue.toNumber() : null
+  const rating = wine.rating ? wine.rating.toNumber() : null
+  const totalCost = purchasePrice !== null ? purchasePrice * wine.quantity : null
+  const totalEstValue = currentEstValue !== null ? currentEstValue * wine.quantity : null
+  const drinkWindow = formatDrinkWindow(wine.drinkWindowStart, wine.drinkWindowEnd)
 
   return (
     <div className="space-y-6">
@@ -106,10 +124,15 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
           <DetailField label="Classification" value={wine.classification} />
           <DetailField label="Varietal" value={wine.varietal} />
           <DetailField label="Format" value={wine.format} />
+          <DetailField label="Style" value={wine.style} />
           <DetailField label="Quantity" value={wine.quantity.toString()} />
           <DetailField
             label="Purchase Price"
-            value={wine.purchasePrice ? formatCurrency(wine.purchasePrice.toNumber()) : null}
+            value={purchasePrice !== null ? formatCurrency(purchasePrice) : null}
+          />
+          <DetailField
+            label="Total Cost"
+            value={totalCost !== null ? formatCurrency(totalCost) : null}
           />
           <DetailField
             label="Purchase Date"
@@ -117,8 +140,41 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
           />
           <DetailField label="Vendor" value={wine.vendor} />
           <DetailField label="Storage Location" value={wine.storageLocation} />
+          <DetailField label="Wine ID" value={wine.wineId} />
+          <DetailField
+            label="Current Est. Value"
+            value={currentEstValue !== null ? formatCurrency(currentEstValue) : null}
+          />
+          <DetailField
+            label="Total Est. Value"
+            value={totalEstValue !== null ? formatCurrency(totalEstValue) : null}
+          />
+          <DetailField label="Rating" value={rating !== null ? formatRating(rating) : null} />
+          <DetailField label="Drink Window" value={drinkWindow} />
         </CardContent>
       </Card>
+
+      {wine.tastingNotes && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Tasting Notes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="whitespace-pre-wrap text-sm text-foreground">{wine.tastingNotes}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {wine.pairingNotes && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Pairing Notes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="whitespace-pre-wrap text-sm text-foreground">{wine.pairingNotes}</p>
+          </CardContent>
+        </Card>
+      )}
 
       {wine.notes && (
         <Card>

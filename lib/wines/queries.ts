@@ -4,14 +4,18 @@ import type { Wine } from '@prisma/client'
 // Prisma returns Decimal fields as Decimal.js instances, which cannot cross
 // the server/client component boundary. Use these when passing wines to
 // client components (table, form).
-export type SerializedWine = Omit<Wine, 'purchasePrice'> & {
+export type SerializedWine = Omit<Wine, 'purchasePrice' | 'rating' | 'currentEstValue'> & {
   purchasePrice: number | null
+  rating: number | null
+  currentEstValue: number | null
 }
 
 export function serializeWine(wine: Wine): SerializedWine {
   return {
     ...wine,
     purchasePrice: wine.purchasePrice ? wine.purchasePrice.toNumber() : null,
+    rating: wine.rating ? wine.rating.toNumber() : null,
+    currentEstValue: wine.currentEstValue ? wine.currentEstValue.toNumber() : null,
   }
 }
 
@@ -76,14 +80,18 @@ export interface DashboardSummary {
 export async function getDashboardSummary(userId: string): Promise<DashboardSummary> {
   const wines = await prisma.wine.findMany({
     where: { userId },
-    select: { quantity: true, purchasePrice: true },
+    select: { quantity: true, purchasePrice: true, currentEstValue: true },
   })
 
   const totalBottles = wines.reduce((sum, w) => sum + w.quantity, 0)
-  const estimatedValue = wines.reduce(
-    (sum, w) => sum + w.quantity * (w.purchasePrice ? w.purchasePrice.toNumber() : 0),
-    0
-  )
+  const estimatedValue = wines.reduce((sum, w) => {
+    const perBottleValue = w.currentEstValue
+      ? w.currentEstValue.toNumber()
+      : w.purchasePrice
+        ? w.purchasePrice.toNumber()
+        : 0
+    return sum + w.quantity * perBottleValue
+  }, 0)
 
   // Will be 0 until Phase 5 populates WineEnrichment.peakWindowStart/End.
   const currentYear = new Date().getFullYear()

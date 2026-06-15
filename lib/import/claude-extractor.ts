@@ -12,11 +12,19 @@ const WINE_FIELD_PROPERTIES = {
   classification: { type: 'string', description: 'e.g. Grand Cru, 1er Cru, DOCG' },
   varietal: { type: 'string', description: 'Primary grape variety or blend name' },
   format: { type: 'string', description: 'Bottle size, e.g. 750mL (Standard), 1.5L (Magnum)' },
+  style: { type: 'string', description: 'Wine style/color, e.g. Red, White, Rosé, Sparkling, Dessert, Fortified' },
   quantity: { type: 'number', description: 'Number of bottles' },
   purchasePrice: { type: 'number', description: 'Price per bottle' },
   purchaseDate: { type: 'string', description: 'ISO 8601 date, e.g. 2024-03-15' },
   vendor: { type: 'string' },
   storageLocation: { type: 'string' },
+  currentEstValue: { type: 'number', description: 'Current estimated market value per bottle' },
+  rating: { type: 'number', description: 'Critic or personal score out of 100' },
+  drinkWindowStart: { type: 'number', description: '4-digit year the wine begins drinking well' },
+  drinkWindowEnd: { type: 'number', description: '4-digit year by which the wine should be drunk' },
+  tastingNotes: { type: 'string', description: 'Tasting notes describing aroma, flavor, and structure' },
+  pairingNotes: { type: 'string', description: 'Food pairing suggestions' },
+  wineId: { type: 'string', description: 'An inventory or lot ID assigned by the collector or seller' },
   notes: { type: 'string' },
 }
 
@@ -30,11 +38,19 @@ const mappedWineDataSchema = z.object({
   classification: z.string().optional(),
   varietal: z.string().optional(),
   format: z.string().optional(),
+  style: z.string().optional(),
   quantity: z.number().optional(),
   purchasePrice: z.number().optional(),
   purchaseDate: z.string().optional(),
   vendor: z.string().optional(),
   storageLocation: z.string().optional(),
+  currentEstValue: z.number().optional(),
+  rating: z.number().optional(),
+  drinkWindowStart: z.number().optional(),
+  drinkWindowEnd: z.number().optional(),
+  tastingNotes: z.string().optional(),
+  pairingNotes: z.string().optional(),
+  wineId: z.string().optional(),
   notes: z.string().optional(),
 })
 
@@ -115,7 +131,7 @@ export async function suggestColumnMapping(
   return mapping
 }
 
-async function extractWinesFromText(text: string, attempt = 0): Promise<ExtractedRow[]> {
+export async function extractWinesFromText(text: string, attempt = 0): Promise<ExtractedRow[]> {
   const message = await anthropic.messages.create({
     model: CLAUDE_MODEL,
     max_tokens: 4096,
@@ -183,37 +199,47 @@ export async function extractWinesFromPdf(pages: string[], batchSize: number): P
   return results
 }
 
-async function extractWineFromImageAttempt(
+export async function extractWinesFromImage(
   base64: string,
   mimeType: 'image/jpeg' | 'image/png' | 'image/webp',
   attempt = 0
-): Promise<ExtractedRow> {
+): Promise<ExtractedRow[]> {
   const message = await anthropic.messages.create({
     model: CLAUDE_MODEL,
-    max_tokens: 1024,
+    max_tokens: 4096,
     tools: [
       {
-        name: 'extract_wine',
-        description: 'Record structured wine data extracted from a photo of a wine label.',
+        name: 'extract_wines',
+        description:
+          'Record structured wine data extracted from an image. Include one entry per distinct wine found.',
         input_schema: {
           type: 'object',
           properties: {
-            mappedData: {
-              type: 'object',
-              description: 'Wine fields identified on the label. Omit fields you cannot determine.',
-              properties: WINE_FIELD_PROPERTIES,
-            },
-            confidenceScores: {
-              type: 'object',
-              description: 'Confidence from 0 to 1 for each field present in mappedData.',
-              additionalProperties: { type: 'number' },
+            wines: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  mappedData: {
+                    type: 'object',
+                    description: 'Wine fields identified for this wine. Omit fields you cannot determine.',
+                    properties: WINE_FIELD_PROPERTIES,
+                  },
+                  confidenceScores: {
+                    type: 'object',
+                    description: 'Confidence from 0 to 1 for each field present in mappedData.',
+                    additionalProperties: { type: 'number' },
+                  },
+                },
+                required: ['mappedData', 'confidenceScores'],
+              },
             },
           },
-          required: ['mappedData', 'confidenceScores'],
+          required: ['wines'],
         },
       },
     ],
-    tool_choice: { type: 'tool', name: 'extract_wine' },
+    tool_choice: { type: 'tool', name: 'extract_wines' },
     messages: [
       {
         role: 'user',
@@ -224,24 +250,17 @@ async function extractWineFromImageAttempt(
           },
           {
             type: 'text',
-            text: 'This is a photo of a wine label. Extract as much structured information as you can identify (producer, wine name, vintage, country, region, varietal, classification, etc.) and give a confidence score (0-1) for each field. Omit fields you cannot determine rather than guessing.',
+            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, region, varietal, classification, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.',
           },
         ],
       },
     ],
   })
 
-  const parsed = extractedRowSchema.safeParse(extractToolInput(message, 'extract_wine'))
+  const parsed = extractedRowsSchema.safeParse(extractToolInput(message, 'extract_wines'))
   if (!parsed.success) {
-    if (attempt === 0) return extractWineFromImageAttempt(base64, mimeType, 1)
-    return { mappedData: {}, confidenceScores: {} }
+    if (attempt === 0) return extractWinesFromImage(base64, mimeType, 1)
+    return []
   }
-  return parsed.data
-}
-
-export async function extractWineFromImage(
-  base64: string,
-  mimeType: 'image/jpeg' | 'image/png' | 'image/webp'
-): Promise<ExtractedRow> {
-  return extractWineFromImageAttempt(base64, mimeType)
+  return parsed.data.wines
 }

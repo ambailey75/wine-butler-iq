@@ -48,12 +48,13 @@ export default async function ImportHubPage() {
         />
         <UploadCard
           title="Label Photos"
-          description="A photo of a wine label"
+          description="Upload label photos OR invoice images"
           icon={<ImageIcon className="h-8 w-8 text-primary" />}
           accept={{
             'image/jpeg': ['.jpg', '.jpeg'],
             'image/png': ['.png'],
             'image/webp': ['.webp'],
+            'text/html': ['.html', '.htm'],
           }}
         />
       </div>

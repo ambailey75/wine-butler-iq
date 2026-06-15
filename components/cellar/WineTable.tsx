@@ -186,6 +186,24 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
             : '—',
       },
       {
+        accessorKey: 'currentEstValue',
+        header: ({ column }) => <SortButton column={column} label="Est. Value/Bottle" />,
+        cell: ({ row }) =>
+          row.original.currentEstValue !== null
+            ? formatCurrency(row.original.currentEstValue)
+            : '—',
+      },
+      {
+        id: 'totalEstValue',
+        accessorFn: (row) =>
+          row.currentEstValue !== null ? row.currentEstValue * row.quantity : null,
+        header: ({ column }) => <SortButton column={column} label="Total Est. Value" />,
+        cell: ({ row }) =>
+          row.original.currentEstValue !== null
+            ? formatCurrency(row.original.currentEstValue * row.original.quantity)
+            : '—',
+      },
+      {
         accessorKey: 'country',
         header: 'Country',
         filterFn: multiSelectFilter,

@@ -11,7 +11,7 @@ import {
   wineFormDefaultValues,
   type WineFormValues,
 } from '@/lib/wines/schema'
-import { COUNTRIES, WINE_FORMATS, COMMON_REGIONS, COMMON_VARIETALS } from '@/lib/wines/constants'
+import { COUNTRIES, WINE_FORMATS, WINE_STYLES, COMMON_REGIONS, COMMON_VARIETALS } from '@/lib/wines/constants'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { createWine, updateWine, searchCellarWines, type WineSuggestion } from '@/lib/wines/actions'
 import { searchStaticWines, type StaticWineEntry } from '@/lib/wines/staticWineSearch'
@@ -295,12 +295,20 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
           classification: wine.classification ?? undefined,
           varietal: wine.varietal ?? undefined,
           format: wine.format ?? undefined,
+          style: wine.style ?? undefined,
           quantity: wine.quantity,
           purchasePrice: wine.purchasePrice ?? undefined,
           purchaseDate: wine.purchaseDate ?? undefined,
           vendor: wine.vendor ?? undefined,
           storageLocation: wine.storageLocation ?? undefined,
           notes: wine.notes ?? undefined,
+          tastingNotes: wine.tastingNotes ?? undefined,
+          pairingNotes: wine.pairingNotes ?? undefined,
+          rating: wine.rating ?? undefined,
+          drinkWindowStart: wine.drinkWindowStart ?? undefined,
+          drinkWindowEnd: wine.drinkWindowEnd ?? undefined,
+          currentEstValue: wine.currentEstValue ?? undefined,
+          wineId: wine.wineId ?? undefined,
         }
       : wineFormDefaultValues,
   })
@@ -543,6 +551,30 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="style"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Style</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a style" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {WINE_STYLES.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
 
@@ -720,6 +752,170 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="currentEstValue"
+              render={({ field: { onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Current Est. Value</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                        $
+                      </span>
+                      <Input
+                        type="number"
+                        inputMode="decimal"
+                        step="0.01"
+                        min={0}
+                        className="pl-7"
+                        placeholder="0.00"
+                        {...field}
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const raw = e.target.value
+                          onChange(raw === '' ? undefined : Number(raw))
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormDescription>Current estimated market value per bottle.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="wineId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Wine ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. ID from your own records" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Tasting &amp; Drinking Window</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="rating"
+              render={({ field: { onChange, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Rating</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      step="0.1"
+                      min={0}
+                      max={100}
+                      placeholder="e.g. 94"
+                      {...field}
+                      value={field.value ?? ''}
+                      onChange={(e) => {
+                        const raw = e.target.value
+                        onChange(raw === '' ? undefined : Number(raw))
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>Score out of 100.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="drinkWindowStart"
+                render={({ field: { onChange, ...field } }) => (
+                  <FormItem>
+                    <FormLabel>Drink Window Start</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        inputMode="numeric"
+                        placeholder="e.g. 2026"
+                        {...field}
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const raw = e.target.value
+                          onChange(raw === '' ? undefined : Number(raw))
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="drinkWindowEnd"
+                render={({ field: { onChange, ...field } }) => (
+                  <FormItem>
+                    <FormLabel>Drink Window End</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        inputMode="numeric"
+                        placeholder="e.g. 2032"
+                        {...field}
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const raw = e.target.value
+                          onChange(raw === '' ? undefined : Number(raw))
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="tastingNotes"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-2">
+                  <FormLabel>Tasting Notes</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Aromas, flavors, structure..."
+                      className="min-h-24"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pairingNotes"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-2">
+                  <FormLabel>Pairing Notes</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Foods that pair well with this bottle..."
+                      className="min-h-24"
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </CardContent>
         </Card>
 
@@ -735,7 +931,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
                 <FormItem>
                   <FormControl>
                     <Textarea
-                      placeholder="Tasting notes, gift occasion, anything worth remembering..."
+                      placeholder="Gift occasion, special memories, anything worth remembering..."
                       className="min-h-24"
                       {...field}
                       value={field.value ?? ''}
