@@ -11,8 +11,6 @@ const NAV_ITEMS = [
     href: '/dashboard/import',
     label: 'Import',
     icon: Upload,
-    soon: true,
-    tooltip: 'Upload Excel, PDF invoices, or label photos (Phase 3)',
   },
   {
     href: '/dashboard/assistant',

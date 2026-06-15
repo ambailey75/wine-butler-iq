@@ -1,0 +1,87 @@
+import Link from 'next/link'
+import type { Import } from '@prisma/client'
+import { AlertTriangle, CheckCircle2, Info } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ColumnMappingForm } from './ColumnMappingForm'
+import { ImportRowTable, type ImportRowWithDuplicate } from './ImportRowTable'
+
+interface ImportReviewProps {
+  importRecord: Import
+  rows: ImportRowWithDuplicate[]
+  mappingSuggestion: Record<string, string | null>
+}
+
+export function ImportReview({ importRecord, rows, mappingSuggestion }: ImportReviewProps) {
+  if (importRecord.status === 'FAILED') {
+    return (
+      <div className="flex items-start gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-4">
+        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+        <div className="space-y-2">
+          <p className="font-medium text-foreground">This import failed</p>
+          <p className="text-sm text-muted-foreground">
+            {importRecord.errorMessage || 'Something went wrong while processing this file.'}
+          </p>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/dashboard/import">Try another file</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  if (importRecord.status === 'COMPLETE') {
+    return (
+      <div className="flex items-start gap-3 rounded-md border border-border bg-card p-4">
+        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+        <div className="space-y-2">
+          <p className="font-medium text-foreground">This import is complete</p>
+          <p className="text-sm text-muted-foreground">
+            {importRecord.recordCount} wine{importRecord.recordCount === 1 ? '' : 's'} added to your
+            cellar
+            {importRecord.skippedCount > 0 ? `, ${importRecord.skippedCount} skipped` : ''}.
+          </p>
+          <Button asChild size="sm">
+            <Link href="/dashboard/cellar">Go to cellar</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  if (importRecord.status === 'PENDING' || importRecord.status === 'PROCESSING') {
+    return (
+      <div className="rounded-md border border-border bg-card p-4 text-sm text-muted-foreground">
+        This import is still processing. Refresh this page in a moment.
+      </div>
+    )
+  }
+
+  const needsMapping = rows.some((row) => row.mappedData === null)
+
+  if (needsMapping) {
+    const firstRow = rows[0]
+    const rawData = (firstRow?.rawData ?? {}) as unknown as Record<string, string>
+    const headers = Object.keys(rawData)
+
+    return (
+      <ColumnMappingForm
+        importId={importRecord.id}
+        headers={headers}
+        sampleRow={rawData}
+        suggestion={mappingSuggestion}
+      />
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      {importRecord.errorMessage && (
+        <div className="flex items-start gap-3 rounded-md border border-border bg-card p-4">
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">{importRecord.errorMessage}</p>
+        </div>
+      )}
+      <ImportRowTable importId={importRecord.id} rows={rows} />
+    </div>
+  )
+}
