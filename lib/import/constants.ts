@@ -54,6 +54,7 @@ export interface MappedWineData {
   country?: string
   region?: string
   subRegion?: string
+  vineyard?: string
   classification?: string
   varietal?: string
   format?: string
@@ -89,6 +90,7 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
   { key: 'country', label: 'Country', type: 'string' },
   { key: 'region', label: 'Region', type: 'string' },
   { key: 'subRegion', label: 'Sub-Region', type: 'string' },
+  { key: 'vineyard', label: 'Vineyard', type: 'string' },
   { key: 'classification', label: 'Classification', type: 'string' },
   { key: 'varietal', label: 'Varietal', type: 'string' },
   { key: 'format', label: 'Format', type: 'string' },
@@ -117,6 +119,8 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
 export const HEADER_ALIASES: Record<string, keyof MappedWineData | null> = {
   notes: 'tastingNotes',
   appellation: 'subRegion',
+  vineyard: 'vineyard',
+  vineyarddesignation: 'vineyard',
   bottlesize: 'format',
   drinkingwindowstart: 'drinkWindowStart',
   drinkingwindowend: 'drinkWindowEnd',

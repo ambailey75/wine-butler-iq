@@ -66,7 +66,7 @@ const globalSearchFilter: FilterFn<SerializedWine> = (row, _columnId, filterValu
   const search = String(filterValue).toLowerCase().trim()
   if (!search) return true
   const wine = row.original
-  return [wine.producer, wine.wineName, wine.region, wine.varietal, wine.vendor, wine.notes]
+  return [wine.producer, wine.wineName, wine.region, wine.vineyard, wine.varietal, wine.vendor, wine.notes]
     .filter((value): value is string => typeof value === 'string')
     .some((value) => value.toLowerCase().includes(search))
 }
@@ -138,6 +138,7 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     country: false,
+    vineyard: false,
   })
   const [globalFilter, setGlobalFilter] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<SerializedWine | null>(null)
@@ -202,6 +203,11 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
           row.original.currentEstValue !== null
             ? formatCurrency(row.original.currentEstValue * row.original.quantity)
             : '—',
+      },
+      {
+        accessorKey: 'vineyard',
+        header: ({ column }) => <SortButton column={column} label="Vineyard" />,
+        cell: ({ row }) => row.original.vineyard ?? '—',
       },
       {
         accessorKey: 'country',

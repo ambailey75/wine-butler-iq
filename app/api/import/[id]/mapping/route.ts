@@ -3,6 +3,8 @@ import type { Prisma } from '@prisma/client'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { prisma } from '@/lib/prisma/client'
 import { applyColumnMapping } from '@/lib/import/excel'
+import { splitRegionValue } from '@/lib/import/claude-extractor'
+import type { MappedWineData } from '@/lib/import/constants'
 
 interface RouteParams {
   params: { id: string }
@@ -28,10 +30,24 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: 'mapping is required' }, { status: 400 })
   }
 
+  const regionSplits: Record<string, string> = body?.regionSplits ?? {}
+
   await Promise.all(
     importRecord.rows.map((row) => {
       const rawData = (row.rawData ?? {}) as unknown as Record<string, string>
       const { mappedData, confidenceScores } = applyColumnMapping(rawData, mapping)
+
+      for (const [header, separator] of Object.entries(regionSplits)) {
+        const rawValue = rawData[header]?.trim()
+        if (!rawValue) continue
+        const { region, subRegion } = splitRegionValue(rawValue, separator)
+        const typed = mappedData as MappedWineData
+        typed.region = region
+        if (subRegion) {
+          typed.subRegion = subRegion
+        }
+      }
+
       return prisma.importRow.update({
         where: { id: row.id },
         data: {

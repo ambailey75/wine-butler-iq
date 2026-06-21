@@ -75,5 +75,6 @@ export async function POST(request: NextRequest) {
     status: updated?.status,
     errorMessage: updated?.errorMessage,
     mappingSuggestion: result.mappingSuggestion,
+    regionSplitColumns: result.regionSplitColumns,
   })
 }

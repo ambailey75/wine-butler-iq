@@ -33,6 +33,7 @@ model Wine {
   country         String?
   region          String?
   subRegion       String?
+  vineyard        String?
   classification  String?
   varietal        String?
   format          String?

@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Table,
   TableBody,
@@ -21,18 +23,18 @@ import {
 import { HEADER_ALIASES, IMPORT_TARGET_FIELDS, type MappedWineData } from '@/lib/import/constants'
 
 const SKIP_VALUE = '__skip__'
+const SPLIT_REGION_VALUE = '__split_region__'
 
 interface ColumnMappingFormProps {
   importId: string
   headers: string[]
   sampleRow: Record<string, string>
   suggestion: Record<string, string | null>
+  regionSplitColumns?: Record<string, string>
 }
 
 const TARGET_KEYS = new Set<string>(IMPORT_TARGET_FIELDS.map((field) => field.key))
 
-// Falls back to matching header text against target field keys/labels when
-// no Claude suggestion is available for a header (e.g. after a page refresh).
 function guessTargetKey(header: string): string | null {
   const normalized = header.trim().toLowerCase().replace(/[^a-z0-9]/g, '')
   const match = IMPORT_TARGET_FIELDS.find(
@@ -43,8 +45,6 @@ function guessTargetKey(header: string): string | null {
   return match?.key ?? null
 }
 
-// Common CSV column names with a known target field (or known-skip, like
-// "Total Cost") take priority over Claude's suggestion and the generic guess.
 function aliasTargetKey(header: string): { matched: boolean; key: string | null } {
   const normalized = header.trim().toLowerCase().replace(/[^a-z0-9]/g, '')
   if (normalized in HEADER_ALIASES) {
@@ -53,7 +53,11 @@ function aliasTargetKey(header: string): { matched: boolean; key: string | null 
   return { matched: false, key: null }
 }
 
-function buildInitialMapping(headers: string[], suggestion: Record<string, string | null>) {
+function buildInitialMapping(
+  headers: string[],
+  suggestion: Record<string, string | null>,
+  regionSplitColumns?: Record<string, string>
+) {
   const mapping: Record<string, string> = {}
   for (const header of headers) {
     const alias = aliasTargetKey(header)
@@ -68,11 +72,18 @@ function buildInitialMapping(headers: string[], suggestion: Record<string, strin
   return mapping
 }
 
-export function ColumnMappingForm({ importId, headers, sampleRow, suggestion }: ColumnMappingFormProps) {
+export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, regionSplitColumns = {} }: ColumnMappingFormProps) {
   const router = useRouter()
   const [mapping, setMapping] = useState<Record<string, string>>(() =>
-    buildInitialMapping(headers, suggestion)
+    buildInitialMapping(headers, suggestion, regionSplitColumns)
   )
+  const [splitSelections, setSplitSelections] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {}
+    for (const header of Object.keys(regionSplitColumns)) {
+      initial[header] = true
+    }
+    return initial
+  })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -81,15 +92,21 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion }: 
     setError(null)
 
     const payload: Record<string, keyof MappedWineData | null> = {}
+    const splits: Record<string, string> = {}
     for (const [header, value] of Object.entries(mapping)) {
-      payload[header] = value === SKIP_VALUE ? null : (value as keyof MappedWineData)
+      if (value === SPLIT_REGION_VALUE || (value === 'region' && splitSelections[header])) {
+        payload[header] = 'region'
+        splits[header] = regionSplitColumns[header] || ', '
+      } else {
+        payload[header] = value === SKIP_VALUE ? null : (value as keyof MappedWineData)
+      }
     }
 
     try {
       const res = await fetch(`/api/import/${importId}/mapping`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mapping: payload }),
+        body: JSON.stringify({ mapping: payload, regionSplits: splits }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => null)
@@ -122,31 +139,54 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion }: 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {headers.map((header) => (
-              <TableRow key={header}>
-                <TableCell className="font-medium text-foreground">{header}</TableCell>
-                <TableCell className="text-muted-foreground">{sampleRow[header] || '—'}</TableCell>
-                <TableCell>
-                  <Select
-                    value={mapping[header]}
-                    onValueChange={(value) => setMapping((prev) => ({ ...prev, [header]: value }))}
-                  >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={SKIP_VALUE}>Don&apos;t import</SelectItem>
-                      {IMPORT_TARGET_FIELDS.map((field) => (
-                        <SelectItem key={field.key} value={field.key}>
-                          {field.label}
-                          {field.required ? ' *' : ''}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </TableCell>
-              </TableRow>
-            ))}
+            {headers.map((header) => {
+              const canSplit = header in regionSplitColumns
+              const isSplitting = canSplit && splitSelections[header]
+
+              return (
+                <TableRow key={header}>
+                  <TableCell className="font-medium text-foreground">{header}</TableCell>
+                  <TableCell className="text-muted-foreground">{sampleRow[header] || '—'}</TableCell>
+                  <TableCell>
+                    <div className="space-y-2">
+                      <Select
+                        value={mapping[header]}
+                        onValueChange={(value) => setMapping((prev) => ({ ...prev, [header]: value }))}
+                      >
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={SKIP_VALUE}>Don&apos;t import</SelectItem>
+                          {IMPORT_TARGET_FIELDS.map((field) => (
+                            <SelectItem key={field.key} value={field.key}>
+                              {field.label}
+                              {field.required ? ' *' : ''}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {canSplit && mapping[header] === 'region' && (
+                        <label className="flex items-center gap-2 text-xs">
+                          <Checkbox
+                            checked={isSplitting}
+                            onCheckedChange={(checked) =>
+                              setSplitSelections((prev) => ({ ...prev, [header]: checked === true }))
+                            }
+                          />
+                          <span className="text-muted-foreground">
+                            Split into Region + Sub-Region
+                          </span>
+                          <Badge variant="secondary" className="text-[10px] font-normal">
+                            Detected
+                          </Badge>
+                        </label>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </div>

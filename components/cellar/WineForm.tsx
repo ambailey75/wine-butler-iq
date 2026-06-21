@@ -230,6 +230,7 @@ interface MergedSuggestion {
   country: string | null
   region: string | null
   subRegion: string | null
+  vineyard: string | null
   classification: string | null
   varietal: string | null
   format: string | null
@@ -244,7 +245,7 @@ function fromStatic(entry: StaticWineEntry): MergedSuggestion {
 }
 
 function fromApi(result: WineLookupResult): MergedSuggestion {
-  return { source: 'api', subRegion: null, classification: null, format: null, ...result }
+  return { source: 'api', subRegion: null, vineyard: null, classification: null, format: null, ...result }
 }
 
 function mergeSuggestions(...lists: MergedSuggestion[][]): MergedSuggestion[] {
@@ -292,6 +293,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
           country: wine.country ?? undefined,
           region: wine.region ?? undefined,
           subRegion: wine.subRegion ?? undefined,
+          vineyard: wine.vineyard ?? undefined,
           classification: wine.classification ?? undefined,
           varietal: wine.varietal ?? undefined,
           format: wine.format ?? undefined,
@@ -395,6 +397,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
     if (suggestion.country) form.setValue('country', suggestion.country)
     if (suggestion.region) form.setValue('region', suggestion.region)
     if (suggestion.subRegion) form.setValue('subRegion', suggestion.subRegion)
+    if (suggestion.vineyard) form.setValue('vineyard', suggestion.vineyard)
     if (suggestion.classification) form.setValue('classification', suggestion.classification)
     if (suggestion.varietal) form.setValue('varietal', suggestion.varietal)
     if (suggestion.format) form.setValue('format', suggestion.format)
@@ -657,15 +660,28 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
             />
             <FormField
               control={form.control}
+              name="vineyard"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vineyard</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. To Kalon, Beckstoffer Georges III" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="classification"
               render={({ field }) => (
-                <FormItem className="sm:col-span-2">
+                <FormItem>
                   <FormLabel>Classification</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Grand Cru, 1er Cru, DOCG" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormDescription>
-                    Optional. Appellation tier, classification, or designation.
+                    Appellation tier, classification, or designation.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

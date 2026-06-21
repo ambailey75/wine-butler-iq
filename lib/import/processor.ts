@@ -8,6 +8,7 @@ import { PDF_PAGE_BATCH_SIZE } from './constants'
 
 export interface ProcessResult {
   mappingSuggestion?: Record<string, string | null>
+  regionSplitColumns?: Record<string, string>
 }
 
 // Parses/extracts the uploaded file and creates ImportRows, then transitions
@@ -58,14 +59,14 @@ async function processSpreadsheet(importId: string, buffer: Buffer): Promise<Pro
     data: rows.map((row) => ({ importId, rawData: row })),
   })
 
-  const mappingSuggestion = await suggestColumnMapping(headers, rows.slice(0, 3))
+  const { mapping: mappingSuggestion, regionSplitColumns } = await suggestColumnMapping(headers, rows.slice(0, 3))
 
   await prisma.import.update({
     where: { id: importId },
     data: { status: 'REVIEW', recordCount: rows.length },
   })
 
-  return { mappingSuggestion }
+  return { mappingSuggestion, regionSplitColumns }
 }
 
 async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResult> {

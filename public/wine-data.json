@@ -5328,5 +5328,71 @@
     "classification": null,
     "varietal": "Sauvignon Blanc",
     "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Schrader Cellars",
+    "wineName": "Schrader Cellars CCS Beckstoffer To Kalon Vineyard",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "vineyard": "Beckstoffer To Kalon Vineyard",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Realm Cellars",
+    "wineName": "Realm Cellars Beckstoffer To Kalon Vineyard",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Oakville",
+    "vineyard": "Beckstoffer To Kalon Vineyard",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Scarecrow",
+    "wineName": "Scarecrow Cabernet Sauvignon",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Rutherford",
+    "vineyard": "J.J. Cohn Estate",
+    "classification": null,
+    "varietal": "Cabernet Sauvignon",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Kongsgaard",
+    "wineName": "Kongsgaard The Judge Chardonnay",
+    "country": "United States",
+    "region": "Napa Valley",
+    "subRegion": "Atlas Peak",
+    "vineyard": "The Judge Vineyard",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Williams Selyem",
+    "wineName": "Williams Selyem Rochioli Riverblock Pinot Noir",
+    "country": "United States",
+    "region": "Sonoma",
+    "subRegion": "Russian River Valley",
+    "vineyard": "Rochioli Riverblock Vineyard",
+    "classification": null,
+    "varietal": "Pinot Noir",
+    "format": "750mL (Standard)"
+  },
+  {
+    "producer": "Peter Michael",
+    "wineName": "Peter Michael Belle Côte Chardonnay",
+    "country": "United States",
+    "region": "Sonoma",
+    "subRegion": "Knights Valley",
+    "vineyard": "Belle Côte Vineyard",
+    "classification": null,
+    "varietal": "Chardonnay",
+    "format": "750mL (Standard)"
   }
 ]

@@ -44,6 +44,16 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
     }
   }
 
+  const regionSplitsParam = searchParams.regionSplits
+  let regionSplitColumns: Record<string, string> = {}
+  if (typeof regionSplitsParam === 'string') {
+    try {
+      regionSplitColumns = JSON.parse(regionSplitsParam)
+    } catch {
+      regionSplitColumns = {}
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -60,7 +70,7 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
         </div>
       </div>
 
-      <ImportReview importRecord={importRecord} rows={rows} mappingSuggestion={mappingSuggestion} />
+      <ImportReview importRecord={importRecord} rows={rows} mappingSuggestion={mappingSuggestion} regionSplitColumns={regionSplitColumns} />
     </div>
   )
 }

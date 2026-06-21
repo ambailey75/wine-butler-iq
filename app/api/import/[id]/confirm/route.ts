@@ -20,6 +20,7 @@ function toWineCreateData(mapped: MappedWineData) {
     country: mapped.country ?? null,
     region: mapped.region ?? null,
     subRegion: mapped.subRegion ?? null,
+    vineyard: mapped.vineyard ?? null,
     classification: mapped.classification ?? null,
     varietal: mapped.varietal ?? null,
     format: mapped.format ?? null,

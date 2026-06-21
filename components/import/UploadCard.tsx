@@ -37,9 +37,14 @@ export function UploadCard({ title, description, icon, accept }: UploadCardProps
           throw new Error(body?.error || 'Upload failed')
         }
 
-        const query = body.mappingSuggestion
-          ? `?mapping=${encodeURIComponent(JSON.stringify(body.mappingSuggestion))}`
-          : ''
+        const params = new URLSearchParams()
+        if (body.mappingSuggestion) {
+          params.set('mapping', JSON.stringify(body.mappingSuggestion))
+        }
+        if (body.regionSplitColumns && Object.keys(body.regionSplitColumns).length > 0) {
+          params.set('regionSplits', JSON.stringify(body.regionSplitColumns))
+        }
+        const query = params.toString() ? `?${params.toString()}` : ''
         router.push(`/dashboard/import/${body.id}${query}`)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Upload failed')
