@@ -133,15 +133,25 @@ function WineRowActions({
   )
 }
 
+type CellarView = 'in-cellar' | 'all' | 'consumed'
+
 export function WineTable({ wines }: { wines: SerializedWine[] }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     country: false,
     vineyard: false,
+    state: false,
   })
   const [globalFilter, setGlobalFilter] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<SerializedWine | null>(null)
+  const [cellarView, setCellarView] = useState<CellarView>('in-cellar')
+
+  const filteredWines = useMemo(() => {
+    if (cellarView === 'all') return wines
+    if (cellarView === 'consumed') return wines.filter((w) => w.isFullyConsumed)
+    return wines.filter((w) => !w.isFullyConsumed)
+  }, [wines, cellarView])
 
   const columns = useMemo<ColumnDef<SerializedWine>[]>(
     () => [
@@ -195,14 +205,41 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
             : '—',
       },
       {
+        id: 'totalCost',
+        accessorFn: (row) =>
+          row.totalCostOverride ?? (row.purchasePrice !== null ? row.purchasePrice * row.quantity : null),
+        header: ({ column }) => <SortButton column={column} label="Total Cost" />,
+        cell: ({ row }) => {
+          const w = row.original
+          const val = w.totalCostOverride ?? (w.purchasePrice !== null ? w.purchasePrice * w.quantity : null)
+          return val !== null ? formatCurrency(val) : '—'
+        },
+      },
+      {
         id: 'totalEstValue',
         accessorFn: (row) =>
-          row.currentEstValue !== null ? row.currentEstValue * row.quantity : null,
+          row.totalValueOverride ?? (row.currentEstValue !== null ? row.currentEstValue * row.quantity : null),
         header: ({ column }) => <SortButton column={column} label="Total Est. Value" />,
-        cell: ({ row }) =>
-          row.original.currentEstValue !== null
-            ? formatCurrency(row.original.currentEstValue * row.original.quantity)
-            : '—',
+        cell: ({ row }) => {
+          const w = row.original
+          const val = w.totalValueOverride ?? (w.currentEstValue !== null ? w.currentEstValue * w.quantity : null)
+          return val !== null ? formatCurrency(val) : '—'
+        },
+      },
+      {
+        id: 'status',
+        header: 'Status',
+        cell: ({ row }) => {
+          const w = row.original
+          if (w.isFullyConsumed) return <span className="text-muted-foreground">Consumed</span>
+          if (w.consumedQuantity > 0) return <span className="text-amber-600">{w.quantity - w.consumedQuantity} of {w.quantity}</span>
+          return null
+        },
+      },
+      {
+        accessorKey: 'state',
+        header: ({ column }) => <SortButton column={column} label="State" />,
+        cell: ({ row }) => row.original.state ?? '—',
       },
       {
         accessorKey: 'vineyard',
@@ -229,7 +266,7 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
     const regions = new Set<string>()
     const varietals = new Set<string>()
 
-    for (const wine of wines) {
+    for (const wine of filteredWines) {
       if (wine.country) countries.add(wine.country)
       if (wine.region) regions.add(wine.region)
       if (wine.varietal) varietals.add(wine.varietal)
@@ -240,10 +277,10 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
       regions: Array.from(regions).sort(),
       varietals: Array.from(varietals).sort(),
     }
-  }, [wines])
+  }, [filteredWines])
 
   const table = useReactTable({
-    data: wines,
+    data: filteredWines,
     columns,
     state: { sorting, columnFilters, columnVisibility, globalFilter },
     onSortingChange: setSorting,
@@ -261,12 +298,29 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Input
-          placeholder="Search your cellar..."
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="sm:max-w-xs"
-        />
+        <div className="flex items-center gap-3">
+          <Input
+            placeholder="Search your cellar..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="sm:max-w-xs"
+          />
+          <div className="flex rounded-md border border-border">
+            {(['in-cellar', 'all', 'consumed'] as CellarView[]).map((view) => (
+              <button
+                key={view}
+                onClick={() => setCellarView(view)}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors first:rounded-l-md last:rounded-r-md ${
+                  cellarView === view
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {view === 'in-cellar' ? 'In Cellar' : view === 'all' ? 'All' : 'Consumed'}
+              </button>
+            ))}
+          </div>
+        </div>
         <WineFilters table={table} options={filterOptions} />
       </div>
 

@@ -4,6 +4,7 @@ export interface StaticWineEntry {
   producer: string
   wineName: string
   country: string | null
+  state: string | null
   region: string | null
   subRegion: string | null
   vineyard: string | null

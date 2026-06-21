@@ -6,7 +6,8 @@ const WINE_FIELD_PROPERTIES = {
   producer: { type: 'string', description: 'Producer / winery name' },
   wineName: { type: 'string', description: 'Wine name (cuvee/bottling), without producer or vintage' },
   vintage: { type: 'number', description: '4-digit vintage year' },
-  country: { type: 'string', description: 'e.g. France, Italy, United States' },
+  country: { type: 'string', description: 'e.g. France, Italy, United States. Infer from state/region when possible (California → United States, South Australia → Australia).' },
+  state: { type: 'string', description: 'US state, Australian state, Canadian province, etc. e.g. California, Oregon, South Australia, Ontario' },
   region: { type: 'string', description: 'e.g. Bordeaux, Napa Valley' },
   subRegion: { type: 'string' },
   vineyard: { type: 'string', description: 'Specific vineyard designation (e.g. To Kalon Vineyard, Beckstoffer Georges III). Common in Napa/Sonoma. Distinct from sub-region.' },
@@ -20,6 +21,8 @@ const WINE_FIELD_PROPERTIES = {
   vendor: { type: 'string' },
   storageLocation: { type: 'string' },
   currentEstValue: { type: 'number', description: 'Current estimated market value per bottle' },
+  totalCostOverride: { type: 'number', description: 'Total cost for all bottles (only if explicitly stated as a total, not per-bottle price)' },
+  totalValueOverride: { type: 'number', description: 'Total estimated value for all bottles (only if explicitly stated as a total)' },
   rating: { type: 'number', description: 'Critic or personal score out of 100' },
   drinkWindowStart: { type: 'number', description: '4-digit year the wine begins drinking well' },
   drinkWindowEnd: { type: 'number', description: '4-digit year by which the wine should be drunk' },
@@ -34,6 +37,7 @@ const mappedWineDataSchema = z.object({
   wineName: z.string().optional(),
   vintage: z.number().optional(),
   country: z.string().optional(),
+  state: z.string().optional(),
   region: z.string().optional(),
   subRegion: z.string().optional(),
   vineyard: z.string().optional(),
@@ -47,6 +51,8 @@ const mappedWineDataSchema = z.object({
   vendor: z.string().optional(),
   storageLocation: z.string().optional(),
   currentEstValue: z.number().optional(),
+  totalCostOverride: z.number().optional(),
+  totalValueOverride: z.number().optional(),
   rating: z.number().optional(),
   drinkWindowStart: z.number().optional(),
   drinkWindowEnd: z.number().optional(),
@@ -251,7 +257,7 @@ export async function extractWinesFromText(text: string, attempt = 0): Promise<E
     messages: [
       {
         role: 'user',
-        content: `Extract every individual wine line item from this invoice/inventory text. For each wine, fill in as many fields as you can confidently determine and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III", "Bien Nacido") and extract them into the vineyard field, separate from sub-region.\n\nText:\n${text}`,
+        content: `Extract every individual wine line item from this invoice/inventory text. For each wine, fill in as many fields as you can confidently determine and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III", "Bien Nacido") and extract them into the vineyard field, separate from sub-region.\n\nInfer the country from the state or region when possible (e.g. California/Oregon/Washington → United States, South Australia/Victoria → Australia, Ontario/British Columbia → Canada). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal, region, or wine name when style is not explicitly stated.\n\nText:\n${text}`,
       },
     ],
   })
@@ -330,7 +336,7 @@ export async function extractWinesFromImage(
           },
           {
             type: 'text',
-            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing. For Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III") and extract them into the vineyard field, separate from sub-region.',
+            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing. For Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III") and extract them into the vineyard field, separate from sub-region. Infer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
           },
         ],
       },

@@ -4,10 +4,12 @@ import type { Wine } from '@prisma/client'
 // Prisma returns Decimal fields as Decimal.js instances, which cannot cross
 // the server/client component boundary. Use these when passing wines to
 // client components (table, form).
-export type SerializedWine = Omit<Wine, 'purchasePrice' | 'rating' | 'currentEstValue'> & {
+export type SerializedWine = Omit<Wine, 'purchasePrice' | 'rating' | 'currentEstValue' | 'totalCostOverride' | 'totalValueOverride'> & {
   purchasePrice: number | null
   rating: number | null
   currentEstValue: number | null
+  totalCostOverride: number | null
+  totalValueOverride: number | null
 }
 
 export function serializeWine(wine: Wine): SerializedWine {
@@ -16,6 +18,8 @@ export function serializeWine(wine: Wine): SerializedWine {
     purchasePrice: wine.purchasePrice ? wine.purchasePrice.toNumber() : null,
     rating: wine.rating ? wine.rating.toNumber() : null,
     currentEstValue: wine.currentEstValue ? wine.currentEstValue.toNumber() : null,
+    totalCostOverride: wine.totalCostOverride ? wine.totalCostOverride.toNumber() : null,
+    totalValueOverride: wine.totalValueOverride ? wine.totalValueOverride.toNumber() : null,
   }
 }
 
@@ -73,27 +77,43 @@ export async function getDistinctRegionsAndVarietals(
 
 export interface DashboardSummary {
   totalBottles: number
-  estimatedValue: number
+  totalCostBasis: number
+  totalCurrentValue: number
+  netGainLoss: number
+  netGainLossPercent: number | null
   bottlesAtPeak: number
 }
 
 export async function getDashboardSummary(userId: string): Promise<DashboardSummary> {
   const wines = await prisma.wine.findMany({
     where: { userId },
-    select: { quantity: true, purchasePrice: true, currentEstValue: true },
+    select: {
+      quantity: true,
+      purchasePrice: true,
+      currentEstValue: true,
+      totalCostOverride: true,
+      totalValueOverride: true,
+    },
   })
 
   const totalBottles = wines.reduce((sum, w) => sum + w.quantity, 0)
-  const estimatedValue = wines.reduce((sum, w) => {
-    const perBottleValue = w.currentEstValue
-      ? w.currentEstValue.toNumber()
-      : w.purchasePrice
-        ? w.purchasePrice.toNumber()
-        : 0
-    return sum + w.quantity * perBottleValue
+
+  const totalCostBasis = wines.reduce((sum, w) => {
+    if (w.totalCostOverride) return sum + w.totalCostOverride.toNumber()
+    if (w.purchasePrice) return sum + w.purchasePrice.toNumber() * w.quantity
+    return sum
   }, 0)
 
-  // Will be 0 until Phase 5 populates WineEnrichment.peakWindowStart/End.
+  const totalCurrentValue = wines.reduce((sum, w) => {
+    if (w.totalValueOverride) return sum + w.totalValueOverride.toNumber()
+    if (w.currentEstValue) return sum + w.currentEstValue.toNumber() * w.quantity
+    if (w.purchasePrice) return sum + w.purchasePrice.toNumber() * w.quantity
+    return sum
+  }, 0)
+
+  const netGainLoss = totalCurrentValue - totalCostBasis
+  const netGainLossPercent = totalCostBasis > 0 ? (netGainLoss / totalCostBasis) * 100 : null
+
   const currentYear = new Date().getFullYear()
   const peakWines = await prisma.wine.findMany({
     where: {
@@ -107,5 +127,21 @@ export async function getDashboardSummary(userId: string): Promise<DashboardSumm
   })
   const bottlesAtPeak = peakWines.reduce((sum, w) => sum + w.quantity, 0)
 
-  return { totalBottles, estimatedValue, bottlesAtPeak }
+  return { totalBottles, totalCostBasis, totalCurrentValue, netGainLoss, netGainLossPercent, bottlesAtPeak }
+}
+
+export async function getRecentConsumptionLogs(userId: string, limit = 5) {
+  return prisma.consumptionLog.findMany({
+    where: { userId },
+    include: { wine: { select: { producer: true, wineName: true, vintage: true } } },
+    orderBy: { consumedDate: 'desc' },
+    take: limit,
+  })
+}
+
+export async function getConsumptionLogs(wineId: string) {
+  return prisma.consumptionLog.findMany({
+    where: { wineId },
+    orderBy: { consumedDate: 'desc' },
+  })
 }

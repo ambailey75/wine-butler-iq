@@ -97,6 +97,24 @@ export const COMMON_VARIETALS: string[] = [
   'Sherry',
 ]
 
+export const COMMON_STATES: string[] = [
+  'California',
+  'Oregon',
+  'Washington',
+  'New York',
+  'Virginia',
+  'Texas',
+  'Michigan',
+  'Colorado',
+  'South Australia',
+  'Victoria',
+  'New South Wales',
+  'Western Australia',
+  'Tasmania',
+  'Ontario',
+  'British Columbia',
+]
+
 export const COMMON_REGIONS: string[] = [
   'Bordeaux',
   'Burgundy',

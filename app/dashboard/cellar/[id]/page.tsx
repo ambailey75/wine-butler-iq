@@ -2,13 +2,14 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { Pencil } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth/current-user'
-import { getWine } from '@/lib/wines/queries'
+import { getWine, getConsumptionLogs } from '@/lib/wines/queries'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { DeleteWineButton } from '@/components/cellar/DeleteWineButton'
 import { LabelPhoto } from '@/components/cellar/LabelPhoto'
 import { LabelPhotoUpload } from '@/components/cellar/LabelPhotoUpload'
+import { ConsumeWineButton } from '@/components/cellar/ConsumeWineButton'
 
 interface WineDetailPageProps {
   params: { id: string }
@@ -62,12 +63,17 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
     notFound()
   }
 
+  const consumptionLogs = await getConsumptionLogs(wine.id)
+
   const purchasePrice = wine.purchasePrice ? wine.purchasePrice.toNumber() : null
   const currentEstValue = wine.currentEstValue ? wine.currentEstValue.toNumber() : null
   const rating = wine.rating ? wine.rating.toNumber() : null
-  const totalCost = purchasePrice !== null ? purchasePrice * wine.quantity : null
-  const totalEstValue = currentEstValue !== null ? currentEstValue * wine.quantity : null
+  const totalCostOverride = wine.totalCostOverride ? wine.totalCostOverride.toNumber() : null
+  const totalValueOverride = wine.totalValueOverride ? wine.totalValueOverride.toNumber() : null
+  const totalCost = totalCostOverride ?? (purchasePrice !== null ? purchasePrice * wine.quantity : null)
+  const totalEstValue = totalValueOverride ?? (currentEstValue !== null ? currentEstValue * wine.quantity : null)
   const drinkWindow = formatDrinkWindow(wine.drinkWindowStart, wine.drinkWindowEnd)
+  const remaining = wine.quantity - wine.consumedQuantity
 
   return (
     <div className="space-y-6">
@@ -88,14 +94,29 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
               </h1>
               {wine.vintage && <Badge variant="secondary">{wine.vintage}</Badge>}
               {wine.format && <Badge variant="outline">{wine.format}</Badge>}
+              {wine.isFullyConsumed && (
+                <Badge variant="outline" className="border-muted-foreground/30 text-muted-foreground">Consumed</Badge>
+              )}
+              {wine.consumedQuantity > 0 && !wine.isFullyConsumed && (
+                <Badge variant="outline" className="border-amber-500/30 text-amber-600">
+                  {remaining} of {wine.quantity} remaining
+                </Badge>
+              )}
             </div>
-            {(wine.region || wine.country) && (
+            {(wine.region || wine.state || wine.country) && (
               <p className="mt-1 text-sm text-muted-foreground">
-                {[wine.region, wine.country].filter(Boolean).join(', ')}
+                {[wine.region, wine.state, wine.country].filter(Boolean).join(', ')}
               </p>
             )}
           </div>
           <div className="flex gap-2">
+            {!wine.isFullyConsumed && (
+              <ConsumeWineButton
+                wineId={wine.id}
+                wineLabel={`${wine.producer} ${wine.wineName}`}
+                maxQuantity={remaining}
+              />
+            )}
             <Button asChild variant="outline">
               <Link href={`/dashboard/cellar/${wine.id}/edit`}>
                 <Pencil className="mr-2 h-4 w-4" />
@@ -119,6 +140,7 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
           <DetailField label="Wine Name" value={wine.wineName} />
           <DetailField label="Vintage" value={wine.vintage?.toString()} />
           <DetailField label="Country" value={wine.country} />
+          <DetailField label="State/Province" value={wine.state} />
           <DetailField label="Region" value={wine.region} />
           <DetailField label="Sub-Region" value={wine.subRegion} />
           <DetailField label="Vineyard" value={wine.vineyard} />
@@ -184,6 +206,36 @@ export default async function WineDetailPage({ params }: WineDetailPageProps) {
           </CardHeader>
           <CardContent>
             <p className="whitespace-pre-wrap text-sm text-foreground">{wine.notes}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {consumptionLogs.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Consumption History</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-3">
+              {consumptionLogs.map((log) => (
+                <li key={log.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-foreground">
+                      {log.quantity} bottle{log.quantity > 1 ? 's' : ''} — {formatDate(log.consumedDate)}
+                    </span>
+                    {log.rating && (
+                      <Badge variant="secondary">{log.rating.toNumber()}/100</Badge>
+                    )}
+                  </div>
+                  {log.occasion && (
+                    <p className="mt-1 text-sm text-muted-foreground">{log.occasion}</p>
+                  )}
+                  {log.notes && (
+                    <p className="mt-1 text-sm text-muted-foreground">{log.notes}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
           </CardContent>
         </Card>
       )}

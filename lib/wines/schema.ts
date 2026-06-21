@@ -12,6 +12,7 @@ export const wineFormSchema = z.object({
     .max(currentYear + 1, `Vintage cannot be after ${currentYear + 1}`)
     .optional(),
   country: z.string().trim().optional(),
+  state: z.string().trim().optional(),
   region: z.string().trim().optional(),
   subRegion: z.string().trim().optional(),
   vineyard: z.string().trim().optional(),
@@ -48,6 +49,7 @@ export const wineFormDefaultValues: WineFormValues = {
   wineName: '',
   vintage: undefined,
   country: undefined,
+  state: undefined,
   region: undefined,
   subRegion: undefined,
   vineyard: undefined,

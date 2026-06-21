@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma/client'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { getImport } from '@/lib/import/queries'
 import { IMPORTS_BUCKET, LABELS_BUCKET, type MappedWineData } from '@/lib/import/constants'
+import { inferStyle } from '@/lib/wines/inferStyle'
 
 interface RouteParams {
   params: { id: string }
@@ -18,18 +19,22 @@ function toWineCreateData(mapped: MappedWineData) {
     wineName: mapped.wineName!.trim(),
     vintage: mapped.vintage ?? null,
     country: mapped.country ?? null,
+    state: mapped.state ?? null,
     region: mapped.region ?? null,
     subRegion: mapped.subRegion ?? null,
     vineyard: mapped.vineyard ?? null,
     classification: mapped.classification ?? null,
     varietal: mapped.varietal ?? null,
     format: mapped.format ?? null,
+    style: mapped.style || inferStyle({ varietal: mapped.varietal, region: mapped.region, wineName: mapped.wineName, classification: mapped.classification }) || null,
     quantity: mapped.quantity && mapped.quantity > 0 ? Math.round(mapped.quantity) : 1,
     purchasePrice: mapped.purchasePrice ?? null,
     purchaseDate: purchaseDate && !Number.isNaN(purchaseDate.getTime()) ? purchaseDate : null,
     vendor: mapped.vendor ?? null,
     storageLocation: mapped.storageLocation ?? null,
     notes: mapped.notes ?? null,
+    totalCostOverride: mapped.totalCostOverride ?? null,
+    totalValueOverride: mapped.totalValueOverride ?? null,
   }
 }
 

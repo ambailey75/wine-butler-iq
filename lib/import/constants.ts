@@ -52,6 +52,7 @@ export interface MappedWineData {
   wineName?: string
   vintage?: number
   country?: string
+  state?: string
   region?: string
   subRegion?: string
   vineyard?: string
@@ -71,6 +72,8 @@ export interface MappedWineData {
   drinkWindowStart?: number
   drinkWindowEnd?: number
   currentEstValue?: number
+  totalCostOverride?: number
+  totalValueOverride?: number
   wineId?: string
 }
 
@@ -88,6 +91,7 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
   { key: 'wineName', label: 'Wine Name', type: 'string', required: true },
   { key: 'vintage', label: 'Vintage', type: 'number' },
   { key: 'country', label: 'Country', type: 'string' },
+  { key: 'state', label: 'State/Province', type: 'string' },
   { key: 'region', label: 'Region', type: 'string' },
   { key: 'subRegion', label: 'Sub-Region', type: 'string' },
   { key: 'vineyard', label: 'Vineyard', type: 'string' },
@@ -101,6 +105,8 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
   { key: 'vendor', label: 'Vendor', type: 'string' },
   { key: 'storageLocation', label: 'Storage Location', type: 'string' },
   { key: 'currentEstValue', label: 'Current Est. Value', type: 'number' },
+  { key: 'totalCostOverride', label: 'Total Cost', type: 'number' },
+  { key: 'totalValueOverride', label: 'Total Est. Value', type: 'number' },
   { key: 'rating', label: 'Rating', type: 'number' },
   { key: 'drinkWindowStart', label: 'Drink Window Start', type: 'number' },
   { key: 'drinkWindowEnd', label: 'Drink Window End', type: 'number' },
@@ -124,6 +130,10 @@ export const HEADER_ALIASES: Record<string, keyof MappedWineData | null> = {
   bottlesize: 'format',
   drinkingwindowstart: 'drinkWindowStart',
   drinkingwindowend: 'drinkWindowEnd',
-  totalcost: null,
-  totalestvalue: null,
+  totalcost: 'totalCostOverride',
+  totalestvalue: 'totalValueOverride',
+  totalvalue: 'totalValueOverride',
+  state: 'state',
+  stateprovince: 'state',
+  province: 'state',
 }

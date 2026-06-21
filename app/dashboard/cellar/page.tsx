@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { Wine } from 'lucide-react'
+import { Download, Wine } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { listWines, serializeWines } from '@/lib/wines/queries'
 import { Button } from '@/components/ui/button'
@@ -20,9 +20,17 @@ export default async function CellarPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Cellar</h1>
         {wines.length > 0 && (
-          <Button asChild>
-            <Link href="/dashboard/cellar/new">Add a wine</Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <a href="/api/wines/export" download>
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
+              </a>
+            </Button>
+            <Button asChild>
+              <Link href="/dashboard/cellar/new">Add a wine</Link>
+            </Button>
+          </div>
         )}
       </div>
 

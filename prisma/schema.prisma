@@ -16,10 +16,11 @@ model User {
   preferences Json     @default("{}")
   createdAt   DateTime @default(now())
 
-  wines         Wine[]
-  alerts        CellarAlert[]
-  conversations AiConversation[]
-  imports       Import[]
+  wines            Wine[]
+  alerts           CellarAlert[]
+  conversations    AiConversation[]
+  imports          Import[]
+  consumptionLogs  ConsumptionLog[]
 
   @@map("users")
 }
@@ -31,6 +32,7 @@ model Wine {
   wineName        String
   vintage         Int?
   country         String?
+  state           String?
   region          String?
   subRegion       String?
   vineyard        String?
@@ -49,22 +51,46 @@ model Wine {
   rating          Decimal?  @db.Decimal(4, 1)
   drinkWindowStart Int?
   drinkWindowEnd   Int?
-  currentEstValue Decimal?  @db.Decimal(10, 2)
+  currentEstValue  Decimal?  @db.Decimal(10, 2)
+  totalCostOverride  Decimal? @db.Decimal(10, 2)
+  totalValueOverride Decimal? @db.Decimal(10, 2)
+  consumedQuantity Int       @default(0)
+  isFullyConsumed  Boolean   @default(false)
   wineId          String?
   labelPhotoUrl   String?
   importId        String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  import     Import?         @relation(fields: [importId], references: [id])
-  enrichment WineEnrichment?
-  alerts     CellarAlert[]
-  importRows ImportRow[]
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  import          Import?           @relation(fields: [importId], references: [id])
+  enrichment      WineEnrichment?
+  alerts          CellarAlert[]
+  importRows      ImportRow[]
+  consumptionLogs ConsumptionLog[]
 
   @@index([userId])
   @@index([importId])
   @@map("wines")
+}
+
+model ConsumptionLog {
+  id           String    @id @default(cuid())
+  wineId       String
+  userId       String
+  quantity     Int       @default(1)
+  consumedDate DateTime  @default(now())
+  occasion     String?
+  notes        String?
+  rating       Decimal?  @db.Decimal(4, 1)
+  createdAt    DateTime  @default(now())
+
+  wine Wine @relation(fields: [wineId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([wineId])
+  @@index([userId])
+  @@map("consumption_logs")
 }
 
 model WineEnrichment {

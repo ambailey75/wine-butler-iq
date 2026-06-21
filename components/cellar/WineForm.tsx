@@ -11,7 +11,7 @@ import {
   wineFormDefaultValues,
   type WineFormValues,
 } from '@/lib/wines/schema'
-import { COUNTRIES, WINE_FORMATS, WINE_STYLES, COMMON_REGIONS, COMMON_VARIETALS } from '@/lib/wines/constants'
+import { COUNTRIES, WINE_FORMATS, WINE_STYLES, COMMON_REGIONS, COMMON_VARIETALS, COMMON_STATES } from '@/lib/wines/constants'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { createWine, updateWine, searchCellarWines, type WineSuggestion } from '@/lib/wines/actions'
 import { searchStaticWines, type StaticWineEntry } from '@/lib/wines/staticWineSearch'
@@ -228,6 +228,7 @@ interface MergedSuggestion {
   wineName: string
   vintage: number | null
   country: string | null
+  state: string | null
   region: string | null
   subRegion: string | null
   vineyard: string | null
@@ -245,7 +246,7 @@ function fromStatic(entry: StaticWineEntry): MergedSuggestion {
 }
 
 function fromApi(result: WineLookupResult): MergedSuggestion {
-  return { source: 'api', subRegion: null, vineyard: null, classification: null, format: null, ...result }
+  return { source: 'api', state: null, subRegion: null, vineyard: null, classification: null, format: null, ...result }
 }
 
 function mergeSuggestions(...lists: MergedSuggestion[][]): MergedSuggestion[] {
@@ -291,6 +292,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
           wineName: wine.wineName,
           vintage: wine.vintage ?? undefined,
           country: wine.country ?? undefined,
+          state: wine.state ?? undefined,
           region: wine.region ?? undefined,
           subRegion: wine.subRegion ?? undefined,
           vineyard: wine.vineyard ?? undefined,
@@ -395,6 +397,7 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
     form.setValue('wineName', suggestion.wineName)
     if (suggestion.vintage != null) form.setValue('vintage', suggestion.vintage)
     if (suggestion.country) form.setValue('country', suggestion.country)
+    if (suggestion.state) form.setValue('state', suggestion.state)
     if (suggestion.region) form.setValue('region', suggestion.region)
     if (suggestion.subRegion) form.setValue('subRegion', suggestion.subRegion)
     if (suggestion.vineyard) form.setValue('vineyard', suggestion.vineyard)
@@ -606,6 +609,22 @@ export function WineForm({ mode, wine, existingRegions, existingVarietals }: Win
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>State/Province</FormLabel>
+                  <ComboboxField
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={COMMON_STATES}
+                    placeholder="Select or type a state"
+                  />
                   <FormMessage />
                 </FormItem>
               )}

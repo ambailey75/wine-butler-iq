@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 interface KpiCardProps {
   label: string
-  value: string
+  value: ReactNode
   caption?: string
   className?: string
 }
