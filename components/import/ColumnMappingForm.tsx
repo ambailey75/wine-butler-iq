@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Select,
@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -91,6 +92,16 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const hasSeparateCountryState = useMemo(() => {
+    const mapped = Object.values(mapping)
+    return mapped.includes('country') && mapped.includes('state')
+  }, [mapping])
+
+  const hasSeparateRegionSubRegion = useMemo(() => {
+    const mapped = Object.values(mapping)
+    return mapped.includes('region') && mapped.includes('subRegion')
+  }, [mapping])
+
   async function handleApply() {
     setSubmitting(true)
     setError(null)
@@ -136,6 +147,19 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
           Fields marked with * are required.
         </p>
       </div>
+
+      {hasSeparateCountryState && (
+        <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+          <Check className="h-4 w-4 shrink-0" />
+          Country and State detected as separate columns — both will be imported into their respective fields
+        </div>
+      )}
+      {hasSeparateRegionSubRegion && (
+        <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+          <Check className="h-4 w-4 shrink-0" />
+          Region and Sub-Region detected as separate columns — both will be imported into their respective fields
+        </div>
+      )}
 
       <div className="overflow-x-auto rounded-md border border-border">
         <Table>

@@ -1,15 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
-  type Column,
   type ColumnDef,
   type ColumnFiltersState,
   type FilterFn,
   type SortingState,
-  type Updater,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -17,7 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ArrowUpDown, Columns3, Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Check, Eye, MoreHorizontal, Trash2 } from 'lucide-react'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { getEstimatedValue } from '@/lib/wines/queries'
 import {
@@ -30,7 +27,6 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,49 +38,10 @@ import { Pagination } from '@/components/ui/pagination'
 import { WineFilters } from './WineFilters'
 import { DeleteWineDialog } from './DeleteWineDialog'
 
-const STORAGE_KEY = 'wine-butler-column-visibility'
-
-const TOGGLEABLE_COLUMNS: { id: string; label: string }[] = [
-  { id: 'subRegion', label: 'Sub-Region' },
-  { id: 'state', label: 'State/Province' },
-  { id: 'format', label: 'Format' },
-  { id: 'storageLocation', label: 'Storage Location' },
-  { id: 'notes', label: 'Notes' },
-]
-
-const DEFAULT_VISIBILITY: VisibilityState = {
-  subRegion: false,
-  state: false,
-  style: false,
-  format: false,
-  storageLocation: false,
-  notes: false,
-}
-
-function loadVisibility(): VisibilityState {
-  if (typeof window === 'undefined') return DEFAULT_VISIBILITY
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) return { ...DEFAULT_VISIBILITY, ...JSON.parse(stored) }
-  } catch { /* ignore */ }
-  return DEFAULT_VISIBILITY
-}
-
-function saveVisibility(vis: VisibilityState) {
-  try {
-    const toStore: Record<string, boolean> = {}
-    for (const col of TOGGLEABLE_COLUMNS) {
-      if (vis[col.id] !== undefined) toStore[col.id] = vis[col.id]
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore))
-  } catch { /* ignore */ }
-}
+const STYLE_OPTIONS = ['Red', 'White', 'Rosé', 'Sparkling', 'Dessert', 'Fortified']
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)
 }
 
 const multiSelectFilter: FilterFn<SerializedWine> = (row, columnId, filterValue: string[]) => {
@@ -93,87 +50,424 @@ const multiSelectFilter: FilterFn<SerializedWine> = (row, columnId, filterValue:
   return value !== null && filterValue.includes(value)
 }
 
-const vintageRangeFilter: FilterFn<SerializedWine> = (row, columnId, filterValue) => {
-  const [min, max] = (filterValue ?? []) as [number | undefined, number | undefined]
-  if (min === undefined && max === undefined) return true
-  const value = row.getValue<number | null>(columnId)
-  if (value === null || value === undefined) return false
-  if (min !== undefined && value < min) return false
-  if (max !== undefined && value > max) return false
-  return true
+const exactYearFilter: FilterFn<SerializedWine> = (row, _columnId, filterValue) => {
+  if (filterValue === undefined || filterValue === null) return true
+  const value = row.getValue<number | null>('vintage')
+  return value === filterValue
 }
 
 const minRatingFilter: FilterFn<SerializedWine> = (row, _columnId, filterValue) => {
-  const minRating = filterValue as number | undefined
-  if (minRating === undefined) return true
+  if (filterValue === undefined) return true
   const value = row.getValue<number | null>('rating')
   if (value === null || value === undefined) return false
-  return value >= minRating
+  return value >= (filterValue as number)
 }
 
 const globalSearchFilter: FilterFn<SerializedWine> = (row, _columnId, filterValue) => {
   const search = String(filterValue).toLowerCase().trim()
   if (!search) return true
-  const wine = row.original
-  return [wine.producer, wine.wineName, wine.region, wine.country, wine.vineyard, wine.varietal, wine.vendor, wine.notes, wine.storageLocation]
-    .filter((value): value is string => typeof value === 'string')
-    .some((value) => value.toLowerCase().includes(search))
+  const w = row.original
+  return [w.producer, w.wineName, w.region, w.country, w.vineyard, w.varietal, w.vendor, w.notes, w.storageLocation, w.state, w.subRegion]
+    .filter((v): v is string => typeof v === 'string')
+    .some((v) => v.toLowerCase().includes(search))
 }
 
-function SortButton({
-  column,
-  label,
+// ─── Inline Editing Primitives ──────────────────────────────────────────────
+
+interface EditCellState {
+  wineId: string
+  field: string
+}
+
+function useInlineEdit(wines: SerializedWine[], setWines: React.Dispatch<React.SetStateAction<SerializedWine[]>>) {
+  const [editing, setEditing] = useState<EditCellState | null>(null)
+  const [savedCell, setSavedCell] = useState<string | null>(null)
+  const savedTimer = useRef<ReturnType<typeof setTimeout>>()
+
+  const startEdit = useCallback((wineId: string, field: string) => {
+    setEditing({ wineId, field })
+  }, [])
+
+  const cancelEdit = useCallback(() => {
+    setEditing(null)
+  }, [])
+
+  const saveField = useCallback(async (wineId: string, updates: Record<string, unknown>) => {
+    setWines((prev) =>
+      prev.map((w) => (w.id === wineId ? { ...w, ...updates } : w))
+    )
+    setEditing(null)
+
+    try {
+      const res = await fetch(`/api/wines/${wineId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      })
+      if (!res.ok) throw new Error()
+
+      const cellKey = `${wineId}-${Object.keys(updates)[0]}`
+      setSavedCell(cellKey)
+      if (savedTimer.current) clearTimeout(savedTimer.current)
+      savedTimer.current = setTimeout(() => setSavedCell(null), 1200)
+    } catch {
+      // Revert is complex — for now the optimistic update stays.
+      // The next page load will show the server state.
+    }
+  }, [setWines])
+
+  return { editing, savedCell, startEdit, cancelEdit, saveField }
+}
+
+// ─── Cell Components ────────────────────────────────────────────────────────
+
+function TextEditCell({
+  value,
+  wineId,
+  field,
+  editing,
+  savedCell,
+  onStart,
+  onSave,
+  onCancel,
+  placeholder,
+  className,
 }: {
-  column: Column<SerializedWine, unknown>
-  label: string
+  value: string | null
+  wineId: string
+  field: string
+  editing: EditCellState | null
+  savedCell: string | null
+  onStart: (id: string, f: string) => void
+  onSave: (id: string, updates: Record<string, unknown>) => void
+  onCancel: () => void
+  placeholder?: string
+  className?: string
 }) {
-  const sorted = column.getIsSorted()
+  const isEditing = editing?.wineId === wineId && editing?.field === field
+  const isSaved = savedCell === `${wineId}-${field}`
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isEditing) inputRef.current?.focus()
+  }, [isEditing])
+
+  if (isEditing) {
+    return (
+      <Input
+        ref={inputRef}
+        defaultValue={value ?? ''}
+        className="h-7 min-w-[80px] text-xs"
+        onBlur={(e) => {
+          const v = e.target.value.trim()
+          onSave(wineId, { [field]: v || null })
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            const v = (e.target as HTMLInputElement).value.trim()
+            onSave(wineId, { [field]: v || null })
+          }
+          if (e.key === 'Escape') onCancel()
+        }}
+      />
+    )
+  }
+
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="-ml-3 h-8 gap-1 px-2"
-      onClick={() => column.toggleSorting(sorted === 'asc')}
+    <div
+      onClick={() => onStart(wineId, field)}
+      className={`cursor-pointer rounded px-1 py-0.5 text-xs hover:bg-accent ${className ?? ''}`}
     >
-      {label}
-      <ArrowUpDown className="h-3.5 w-3.5" />
-    </Button>
+      {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
+      {value || <span className="text-muted-foreground">{placeholder ?? '—'}</span>}
+    </div>
   )
 }
 
-function WineRowActions({
-  wine,
-  onDelete,
+function NumberEditCell({
+  value,
+  wineId,
+  field,
+  editing,
+  savedCell,
+  onStart,
+  onSave,
+  onCancel,
+  format,
 }: {
-  wine: SerializedWine
-  onDelete: () => void
+  value: number | null
+  wineId: string
+  field: string
+  editing: EditCellState | null
+  savedCell: string | null
+  onStart: (id: string, f: string) => void
+  onSave: (id: string, updates: Record<string, unknown>) => void
+  onCancel: () => void
+  format?: (v: number) => string
 }) {
+  const isEditing = editing?.wineId === wineId && editing?.field === field
+  const isSaved = savedCell === `${wineId}-${field}`
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isEditing) inputRef.current?.focus()
+  }, [isEditing])
+
+  if (isEditing) {
+    return (
+      <Input
+        ref={inputRef}
+        type="number"
+        defaultValue={value ?? ''}
+        className="h-7 w-20 text-xs"
+        onBlur={(e) => {
+          const v = e.target.value.trim()
+          onSave(wineId, { [field]: v ? Number(v) : null })
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            const v = (e.target as HTMLInputElement).value.trim()
+            onSave(wineId, { [field]: v ? Number(v) : null })
+          }
+          if (e.key === 'Escape') onCancel()
+        }}
+      />
+    )
+  }
+
+  return (
+    <div
+      onClick={() => onStart(wineId, field)}
+      className="cursor-pointer rounded px-1 py-0.5 text-xs hover:bg-accent"
+    >
+      {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
+      {value !== null ? (format ? format(value) : value) : <span className="text-muted-foreground">—</span>}
+    </div>
+  )
+}
+
+function StyleSelectCell({
+  value,
+  wineId,
+  editing,
+  savedCell,
+  onStart,
+  onSave,
+  onCancel,
+}: {
+  value: string | null
+  wineId: string
+  editing: EditCellState | null
+  savedCell: string | null
+  onStart: (id: string, f: string) => void
+  onSave: (id: string, updates: Record<string, unknown>) => void
+  onCancel: () => void
+}) {
+  const isEditing = editing?.wineId === wineId && editing?.field === 'style'
+  const isSaved = savedCell === `${wineId}-style`
+  const selectRef = useRef<HTMLSelectElement>(null)
+
+  useEffect(() => {
+    if (isEditing) selectRef.current?.focus()
+  }, [isEditing])
+
+  if (isEditing) {
+    return (
+      <select
+        ref={selectRef}
+        defaultValue={value ?? ''}
+        className="h-7 rounded border border-border bg-background px-1 text-xs"
+        onBlur={(e) => {
+          onSave(wineId, { style: e.target.value || null })
+        }}
+        onChange={(e) => {
+          onSave(wineId, { style: e.target.value || null })
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onCancel()
+        }}
+      >
+        <option value="">—</option>
+        {STYLE_OPTIONS.map((s) => (
+          <option key={s} value={s}>{s}</option>
+        ))}
+      </select>
+    )
+  }
+
+  return (
+    <div
+      onClick={() => onStart(wineId, 'style')}
+      className="cursor-pointer rounded px-1 py-0.5 text-xs hover:bg-accent"
+    >
+      {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
+      {value || <span className="text-muted-foreground">—</span>}
+    </div>
+  )
+}
+
+function DualFieldCell({
+  topValue,
+  bottomValue,
+  wineId,
+  topField,
+  bottomField,
+  topLabel,
+  bottomLabel,
+  editing,
+  savedCell,
+  onStart,
+  onSave,
+  onCancel,
+}: {
+  topValue: string | null
+  bottomValue: string | null
+  wineId: string
+  topField: string
+  bottomField: string
+  topLabel: string
+  bottomLabel: string
+  editing: EditCellState | null
+  savedCell: string | null
+  onStart: (id: string, f: string) => void
+  onSave: (id: string, updates: Record<string, unknown>) => void
+  onCancel: () => void
+}) {
+  const dualField = `${topField}_${bottomField}`
+  const isEditing = editing?.wineId === wineId && editing?.field === dualField
+  const isSaved = savedCell === `${wineId}-${topField}` || savedCell === `${wineId}-${bottomField}`
+  const topRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (isEditing) topRef.current?.focus()
+  }, [isEditing])
+
+  if (isEditing) {
+    return (
+      <div className="flex flex-col gap-1">
+        <Input
+          ref={topRef}
+          defaultValue={topValue ?? ''}
+          placeholder={topLabel}
+          className="h-6 text-xs"
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') onCancel()
+          }}
+        />
+        <Input
+          defaultValue={bottomValue ?? ''}
+          placeholder={bottomLabel}
+          className="h-6 text-xs"
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') onCancel()
+            if (e.key === 'Enter') {
+              const topVal = topRef.current?.value.trim() || null
+              const botVal = (e.target as HTMLInputElement).value.trim() || null
+              onSave(wineId, { [topField]: topVal, [bottomField]: botVal })
+            }
+          }}
+          onBlur={(e) => {
+            const topVal = topRef.current?.value.trim() || null
+            const botVal = e.target.value.trim() || null
+            onSave(wineId, { [topField]: topVal, [bottomField]: botVal })
+          }}
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      onClick={() => onStart(wineId, dualField)}
+      className="cursor-pointer rounded px-1 py-0.5 hover:bg-accent"
+    >
+      {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
+      <div className="text-xs leading-tight">
+        {topValue || <span className="text-muted-foreground">—</span>}
+      </div>
+      {bottomValue && (
+        <div className="text-[10px] leading-tight text-muted-foreground">{bottomValue}</div>
+      )}
+    </div>
+  )
+}
+
+function NotesEditCell({
+  value,
+  wineId,
+  field,
+  editing,
+  savedCell,
+  onStart,
+  onSave,
+  onCancel,
+}: {
+  value: string | null
+  wineId: string
+  field: string
+  editing: EditCellState | null
+  savedCell: string | null
+  onStart: (id: string, f: string) => void
+  onSave: (id: string, updates: Record<string, unknown>) => void
+  onCancel: () => void
+}) {
+  const isEditing = editing?.wineId === wineId && editing?.field === field
+  const isSaved = savedCell === `${wineId}-${field}`
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (isEditing) textareaRef.current?.focus()
+  }, [isEditing])
+
+  if (isEditing) {
+    return (
+      <textarea
+        ref={textareaRef}
+        defaultValue={value ?? ''}
+        className="min-h-[60px] w-full rounded border border-border bg-background px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+        onBlur={(e) => {
+          onSave(wineId, { [field]: e.target.value.trim() || null })
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onCancel()
+        }}
+      />
+    )
+  }
+
+  const truncated = value && value.length > 40 ? `${value.slice(0, 40)}...` : value
+
+  return (
+    <div
+      onClick={() => onStart(wineId, field)}
+      title={value ?? undefined}
+      className="max-w-[120px] cursor-pointer truncate rounded px-1 py-0.5 text-xs hover:bg-accent"
+    >
+      {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
+      {truncated || <span className="text-muted-foreground">—</span>}
+    </div>
+  )
+}
+
+// ─── Row Actions ────────────────────────────────────────────────────────────
+
+function WineRowActions({ wine, onDelete }: { wine: SerializedWine; onDelete: () => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+        <Button variant="ghost" size="icon" className="h-7 w-7">
           <MoreHorizontal className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem asChild>
           <Link href={`/dashboard/cellar/${wine.id}`}>
             <Eye className="mr-2 h-4 w-4" />
-            View
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={`/dashboard/cellar/${wine.id}/edit`}>
-            <Pencil className="mr-2 h-4 w-4" />
-            Edit
+            View Details
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={onDelete}
-          className="text-destructive focus:text-destructive"
-        >
+        <DropdownMenuItem onSelect={onDelete} className="text-destructive focus:text-destructive">
           <Trash2 className="mr-2 h-4 w-4" />
           Delete
         </DropdownMenuItem>
@@ -182,66 +476,21 @@ function WineRowActions({
   )
 }
 
-function ColumnToggle({
-  visibility,
-  onToggle,
-}: {
-  visibility: VisibilityState
-  onToggle: (id: string, checked: boolean) => void
-}) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Columns3 className="h-4 w-4" />
-          Columns
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        {TOGGLEABLE_COLUMNS.map((col) => (
-          <label
-            key={col.id}
-            className="flex cursor-pointer items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent"
-          >
-            <Checkbox
-              checked={visibility[col.id] !== false}
-              onCheckedChange={(checked) => onToggle(col.id, checked === true)}
-            />
-            {col.label}
-          </label>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
+// ─── Main Table ─────────────────────────────────────────────────────────────
 
 type CellarView = 'in-cellar' | 'all' | 'consumed'
 
-export function WineTable({ wines }: { wines: SerializedWine[] }) {
+export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) {
+  const [wines, setWines] = useState(initialWines)
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(DEFAULT_VISIBILITY)
   const [globalFilter, setGlobalFilter] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<SerializedWine | null>(null)
   const [cellarView, setCellarView] = useState<CellarView>('in-cellar')
 
-  useEffect(() => {
-    setColumnVisibility(loadVisibility())
-  }, [])
+  useEffect(() => { setWines(initialWines) }, [initialWines])
 
-  const handleVisibilityChange = (updater: Updater<VisibilityState>) => {
-    setColumnVisibility((prev) => {
-      const next = typeof updater === 'function' ? updater(prev) : updater
-      saveVisibility(next)
-      return next
-    })
-  }
-
-  const handleColumnToggle = (id: string, checked: boolean) => {
-    const updated = { ...columnVisibility, [id]: checked }
-    setColumnVisibility(updated)
-    saveVisibility(updated)
-  }
+  const { editing, savedCell, startEdit, cancelEdit, saveField } = useInlineEdit(wines, setWines)
 
   const filteredWines = useMemo(() => {
     if (cellarView === 'all') return wines
@@ -253,95 +502,208 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
     () => [
       {
         accessorKey: 'producer',
-        header: ({ column }) => <SortButton column={column} label="Producer" />,
+        header: ({ column }) => <SortHeader column={column} label="Producer" />,
         cell: ({ row }) => (
-          <span className="font-medium text-foreground">{row.original.producer}</span>
+          <TextEditCell
+            value={row.original.producer}
+            wineId={row.original.id} field="producer"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+            className="font-medium"
+          />
         ),
       },
       {
         accessorKey: 'wineName',
-        header: ({ column }) => <SortButton column={column} label="Wine Name" />,
+        header: ({ column }) => <SortHeader column={column} label="Wine" />,
+        cell: ({ row }) => (
+          <TextEditCell
+            value={row.original.wineName}
+            wineId={row.original.id} field="wineName"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
         accessorKey: 'vintage',
-        header: ({ column }) => <SortButton column={column} label="Vintage" />,
-        cell: ({ row }) => row.original.vintage ?? '—',
-        filterFn: vintageRangeFilter,
+        header: ({ column }) => <SortHeader column={column} label="Yr" />,
+        cell: ({ row }) => (
+          <NumberEditCell
+            value={row.original.vintage}
+            wineId={row.original.id} field="vintage"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+        filterFn: exactYearFilter,
       },
       {
-        accessorKey: 'country',
-        header: ({ column }) => <SortButton column={column} label="Country" />,
-        cell: ({ row }) => row.original.country ?? '—',
+        id: 'countryState',
+        accessorFn: (row) => row.country,
+        header: ({ column }) => <SortHeader column={column} label="Country" />,
+        cell: ({ row }) => (
+          <DualFieldCell
+            topValue={row.original.country}
+            bottomValue={row.original.state}
+            wineId={row.original.id}
+            topField="country" bottomField="state"
+            topLabel="Country" bottomLabel="State"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+        filterFn: multiSelectFilter,
       },
       {
-        accessorKey: 'region',
-        header: ({ column }) => <SortButton column={column} label="Region" />,
-        cell: ({ row }) => row.original.region ?? '—',
-      },
-      {
-        accessorKey: 'subRegion',
-        header: ({ column }) => <SortButton column={column} label="Sub-Region" />,
-        cell: ({ row }) => row.original.subRegion ?? '—',
-      },
-      {
-        accessorKey: 'state',
-        header: ({ column }) => <SortButton column={column} label="State" />,
-        cell: ({ row }) => row.original.state ?? '—',
+        id: 'regionSubRegion',
+        accessorFn: (row) => row.region,
+        header: ({ column }) => <SortHeader column={column} label="Region" />,
+        cell: ({ row }) => (
+          <DualFieldCell
+            topValue={row.original.region}
+            bottomValue={row.original.subRegion}
+            wineId={row.original.id}
+            topField="region" bottomField="subRegion"
+            topLabel="Region" bottomLabel="Sub-Region"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+        filterFn: multiSelectFilter,
       },
       {
         accessorKey: 'varietal',
-        header: ({ column }) => <SortButton column={column} label="Varietal" />,
-        cell: ({ row }) => row.original.varietal ?? '—',
+        header: ({ column }) => <SortHeader column={column} label="Varietal" />,
+        cell: ({ row }) => (
+          <TextEditCell
+            value={row.original.varietal}
+            wineId={row.original.id} field="varietal"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+        filterFn: multiSelectFilter,
       },
       {
-        accessorKey: 'style',
-        header: ({ column }) => <SortButton column={column} label="Style" />,
-        cell: ({ row }) => row.original.style ?? '—',
-        filterFn: multiSelectFilter,
-        enableHiding: false,
-      },
-      {
-        accessorKey: 'format',
-        header: ({ column }) => <SortButton column={column} label="Format" />,
-        cell: ({ row }) => row.original.format ?? '—',
-        filterFn: multiSelectFilter,
+        accessorKey: 'vineyard',
+        header: ({ column }) => <SortHeader column={column} label="Vineyard" />,
+        cell: ({ row }) => (
+          <TextEditCell
+            value={row.original.vineyard}
+            wineId={row.original.id} field="vineyard"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
         accessorKey: 'quantity',
-        header: ({ column }) => <SortButton column={column} label="Qty" />,
+        header: ({ column }) => <SortHeader column={column} label="Qty" />,
+        cell: ({ row }) => (
+          <NumberEditCell
+            value={row.original.quantity}
+            wineId={row.original.id} field="quantity"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+      },
+      {
+        accessorKey: 'style',
+        header: ({ column }) => <SortHeader column={column} label="Style" />,
+        cell: ({ row }) => (
+          <StyleSelectCell
+            value={row.original.style}
+            wineId={row.original.id}
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
         accessorKey: 'purchasePrice',
-        header: ({ column }) => <SortButton column={column} label="Purchase Price" />,
-        cell: ({ row }) =>
-          row.original.purchasePrice !== null
-            ? formatCurrency(row.original.purchasePrice)
-            : '—',
+        header: ({ column }) => <SortHeader column={column} label="Price" />,
+        cell: ({ row }) => (
+          <NumberEditCell
+            value={row.original.purchasePrice}
+            wineId={row.original.id} field="purchasePrice"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+            format={formatCurrency}
+          />
+        ),
       },
       {
-        accessorKey: 'currentEstValue',
-        header: ({ column }) => <SortButton column={column} label="Est. Value/Bottle" />,
+        accessorKey: 'rating',
+        header: ({ column }) => <SortHeader column={column} label="Score" />,
+        cell: ({ row }) => (
+          <NumberEditCell
+            value={row.original.rating}
+            wineId={row.original.id} field="rating"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+        filterFn: minRatingFilter,
+      },
+      {
+        id: 'estValue',
         accessorFn: (row) => {
           const est = getEstimatedValue(row.currentEstValue, row.purchasePrice)
           return est.perBottle
         },
+        header: ({ column }) => <SortHeader column={column} label="Est. Val" />,
         cell: ({ row }) => {
           const w = row.original
           const est = getEstimatedValue(w.currentEstValue, w.purchasePrice)
-          if (est.perBottle === null) return <span className="text-muted-foreground">No data</span>
-          if (est.isApproximate) return <span title="Based on purchase price">≈{formatCurrency(est.perBottle)}</span>
-          return formatCurrency(est.perBottle)
+          const isEditing = editing?.wineId === w.id && editing?.field === 'currentEstValue'
+          const isSaved = savedCell === `${w.id}-currentEstValue`
+
+          if (isEditing) {
+            return (
+              <NumberEditCell
+                value={w.currentEstValue}
+                wineId={w.id} field="currentEstValue"
+                editing={editing} savedCell={savedCell}
+                onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+                format={formatCurrency}
+              />
+            )
+          }
+
+          return (
+            <div
+              onClick={() => startEdit(w.id, 'currentEstValue')}
+              className="cursor-pointer rounded px-1 py-0.5 text-xs hover:bg-accent"
+            >
+              {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
+              {est.perBottle !== null ? (
+                est.isApproximate ? (
+                  <span className="text-muted-foreground" title="Based on purchase price">≈{formatCurrency(est.perBottle)}</span>
+                ) : (
+                  formatCurrency(est.perBottle)
+                )
+              ) : (
+                <span className="text-muted-foreground">No data</span>
+              )}
+            </div>
+          )
         },
       },
       {
         id: 'totalCost',
         accessorFn: (row) =>
           row.totalCostOverride ?? (row.purchasePrice !== null ? row.purchasePrice * row.quantity : null),
-        header: ({ column }) => <SortButton column={column} label="Total Cost" />,
+        header: ({ column }) => <SortHeader column={column} label="Total Cost" />,
         cell: ({ row }) => {
           const w = row.original
           const val = w.totalCostOverride ?? (w.purchasePrice !== null ? w.purchasePrice * w.quantity : null)
-          return val !== null ? formatCurrency(val) : '—'
+          return (
+            <div className="bg-muted/30 px-1 py-0.5 text-xs">
+              {val !== null ? formatCurrency(val) : <span className="text-muted-foreground">—</span>}
+            </div>
+          )
         },
       },
       {
@@ -351,46 +713,107 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
           const est = getEstimatedValue(row.currentEstValue, row.purchasePrice)
           return est.perBottle !== null ? est.perBottle * row.quantity : null
         },
-        header: ({ column }) => <SortButton column={column} label="Total Est. Value" />,
+        header: ({ column }) => <SortHeader column={column} label="Total Val" />,
         cell: ({ row }) => {
           const w = row.original
-          if (w.totalValueOverride !== null) return formatCurrency(w.totalValueOverride)
+          if (w.totalValueOverride !== null) {
+            return <div className="bg-muted/30 px-1 py-0.5 text-xs">{formatCurrency(w.totalValueOverride)}</div>
+          }
           const est = getEstimatedValue(w.currentEstValue, w.purchasePrice)
-          if (est.perBottle === null) return <span className="text-muted-foreground">No data</span>
+          if (est.perBottle === null) {
+            return <div className="bg-muted/30 px-1 py-0.5 text-xs text-muted-foreground">No data</div>
+          }
           const total = est.perBottle * w.quantity
-          if (est.isApproximate) return <span title="Based on purchase price">≈{formatCurrency(total)}</span>
-          return formatCurrency(total)
+          return (
+            <div className="bg-muted/30 px-1 py-0.5 text-xs">
+              {est.isApproximate ? <span className="text-muted-foreground">≈{formatCurrency(total)}</span> : formatCurrency(total)}
+            </div>
+          )
         },
       },
       {
-        accessorKey: 'rating',
-        header: ({ column }) => <SortButton column={column} label="Rating" />,
-        cell: ({ row }) => row.original.rating !== null ? row.original.rating : '—',
-        filterFn: minRatingFilter,
+        accessorKey: 'drinkWindowStart',
+        header: ({ column }) => <SortHeader column={column} label="Drink Start" />,
+        cell: ({ row }) => (
+          <NumberEditCell
+            value={row.original.drinkWindowStart}
+            wineId={row.original.id} field="drinkWindowStart"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+      },
+      {
+        accessorKey: 'drinkWindowEnd',
+        header: ({ column }) => <SortHeader column={column} label="Drink Until" />,
+        cell: ({ row }) => (
+          <NumberEditCell
+            value={row.original.drinkWindowEnd}
+            wineId={row.original.id} field="drinkWindowEnd"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+      },
+      {
+        accessorKey: 'format',
+        header: ({ column }) => <SortHeader column={column} label="Format" />,
+        cell: ({ row }) => (
+          <TextEditCell
+            value={row.original.format}
+            wineId={row.original.id} field="format"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
         accessorKey: 'storageLocation',
-        header: ({ column }) => <SortButton column={column} label="Storage Location" />,
-        cell: ({ row }) => row.original.storageLocation ?? '—',
+        header: ({ column }) => <SortHeader column={column} label="Location" />,
+        cell: ({ row }) => (
+          <TextEditCell
+            value={row.original.storageLocation}
+            wineId={row.original.id} field="storageLocation"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
         accessorKey: 'notes',
         header: 'Notes',
-        cell: ({ row }) => {
-          const notes = row.original.notes
-          if (!notes) return '—'
-          return notes.length > 50 ? `${notes.slice(0, 50)}...` : notes
-        },
+        cell: ({ row }) => (
+          <NotesEditCell
+            value={row.original.notes}
+            wineId={row.original.id} field="notes"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
-        id: 'status',
-        header: 'Status',
-        cell: ({ row }) => {
-          const w = row.original
-          if (w.isFullyConsumed) return <span className="text-muted-foreground">Consumed</span>
-          if (w.consumedQuantity > 0) return <span className="text-amber-600">{w.quantity - w.consumedQuantity} of {w.quantity}</span>
-          return null
-        },
+        accessorKey: 'tastingNotes',
+        header: 'Tasting',
+        cell: ({ row }) => (
+          <NotesEditCell
+            value={row.original.tastingNotes}
+            wineId={row.original.id} field="tastingNotes"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+      },
+      {
+        accessorKey: 'pairingNotes',
+        header: 'Pairing',
+        cell: ({ row }) => (
+          <NotesEditCell
+            value={row.original.pairingNotes}
+            wineId={row.original.id} field="pairingNotes"
+            editing={editing} savedCell={savedCell}
+            onStart={startEdit} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
       },
       {
         id: 'actions',
@@ -399,31 +822,36 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
         ),
       },
     ],
-    []
+    [editing, savedCell, startEdit, saveField, cancelEdit]
   )
 
   const filterOptions = useMemo(() => {
-    const styles = new Set<string>()
-    const formats = new Set<string>()
+    const countries = new Set<string>()
+    const regions = new Set<string>()
+    const varietals = new Set<string>()
+    const vintages = new Set<number>()
 
     for (const wine of filteredWines) {
-      if (wine.style) styles.add(wine.style)
-      if (wine.format) formats.add(wine.format)
+      if (wine.country) countries.add(wine.country)
+      if (wine.region) regions.add(wine.region)
+      if (wine.varietal) varietals.add(wine.varietal)
+      if (wine.vintage) vintages.add(wine.vintage)
     }
 
     return {
-      styles: Array.from(styles).sort(),
-      formats: Array.from(formats).sort(),
+      countries: Array.from(countries).sort(),
+      regions: Array.from(regions).sort(),
+      varietals: Array.from(varietals).sort(),
+      vintages: Array.from(vintages).sort((a, b) => b - a),
     }
   }, [filteredWines])
 
   const table = useReactTable({
     data: filteredWines,
     columns,
-    state: { sorting, columnFilters, columnVisibility, globalFilter },
+    state: { sorting, columnFilters, globalFilter },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: handleVisibilityChange,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: globalSearchFilter,
     getCoreRowModel: getCoreRowModel(),
@@ -459,19 +887,16 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <WineFilters table={table} options={filterOptions} />
-          <ColumnToggle visibility={columnVisibility} onToggle={handleColumnToggle} />
-        </div>
+        <WineFilters table={table} options={filterOptions} />
       </div>
 
-      <div className="rounded-md border border-border">
+      <div className="overflow-x-auto rounded-md border border-border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="whitespace-nowrap px-2">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -485,7 +910,7 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="px-2 py-1">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -513,14 +938,26 @@ export function WineTable({ wines }: { wines: SerializedWine[] }) {
 
       <DeleteWineDialog
         wineId={deleteTarget?.id ?? ''}
-        wineLabel={
-          deleteTarget ? `${deleteTarget.producer} ${deleteTarget.wineName}` : ''
-        }
+        wineLabel={deleteTarget ? `${deleteTarget.producer} ${deleteTarget.wineName}` : ''}
         open={deleteTarget !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null)
-        }}
+        onOpenChange={(open) => { if (!open) setDeleteTarget(null) }}
       />
     </div>
+  )
+}
+
+// Extracted to avoid type issues with Column generic
+function SortHeader({ column, label }: { column: { getIsSorted: () => false | 'asc' | 'desc'; toggleSorting: (desc: boolean) => void }; label: string }) {
+  const sorted = column.getIsSorted()
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="-ml-3 h-8 gap-1 px-2"
+      onClick={() => column.toggleSorting(sorted === 'asc')}
+    >
+      {label}
+      <ArrowUpDown className="h-3.5 w-3.5" />
+    </Button>
   )
 }

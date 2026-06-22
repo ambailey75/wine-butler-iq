@@ -4,8 +4,6 @@ import { Check, ChevronsUpDown, Filter, X } from 'lucide-react'
 import type { Table } from '@tanstack/react-table'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
@@ -91,8 +89,10 @@ const RATING_OPTIONS = [
 ]
 
 export interface WineFilterOptions {
-  styles: string[]
-  formats: string[]
+  countries: string[]
+  regions: string[]
+  varietals: string[]
+  vintages: number[]
 }
 
 interface WineFiltersProps {
@@ -101,25 +101,23 @@ interface WineFiltersProps {
 }
 
 export function WineFilters({ table, options }: WineFiltersProps) {
-  const styleFilter = (table.getColumn('style')?.getFilterValue() as string[]) ?? []
-  const formatFilter = (table.getColumn('format')?.getFilterValue() as string[]) ?? []
+  const countryFilter = (table.getColumn('countryState')?.getFilterValue() as string[]) ?? []
+  const regionFilter = (table.getColumn('regionSubRegion')?.getFilterValue() as string[]) ?? []
+  const varietalFilter = (table.getColumn('varietal')?.getFilterValue() as string[]) ?? []
   const ratingFilter = table.getColumn('rating')?.getFilterValue() as number | undefined
-  const vintageFilter =
-    (table.getColumn('vintage')?.getFilterValue() as
-      | [number | undefined, number | undefined]
-      | undefined) ?? []
-  const [vintageMin, vintageMax] = vintageFilter
+  const vintageFilter = table.getColumn('vintage')?.getFilterValue() as number | undefined
 
   const hasFilters =
-    styleFilter.length > 0 ||
-    formatFilter.length > 0 ||
+    countryFilter.length > 0 ||
+    regionFilter.length > 0 ||
+    varietalFilter.length > 0 ||
     ratingFilter !== undefined ||
-    vintageMin !== undefined ||
-    vintageMax !== undefined
+    vintageFilter !== undefined
 
   const clearAll = () => {
-    table.getColumn('style')?.setFilterValue(undefined)
-    table.getColumn('format')?.setFilterValue(undefined)
+    table.getColumn('countryState')?.setFilterValue(undefined)
+    table.getColumn('regionSubRegion')?.setFilterValue(undefined)
+    table.getColumn('varietal')?.setFilterValue(undefined)
     table.getColumn('rating')?.setFilterValue(undefined)
     table.getColumn('vintage')?.setFilterValue(undefined)
   }
@@ -127,19 +125,27 @@ export function WineFilters({ table, options }: WineFiltersProps) {
   const content = (
     <div className="flex flex-wrap items-center gap-2">
       <FacetedFilter
-        title="Style"
-        options={options.styles}
-        selected={styleFilter}
+        title="Country"
+        options={options.countries}
+        selected={countryFilter}
         onChange={(values) =>
-          table.getColumn('style')?.setFilterValue(values.length ? values : undefined)
+          table.getColumn('countryState')?.setFilterValue(values.length ? values : undefined)
         }
       />
       <FacetedFilter
-        title="Format"
-        options={options.formats}
-        selected={formatFilter}
+        title="Region"
+        options={options.regions}
+        selected={regionFilter}
         onChange={(values) =>
-          table.getColumn('format')?.setFilterValue(values.length ? values : undefined)
+          table.getColumn('regionSubRegion')?.setFilterValue(values.length ? values : undefined)
+        }
+      />
+      <FacetedFilter
+        title="Varietal"
+        options={options.varietals}
+        selected={varietalFilter}
+        onChange={(values) =>
+          table.getColumn('varietal')?.setFilterValue(values.length ? values : undefined)
         }
       />
       <Popover>
@@ -174,37 +180,56 @@ export function WineFilters({ table, options }: WineFiltersProps) {
           ))}
         </PopoverContent>
       </Popover>
-      <div className="flex items-center gap-2">
-        <Label htmlFor="vintage-min" className="text-xs text-muted-foreground">
-          Vintage
-        </Label>
-        <Input
-          id="vintage-min"
-          type="number"
-          placeholder="From"
-          className="h-9 w-20"
-          value={vintageMin ?? ''}
-          onChange={(e) => {
-            const min = e.target.value ? Number(e.target.value) : undefined
-            table.getColumn('vintage')?.setFilterValue([min, vintageMax])
-          }}
-        />
-        <span className="text-xs text-muted-foreground">to</span>
-        <Input
-          type="number"
-          placeholder="To"
-          className="h-9 w-20"
-          value={vintageMax ?? ''}
-          onChange={(e) => {
-            const max = e.target.value ? Number(e.target.value) : undefined
-            table.getColumn('vintage')?.setFilterValue([vintageMin, max])
-          }}
-        />
-      </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="sm" className="justify-between gap-2">
+            Vintage
+            {vintageFilter !== undefined && (
+              <Badge variant="secondary" className="rounded-sm px-1 font-normal">
+                {vintageFilter}
+              </Badge>
+            )}
+            <ChevronsUpDown className="h-3.5 w-3.5 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-36 p-0" align="start">
+          <Command>
+            <CommandInput placeholder="Year..." />
+            <CommandList>
+              <CommandEmpty>No vintages.</CommandEmpty>
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => table.getColumn('vintage')?.setFilterValue(undefined)}
+                >
+                  <div className={cn('mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary', vintageFilter === undefined ? 'bg-primary text-primary-foreground' : 'opacity-50')}>
+                    {vintageFilter === undefined && <Check className="h-3 w-3" />}
+                  </div>
+                  All
+                </CommandItem>
+                {options.vintages.map((yr) => (
+                  <CommandItem
+                    key={yr}
+                    onSelect={() =>
+                      table.getColumn('vintage')?.setFilterValue(
+                        vintageFilter === yr ? undefined : yr
+                      )
+                    }
+                  >
+                    <div className={cn('mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary', vintageFilter === yr ? 'bg-primary text-primary-foreground' : 'opacity-50')}>
+                      {vintageFilter === yr && <Check className="h-3 w-3" />}
+                    </div>
+                    {yr}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearAll} className="gap-1">
           <X className="h-3.5 w-3.5" />
-          Clear filters
+          Clear
         </Button>
       )}
     </div>
