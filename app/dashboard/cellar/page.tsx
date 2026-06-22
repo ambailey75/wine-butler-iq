@@ -40,7 +40,7 @@ export default async function CellarPage() {
           title="Your cellar is empty"
           description="Add your first bottle to start tracking your collection, or import your existing cellar."
           action={{ label: 'Add a wine', href: '/dashboard/cellar/new' }}
-          secondaryAction={{ label: 'Import your collection' }}
+          secondaryAction={{ label: 'Import your collection', href: '/dashboard/import' }}
         />
       ) : (
         <WineTable wines={serializeWines(wines)} />

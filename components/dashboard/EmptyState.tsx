@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import type { LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 
 interface EmptyStateAction {
   label: string
@@ -13,7 +12,7 @@ interface EmptyStateProps {
   title: string
   description: string
   action?: EmptyStateAction
-  secondaryAction?: { label: string }
+  secondaryAction?: EmptyStateAction
 }
 
 export function EmptyState({
@@ -35,11 +34,8 @@ export function EmptyState({
           </Button>
         )}
         {secondaryAction && (
-          <Button variant="outline" disabled className="gap-2">
-            {secondaryAction.label}
-            <Badge variant="outline" className="text-[10px] font-normal">
-              Soon
-            </Badge>
+          <Button asChild variant="outline">
+            <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
           </Button>
         )}
       </div>
