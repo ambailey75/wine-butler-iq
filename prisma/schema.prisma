@@ -21,6 +21,8 @@ model User {
   conversations    AiConversation[]
   imports          Import[]
   consumptionLogs  ConsumptionLog[]
+  tastingNotes     TastingNote[]
+  watchListItems   WatchListItem[]
 
   @@map("users")
 }
@@ -112,15 +114,16 @@ model WineEnrichment {
 model CellarAlert {
   id          String    @id @default(cuid())
   userId      String
-  wineId      String
+  wineId      String?
   alertType   String
+  message     String?
   triggerDate DateTime
   deliveredAt DateTime?
   dismissedAt DateTime?
   createdAt   DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  wine Wine @relation(fields: [wineId], references: [id], onDelete: Cascade)
+  wine Wine? @relation(fields: [wineId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([wineId])
@@ -198,4 +201,41 @@ model ImportRow {
   @@index([importId])
   @@index([wineId])
   @@map("import_rows")
+}
+
+model TastingNote {
+  id         String    @id @default(cuid())
+  userId     String
+  producer   String
+  wineName   String
+  vintage    Int?
+  rating     Decimal?  @db.Decimal(4, 1)
+  liked      Boolean?
+  notes      String?
+  occasion   String?
+  photoUrl   String?
+  tastedDate DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("tasting_notes")
+}
+
+model WatchListItem {
+  id         String    @id @default(cuid())
+  userId     String
+  producer   String
+  wineName   String?
+  vintage    Int?
+  notes      String?
+  targetDate DateTime?
+  notified   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("watch_list_items")
 }

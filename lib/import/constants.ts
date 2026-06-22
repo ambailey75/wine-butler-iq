@@ -15,7 +15,7 @@ export const ALLOWED_MIME_TYPES: Record<ImportSourceType, string[]> = {
     'application/vnd.ms-excel',
   ],
   CSV: ['text/csv', 'application/csv', 'application/vnd.ms-excel'],
-  PDF: ['application/pdf'],
+  PDF: ['application/pdf', 'text/html', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'],
   IMAGE: ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'text/html'],
 }
 

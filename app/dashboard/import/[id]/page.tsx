@@ -54,6 +54,16 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
     }
   }
 
+  const countryStateSplitsParam = searchParams.countryStateSplits
+  let countryStateSplitColumns: Record<string, string> = {}
+  if (typeof countryStateSplitsParam === 'string') {
+    try {
+      countryStateSplitColumns = JSON.parse(countryStateSplitsParam)
+    } catch {
+      countryStateSplitColumns = {}
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -70,7 +80,7 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
         </div>
       </div>
 
-      <ImportReview importRecord={importRecord} rows={rows} mappingSuggestion={mappingSuggestion} regionSplitColumns={regionSplitColumns} />
+      <ImportReview importRecord={importRecord} rows={rows} mappingSuggestion={mappingSuggestion} regionSplitColumns={regionSplitColumns} countryStateSplitColumns={countryStateSplitColumns} />
     </div>
   )
 }

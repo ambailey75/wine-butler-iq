@@ -12,9 +12,10 @@ interface UploadCardProps {
   description: string
   icon: ReactNode
   accept: Record<string, string[]>
+  sourceHint?: 'invoice' | 'label'
 }
 
-export function UploadCard({ title, description, icon, accept }: UploadCardProps) {
+export function UploadCard({ title, description, icon, accept, sourceHint }: UploadCardProps) {
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -29,6 +30,7 @@ export function UploadCard({ title, description, icon, accept }: UploadCardProps
 
       const formData = new FormData()
       formData.append('file', file)
+      if (sourceHint) formData.append('sourceHint', sourceHint)
 
       try {
         const res = await fetch('/api/import/upload', { method: 'POST', body: formData })
@@ -44,6 +46,9 @@ export function UploadCard({ title, description, icon, accept }: UploadCardProps
         if (body.regionSplitColumns && Object.keys(body.regionSplitColumns).length > 0) {
           params.set('regionSplits', JSON.stringify(body.regionSplitColumns))
         }
+        if (body.countryStateSplitColumns && Object.keys(body.countryStateSplitColumns).length > 0) {
+          params.set('countryStateSplits', JSON.stringify(body.countryStateSplitColumns))
+        }
         const query = params.toString() ? `?${params.toString()}` : ''
         router.push(`/dashboard/import/${body.id}${query}`)
       } catch (err) {
@@ -51,7 +56,7 @@ export function UploadCard({ title, description, icon, accept }: UploadCardProps
         setUploading(false)
       }
     },
-    [router]
+    [router, sourceHint]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

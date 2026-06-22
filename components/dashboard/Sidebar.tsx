@@ -2,29 +2,33 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Wine, Upload, Sparkles, Bell, Settings } from 'lucide-react'
+import {
+  Wine,
+  Upload,
+  BarChart3,
+  Search,
+  Notebook,
+  BookmarkCheck,
+  Bell,
+  Sparkles,
+  Settings,
+} from 'lucide-react'
 import { NavItem } from './NavItem'
 
 const NAV_ITEMS = [
   { href: '/dashboard/cellar', label: 'Cellar', icon: Wine },
-  {
-    href: '/dashboard/import',
-    label: 'Import',
-    icon: Upload,
-  },
+  { href: '/dashboard/insights', label: 'Insights', icon: BarChart3 },
+  { href: '/dashboard/import', label: 'Import', icon: Upload },
+  { href: '/dashboard/butler', label: 'Butler', icon: Search },
+  { href: '/dashboard/tastings', label: 'Tastings', icon: Notebook },
+  { href: '/dashboard/watchlist', label: 'Watch List', icon: BookmarkCheck },
+  { href: '/dashboard/alerts', label: 'Alerts', icon: Bell },
   {
     href: '/dashboard/assistant',
     label: 'Assistant',
     icon: Sparkles,
     soon: true,
     tooltip: 'AI sommelier chat for your collection (Phase 4)',
-  },
-  {
-    href: '/dashboard/alerts',
-    label: 'Alerts',
-    icon: Bell,
-    soon: true,
-    tooltip: 'Drink-window notifications (Phase 5)',
   },
   {
     href: '/dashboard/settings',
@@ -35,7 +39,7 @@ const NAV_ITEMS = [
   },
 ]
 
-export function Sidebar() {
+export function Sidebar({ alertCount = 0 }: { alertCount?: number }) {
   const pathname = usePathname()
 
   return (
@@ -47,7 +51,12 @@ export function Sidebar() {
         Wine Butler AI
       </Link>
       {NAV_ITEMS.map((item) => (
-        <NavItem key={item.label} {...item} active={pathname.startsWith(item.href)} />
+        <NavItem
+          key={item.label}
+          {...item}
+          active={pathname.startsWith(item.href)}
+          badgeCount={item.href === '/dashboard/alerts' ? alertCount : undefined}
+        />
       ))}
     </nav>
   )

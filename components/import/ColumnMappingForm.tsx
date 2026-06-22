@@ -31,6 +31,7 @@ interface ColumnMappingFormProps {
   sampleRow: Record<string, string>
   suggestion: Record<string, string | null>
   regionSplitColumns?: Record<string, string>
+  countryStateSplitColumns?: Record<string, string>
 }
 
 const TARGET_KEYS = new Set<string>(IMPORT_TARGET_FIELDS.map((field) => field.key))
@@ -72,7 +73,7 @@ function buildInitialMapping(
   return mapping
 }
 
-export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, regionSplitColumns = {} }: ColumnMappingFormProps) {
+export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, regionSplitColumns = {}, countryStateSplitColumns = {} }: ColumnMappingFormProps) {
   const router = useRouter()
   const [mapping, setMapping] = useState<Record<string, string>>(() =>
     buildInitialMapping(headers, suggestion, regionSplitColumns)
@@ -81,6 +82,9 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
     const initial: Record<string, boolean> = {}
     for (const header of Object.keys(regionSplitColumns)) {
       initial[header] = true
+    }
+    for (const header of Object.keys(countryStateSplitColumns)) {
+      initial[`cs_${header}`] = true
     }
     return initial
   })
@@ -93,10 +97,14 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
 
     const payload: Record<string, keyof MappedWineData | null> = {}
     const splits: Record<string, string> = {}
+    const countrySplits: Record<string, string> = {}
     for (const [header, value] of Object.entries(mapping)) {
       if (value === SPLIT_REGION_VALUE || (value === 'region' && splitSelections[header])) {
         payload[header] = 'region'
         splits[header] = regionSplitColumns[header] || ', '
+      } else if (value === 'country' && splitSelections[`cs_${header}`] && header in countryStateSplitColumns) {
+        payload[header] = 'country'
+        countrySplits[header] = countryStateSplitColumns[header] || ', '
       } else {
         payload[header] = value === SKIP_VALUE ? null : (value as keyof MappedWineData)
       }
@@ -106,7 +114,7 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
       const res = await fetch(`/api/import/${importId}/mapping`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mapping: payload, regionSplits: splits }),
+        body: JSON.stringify({ mapping: payload, regionSplits: splits, countryStateSplits: countrySplits }),
       })
       if (!res.ok) {
         const body = await res.json().catch(() => null)
@@ -140,8 +148,10 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
           </TableHeader>
           <TableBody>
             {headers.map((header) => {
-              const canSplit = header in regionSplitColumns
-              const isSplitting = canSplit && splitSelections[header]
+              const canSplitRegion = header in regionSplitColumns
+              const isSplittingRegion = canSplitRegion && splitSelections[header]
+              const canSplitCountry = header in countryStateSplitColumns
+              const isSplittingCountry = canSplitCountry && splitSelections[`cs_${header}`]
 
               return (
                 <TableRow key={header}>
@@ -166,16 +176,32 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
                           ))}
                         </SelectContent>
                       </Select>
-                      {canSplit && mapping[header] === 'region' && (
+                      {canSplitRegion && mapping[header] === 'region' && (
                         <label className="flex items-center gap-2 text-xs">
                           <Checkbox
-                            checked={isSplitting}
+                            checked={isSplittingRegion}
                             onCheckedChange={(checked) =>
                               setSplitSelections((prev) => ({ ...prev, [header]: checked === true }))
                             }
                           />
                           <span className="text-muted-foreground">
                             Split into Region + Sub-Region
+                          </span>
+                          <Badge variant="secondary" className="text-[10px] font-normal">
+                            Detected
+                          </Badge>
+                        </label>
+                      )}
+                      {canSplitCountry && mapping[header] === 'country' && (
+                        <label className="flex items-center gap-2 text-xs">
+                          <Checkbox
+                            checked={isSplittingCountry}
+                            onCheckedChange={(checked) =>
+                              setSplitSelections((prev) => ({ ...prev, [`cs_${header}`]: checked === true }))
+                            }
+                          />
+                          <span className="text-muted-foreground">
+                            Split into Country + State/Province
                           </span>
                           <Badge variant="secondary" className="text-[10px] font-normal">
                             Detected

@@ -1,1 +1,13 @@
-{"framework": "nextjs"}
+{
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/watchlist-check",
+      "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/drink-window-check",
+      "schedule": "0 14 * * 1"
+    }
+  ]
+}

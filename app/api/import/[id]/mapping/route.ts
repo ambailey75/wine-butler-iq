@@ -3,7 +3,7 @@ import type { Prisma } from '@prisma/client'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { prisma } from '@/lib/prisma/client'
 import { applyColumnMapping } from '@/lib/import/excel'
-import { splitRegionValue } from '@/lib/import/claude-extractor'
+import { splitRegionValue, splitCountryStateValue } from '@/lib/import/claude-extractor'
 import type { MappedWineData } from '@/lib/import/constants'
 
 interface RouteParams {
@@ -31,6 +31,7 @@ export async function POST(request: Request, { params }: RouteParams) {
   }
 
   const regionSplits: Record<string, string> = body?.regionSplits ?? {}
+  const countryStateSplits: Record<string, string> = body?.countryStateSplits ?? {}
 
   await Promise.all(
     importRecord.rows.map((row) => {
@@ -45,6 +46,17 @@ export async function POST(request: Request, { params }: RouteParams) {
         typed.region = region
         if (subRegion) {
           typed.subRegion = subRegion
+        }
+      }
+
+      for (const [header, separator] of Object.entries(countryStateSplits)) {
+        const rawValue = rawData[header]?.trim()
+        if (!rawValue) continue
+        const { country, state } = splitCountryStateValue(rawValue, separator)
+        const typed = mappedData as MappedWineData
+        typed.country = country
+        if (state) {
+          typed.state = state
         }
       }
 

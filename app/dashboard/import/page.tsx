@@ -41,21 +41,30 @@ export default async function ImportHubPage() {
           }}
         />
         <UploadCard
-          title="PDF Invoice"
-          description="A wine shop or auction invoice"
+          title="PDF, HTML, or Image Invoice"
+          description="Upload purchase invoices as PDF, saved webpage, or photo of a paper invoice"
           icon={<FileText className="h-8 w-8 text-primary" />}
-          accept={{ 'application/pdf': ['.pdf'] }}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'text/html': ['.html', '.htm'],
+            'image/jpeg': ['.jpg', '.jpeg'],
+            'image/png': ['.png'],
+            'image/webp': ['.webp'],
+            'image/heic': ['.heic'],
+          }}
+          sourceHint="invoice"
         />
         <UploadCard
           title="Label Photos"
-          description="Upload label photos OR invoice images"
+          description="Photo of a single wine label"
           icon={<ImageIcon className="h-8 w-8 text-primary" />}
           accept={{
             'image/jpeg': ['.jpg', '.jpeg'],
             'image/png': ['.png'],
             'image/webp': ['.webp'],
-            'text/html': ['.html', '.htm'],
+            'image/heic': ['.heic'],
           }}
+          sourceHint="label"
         />
       </div>
 

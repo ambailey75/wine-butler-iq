@@ -16,11 +16,11 @@ const WINE_FIELD_PROPERTIES = {
   format: { type: 'string', description: 'Bottle size, e.g. 750mL (Standard), 1.5L (Magnum)' },
   style: { type: 'string', description: 'Wine style/color, e.g. Red, White, Rosé, Sparkling, Dessert, Fortified' },
   quantity: { type: 'number', description: 'Number of bottles' },
-  purchasePrice: { type: 'number', description: 'Price per bottle' },
+  purchasePrice: { type: 'number', description: 'Actual price paid per bottle. On invoices with two prices (retail/list vs. member/sale/you-pay), this is the LOWER price the buyer actually paid.' },
   purchaseDate: { type: 'string', description: 'ISO 8601 date, e.g. 2024-03-15' },
   vendor: { type: 'string' },
   storageLocation: { type: 'string' },
-  currentEstValue: { type: 'number', description: 'Current estimated market value per bottle' },
+  currentEstValue: { type: 'number', description: 'Current estimated market/retail value per bottle. On invoices with a crossed-out/strikethrough retail price and a lower actual price, this is the HIGHER retail/list price.' },
   totalCostOverride: { type: 'number', description: 'Total cost for all bottles (only if explicitly stated as a total, not per-bottle price)' },
   totalValueOverride: { type: 'number', description: 'Total estimated value for all bottles (only if explicitly stated as a total)' },
   rating: { type: 'number', description: 'Critic or personal score out of 100' },
@@ -90,6 +90,23 @@ function extractToolInput(
   return block?.input
 }
 
+const COUNTRY_STATE_PAIRS: Record<string, string[]> = {
+  'united states': ['california', 'oregon', 'washington', 'new york', 'virginia', 'texas', 'michigan', 'colorado', 'idaho', 'missouri', 'north carolina', 'ohio', 'pennsylvania', 'arizona', 'new mexico', 'maryland', 'georgia', 'illinois', 'indiana', 'iowa', 'minnesota', 'new jersey', 'connecticut', 'massachusetts'],
+  'usa': ['california', 'oregon', 'washington', 'new york', 'virginia', 'texas', 'michigan', 'colorado', 'idaho', 'missouri'],
+  'us': ['california', 'oregon', 'washington', 'new york', 'virginia', 'texas', 'michigan', 'colorado', 'idaho', 'missouri'],
+  'australia': ['south australia', 'victoria', 'new south wales', 'western australia', 'tasmania', 'queensland'],
+  'canada': ['british columbia', 'ontario', 'nova scotia', 'quebec'],
+  'argentina': ['mendoza', 'salta', 'patagonia', 'san juan'],
+  'germany': ['mosel', 'rheingau', 'pfalz', 'rheinhessen', 'baden', 'franken', 'nahe', 'württemberg', 'sachsen'],
+  'italy': ['tuscany', 'piedmont', 'veneto', 'sicily', 'sardinia', 'lombardy', 'friuli', 'campania', 'puglia', 'trentino', 'alto adige', 'abruzzo', 'umbria', 'marche', 'liguria', 'emilia-romagna'],
+  'spain': ['rioja', 'ribera del duero', 'priorat', 'galicia', 'catalonia', 'andalusia', 'castilla y león', 'navarra', 'valencia'],
+  'france': ['bordeaux', 'burgundy', 'champagne', 'rhône', 'loire', 'alsace', 'languedoc', 'provence', 'jura', 'savoie', 'corsica', 'beaujolais'],
+  'new zealand': ['marlborough', 'central otago', 'hawke\'s bay', 'martinborough', 'waiheke island', 'gisborne', 'wairarapa'],
+  'south africa': ['stellenbosch', 'franschhoek', 'paarl', 'swartland', 'constantia', 'walker bay', 'elgin'],
+  'chile': ['maipo valley', 'colchagua', 'casablanca', 'rapel', 'aconcagua', 'bio bio', 'itata'],
+  'portugal': ['douro', 'alentejo', 'dão', 'bairrada', 'vinho verde', 'lisbon'],
+}
+
 const REGION_SUBREGION_PAIRS: Record<string, string[]> = {
   'napa valley': ['oakville', 'rutherford', 'st. helena', 'stags leap', 'calistoga', 'yountville', 'howell mountain', 'atlas peak', 'spring mountain', 'diamond mountain', 'los carneros', 'mount veeder', 'coombsville', 'chiles valley'],
   'sonoma': ['russian river valley', 'sonoma coast', 'alexander valley', 'dry creek valley', 'knights valley', 'sonoma mountain', 'sonoma valley', 'bennett valley', 'chalk hill', 'green valley', 'moon mountain', 'petaluma gap', 'pine mountain-cloverdale peak'],
@@ -150,9 +167,55 @@ export function splitRegionValue(
   }
 }
 
+export function detectCountryStateSplit(
+  sampleValues: string[]
+): { shouldSplit: boolean; separator: string } {
+  const separators = [', ', ' - ', ' / ']
+  for (const sep of separators) {
+    let matchCount = 0
+    for (const value of sampleValues) {
+      if (!value.includes(sep)) continue
+      const parts = value.split(sep)
+      if (parts.length < 2) continue
+      const first = parts[0].trim().toLowerCase()
+      const rest = parts.slice(1).join(sep).trim().toLowerCase()
+      const knownStates = COUNTRY_STATE_PAIRS[first]
+      if (knownStates && knownStates.some((s) => rest.includes(s))) {
+        matchCount++
+      } else {
+        for (const [country, states] of Object.entries(COUNTRY_STATE_PAIRS)) {
+          if (first.includes(country) || country.includes(first)) {
+            if (states.some((s) => rest.includes(s))) {
+              matchCount++
+              break
+            }
+          }
+        }
+      }
+    }
+    if (matchCount >= 2 || (sampleValues.length <= 3 && matchCount >= 1)) {
+      return { shouldSplit: true, separator: sep }
+    }
+  }
+  return { shouldSplit: false, separator: '' }
+}
+
+export function splitCountryStateValue(
+  value: string,
+  separator: string
+): { country: string; state: string } {
+  const idx = value.indexOf(separator)
+  if (idx === -1) return { country: value.trim(), state: '' }
+  return {
+    country: value.substring(0, idx).trim(),
+    state: value.substring(idx + separator.length).trim(),
+  }
+}
+
 export interface ColumnMappingSuggestion {
   mapping: Record<string, string | null>
   regionSplitColumns: Record<string, string>
+  countryStateSplitColumns: Record<string, string>
 }
 
 export async function suggestColumnMapping(
@@ -193,7 +256,7 @@ export async function suggestColumnMapping(
   })
 
   const parsed = columnMappingSchema.safeParse(extractToolInput(message, 'suggest_mapping'))
-  if (!parsed.success) return { mapping: {}, regionSplitColumns: {} }
+  if (!parsed.success) return { mapping: {}, regionSplitColumns: {}, countryStateSplitColumns: {} }
 
   const validKeys = new Set<string>(IMPORT_TARGET_FIELDS.map((f) => f.key))
   const mapping: Record<string, string | null> = {}
@@ -214,7 +277,19 @@ export async function suggestColumnMapping(
     }
   }
 
-  return { mapping, regionSplitColumns }
+  const countryStateSplitColumns: Record<string, string> = {}
+  for (const header of headers) {
+    if (mapping[header] !== 'country') continue
+    const sampleValues = sampleRows
+      .map((row) => row[header]?.trim())
+      .filter((v): v is string => Boolean(v))
+    const detection = detectCountryStateSplit(sampleValues)
+    if (detection.shouldSplit) {
+      countryStateSplitColumns[header] = detection.separator
+    }
+  }
+
+  return { mapping, regionSplitColumns, countryStateSplitColumns }
 }
 
 export async function extractWinesFromText(text: string, attempt = 0): Promise<ExtractedRow[]> {
@@ -257,7 +332,7 @@ export async function extractWinesFromText(text: string, attempt = 0): Promise<E
     messages: [
       {
         role: 'user',
-        content: `Extract every individual wine line item from this invoice/inventory text. For each wine, fill in as many fields as you can confidently determine and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III", "Bien Nacido") and extract them into the vineyard field, separate from sub-region.\n\nInfer the country from the state or region when possible (e.g. California/Oregon/Washington → United States, South Australia/Victoria → Australia, Ontario/British Columbia → Canada). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal, region, or wine name when style is not explicitly stated.\n\nText:\n${text}`,
+        content: `Extract every individual wine line item from this invoice/inventory text. For each wine, fill in as many fields as you can confidently determine and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nPRICE HANDLING — many invoices show two prices per wine:\n- Patterns: "Retail: $150 / Member: $95", "$150 $95", "List: $150 You Pay: $95", "MSRP $150 Sale $95", "Regular Price ... Sale Price"\n- When two prices are present: the higher price (retail/list/regular/MSRP) goes into currentEstValue; the lower price (member/sale/you-pay/actual) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but it is unclear which is retail vs. paid: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III", "Bien Nacido") and extract them into the vineyard field, separate from sub-region.\n\nInfer the country from the state or region when possible (e.g. California/Oregon/Washington → United States, South Australia/Victoria → Australia, Ontario/British Columbia → Canada). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal, region, or wine name when style is not explicitly stated.\n\nText:\n${text}`,
       },
     ],
   })
@@ -336,7 +411,7 @@ export async function extractWinesFromImage(
           },
           {
             type: 'text',
-            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing. For Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III") and extract them into the vineyard field, separate from sub-region. Infer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
+            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nPRICE HANDLING — invoices often show two prices per wine:\n- Look for visual strikethrough/crossed-out formatting on the higher price, or labels like "retail", "regular", "list", "MSRP" vs. "you pay", "member price", "sale price", "club price".\n- When two prices are present: the higher (retail/list/strikethrough) goes into currentEstValue; the lower (actual/member/sale) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but which is retail vs. paid is ambiguous: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III") and extract them into the vineyard field, separate from sub-region. Infer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
           },
         ],
       },
@@ -346,6 +421,72 @@ export async function extractWinesFromImage(
   const parsed = extractedRowsSchema.safeParse(extractToolInput(message, 'extract_wines'))
   if (!parsed.success) {
     if (attempt === 0) return extractWinesFromImage(base64, mimeType, 1)
+    return []
+  }
+  return parsed.data.wines
+}
+
+export async function extractWinesFromInvoiceImage(
+  base64: string,
+  mimeType: 'image/jpeg' | 'image/png' | 'image/webp',
+  attempt = 0
+): Promise<ExtractedRow[]> {
+  const message = await anthropic.messages.create({
+    model: CLAUDE_MODEL,
+    max_tokens: 4096,
+    tools: [
+      {
+        name: 'extract_wines',
+        description:
+          'Record structured wine data extracted from an invoice image. Include one entry per distinct wine line item found.',
+        input_schema: {
+          type: 'object',
+          properties: {
+            wines: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  mappedData: {
+                    type: 'object',
+                    description: 'Wine fields identified for this wine. Omit fields you cannot determine.',
+                    properties: WINE_FIELD_PROPERTIES,
+                  },
+                  confidenceScores: {
+                    type: 'object',
+                    description: 'Confidence from 0 to 1 for each field present in mappedData.',
+                    additionalProperties: { type: 'number' },
+                  },
+                },
+                required: ['mappedData', 'confidenceScores'],
+              },
+            },
+          },
+          required: ['wines'],
+        },
+      },
+    ],
+    tool_choice: { type: 'tool', name: 'extract_wines' },
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: mimeType, data: base64 },
+          },
+          {
+            type: 'text',
+            text: 'This image is a wine purchase invoice, receipt, or order confirmation — either a photo of a paper invoice or a screenshot of an online order. It likely contains MULTIPLE wine line items. Extract EVERY distinct wine line item you can see. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, order number, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nPRICE HANDLING — invoices often show two prices per wine:\n- Look for visual strikethrough/crossed-out formatting on the higher price, or labels like "retail", "regular", "list", "MSRP" vs. "you pay", "member price", "sale price", "club price".\n- When two prices are present: the higher (retail/list/strikethrough) goes into currentEstValue; the lower (actual/member/sale) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but which is retail vs. paid is ambiguous: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n- Look for order totals or subtotals to distinguish per-bottle vs. per-case pricing. If a line shows "6 x $45" or "Qty: 6 @ $45", quantity is 6 and purchasePrice is 45.\n\nInfer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
+          },
+        ],
+      },
+    ],
+  })
+
+  const parsed = extractedRowsSchema.safeParse(extractToolInput(message, 'extract_wines'))
+  if (!parsed.success) {
+    if (attempt === 0) return extractWinesFromInvoiceImage(base64, mimeType, 1)
     return []
   }
   return parsed.data.wines

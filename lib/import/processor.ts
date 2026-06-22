@@ -3,18 +3,19 @@ import { prisma } from '@/lib/prisma/client'
 import { parseSpreadsheet } from './excel'
 import { extractPdfPages } from './pdf'
 import { fileToBase64 } from './image'
-import { extractWinesFromPdf, extractWinesFromImage, extractWinesFromText, suggestColumnMapping } from './claude-extractor'
+import { extractWinesFromPdf, extractWinesFromImage, extractWinesFromInvoiceImage, extractWinesFromText, suggestColumnMapping } from './claude-extractor'
 import { PDF_PAGE_BATCH_SIZE } from './constants'
 
 export interface ProcessResult {
   mappingSuggestion?: Record<string, string | null>
   regionSplitColumns?: Record<string, string>
+  countryStateSplitColumns?: Record<string, string>
 }
 
 // Parses/extracts the uploaded file and creates ImportRows, then transitions
 // Import to REVIEW (or FAILED). Called synchronously from the upload route;
 // kept isolated here as a seam for a future background-job approach.
-export async function processImport(importId: string, file: File): Promise<ProcessResult> {
+export async function processImport(importId: string, file: File, sourceHint?: string): Promise<ProcessResult> {
   const importRecord = await prisma.import.findUniqueOrThrow({ where: { id: importId } })
 
   await prisma.import.update({ where: { id: importId }, data: { status: 'PROCESSING' } })
@@ -29,7 +30,7 @@ export async function processImport(importId: string, file: File): Promise<Proce
       case 'PDF':
         return await processPdf(importId, buffer)
       case 'IMAGE':
-        return await processImage(importId, file)
+        return await processImage(importId, file, sourceHint === 'invoice')
     }
   } catch (error) {
     await prisma.import.update({
@@ -59,14 +60,14 @@ async function processSpreadsheet(importId: string, buffer: Buffer): Promise<Pro
     data: rows.map((row) => ({ importId, rawData: row })),
   })
 
-  const { mapping: mappingSuggestion, regionSplitColumns } = await suggestColumnMapping(headers, rows.slice(0, 3))
+  const { mapping: mappingSuggestion, regionSplitColumns, countryStateSplitColumns } = await suggestColumnMapping(headers, rows.slice(0, 3))
 
   await prisma.import.update({
     where: { id: importId },
     data: { status: 'REVIEW', recordCount: rows.length },
   })
 
-  return { mappingSuggestion, regionSplitColumns }
+  return { mappingSuggestion, regionSplitColumns, countryStateSplitColumns }
 }
 
 async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResult> {
@@ -102,7 +103,7 @@ async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResu
   return {}
 }
 
-async function processImage(importId: string, file: File): Promise<ProcessResult> {
+async function processImage(importId: string, file: File, isInvoice = false): Promise<ProcessResult> {
   const isHtml = file.type === 'text/html' || /\.html?$/i.test(file.name)
 
   if (isHtml) {
@@ -148,7 +149,9 @@ async function processImage(importId: string, file: File): Promise<ProcessResult
     return {}
   }
 
-  const extracted = await extractWinesFromImage(base64, mimeType)
+  const extracted = isInvoice
+    ? await extractWinesFromInvoiceImage(base64, mimeType)
+    : await extractWinesFromImage(base64, mimeType)
 
   if (extracted.length === 0) {
     await prisma.importRow.create({

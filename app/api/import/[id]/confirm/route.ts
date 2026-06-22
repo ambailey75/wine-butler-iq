@@ -7,9 +7,13 @@ import { getImport } from '@/lib/import/queries'
 import { IMPORTS_BUCKET, LABELS_BUCKET, type MappedWineData } from '@/lib/import/constants'
 import { inferStyle } from '@/lib/wines/inferStyle'
 
+export const maxDuration = 60
+
 interface RouteParams {
   params: { id: string }
 }
+
+const BATCH_SIZE = 50
 
 function toWineCreateData(mapped: MappedWineData) {
   const purchaseDate = mapped.purchaseDate ? new Date(mapped.purchaseDate) : null
@@ -33,13 +37,18 @@ function toWineCreateData(mapped: MappedWineData) {
     vendor: mapped.vendor ?? null,
     storageLocation: mapped.storageLocation ?? null,
     notes: mapped.notes ?? null,
+    currentEstValue: mapped.currentEstValue ?? null,
     totalCostOverride: mapped.totalCostOverride ?? null,
     totalValueOverride: mapped.totalValueOverride ?? null,
+    rating: mapped.rating ?? null,
+    drinkWindowStart: mapped.drinkWindowStart ?? null,
+    drinkWindowEnd: mapped.drinkWindowEnd ?? null,
+    tastingNotes: mapped.tastingNotes ?? null,
+    pairingNotes: mapped.pairingNotes ?? null,
+    wineId: mapped.wineId ?? null,
   }
 }
 
-// Copies the uploaded label photo from the private imports bucket to the
-// public labels bucket so an IMAGE import also populates Wine.labelPhotoUrl.
 async function copyLabelPhoto(userId: string, sourcePath: string): Promise<string | null> {
   const supabase = createAdminClient()
 
@@ -114,34 +123,81 @@ export async function POST(_request: Request, { params }: RouteParams) {
     labelPhotoUrl = await copyLabelPhoto(user.id, importRecord.storagePath)
   }
 
-  await prisma.$transaction(async (tx) => {
-    for (const row of rowsToImport) {
-      const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
+  const encoder = new TextEncoder()
+  const stream = new ReadableStream({
+    async start(controller) {
+      function sendProgress(imported: number, total: number) {
+        controller.enqueue(
+          encoder.encode(JSON.stringify({ type: 'progress', imported, total }) + '\n')
+        )
+      }
 
-      const wine = await tx.wine.create({
-        data: {
-          userId: user.id,
-          importId: importRecord.id,
-          ...toWineCreateData(mapped),
-          ...(labelPhotoUrl ? { labelPhotoUrl } : {}),
-        },
-      })
+      try {
+        let totalImported = 0
 
-      await tx.importRow.update({
-        where: { id: row.id },
-        data: { status: 'CONFIRMED', wineId: wine.id },
-      })
-    }
+        for (let i = 0; i < rowsToImport.length; i += BATCH_SIZE) {
+          const batch = rowsToImport.slice(i, i + BATCH_SIZE)
 
-    await tx.import.update({
-      where: { id: importRecord.id },
-      data: {
-        status: 'COMPLETE',
-        recordCount: rowsToImport.length,
-        skippedCount: skippedRows.length,
-        completedAt: new Date(),
-      },
-    })
+          const wineDataBatch = batch.map((row) => {
+            const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
+            return {
+              userId: user.id,
+              importId: importRecord.id,
+              ...toWineCreateData(mapped),
+              ...(labelPhotoUrl ? { labelPhotoUrl } : {}),
+            }
+          })
+
+          await prisma.wine.createMany({ data: wineDataBatch })
+
+          const createdWines = await prisma.wine.findMany({
+            where: { importId: importRecord.id },
+            select: { id: true, producer: true, wineName: true, vintage: true },
+            orderBy: { createdAt: 'asc' },
+            skip: i,
+            take: BATCH_SIZE,
+          })
+
+          const rowUpdates = batch.map((row, idx) => {
+            const wineId = createdWines[idx]?.id
+            return prisma.importRow.update({
+              where: { id: row.id },
+              data: { status: 'CONFIRMED', ...(wineId ? { wineId } : {}) },
+            })
+          })
+          await Promise.all(rowUpdates)
+
+          totalImported += batch.length
+          sendProgress(totalImported, rowsToImport.length)
+        }
+
+        await prisma.import.update({
+          where: { id: importRecord.id },
+          data: {
+            status: 'COMPLETE',
+            recordCount: rowsToImport.length,
+            skippedCount: skippedRows.length,
+            completedAt: new Date(),
+          },
+        })
+
+        controller.enqueue(
+          encoder.encode(JSON.stringify({ type: 'complete', imported: totalImported }) + '\n')
+        )
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Import failed'
+        await prisma.import.update({
+          where: { id: importRecord.id },
+          data: { status: 'FAILED', errorMessage: message, completedAt: new Date() },
+        }).catch(() => {})
+
+        controller.enqueue(
+          encoder.encode(JSON.stringify({ type: 'error', error: message }) + '\n')
+        )
+      } finally {
+        controller.close()
+      }
+    },
   })
 
   revalidatePath('/dashboard')
@@ -150,5 +206,11 @@ export async function POST(_request: Request, { params }: RouteParams) {
   revalidatePath('/dashboard/import/history')
   revalidatePath(`/dashboard/import/${importRecord.id}`)
 
-  return NextResponse.json({ success: true })
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Transfer-Encoding': 'chunked',
+      'Cache-Control': 'no-cache',
+    },
+  })
 }

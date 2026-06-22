@@ -11,9 +11,10 @@ interface NavItemProps {
   soon?: boolean
   tooltip?: string
   active?: boolean
+  badgeCount?: number
 }
 
-export function NavItem({ href, label, icon: Icon, soon, tooltip, active }: NavItemProps) {
+export function NavItem({ href, label, icon: Icon, soon, tooltip, active, badgeCount }: NavItemProps) {
   const baseClasses =
     'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors'
 
@@ -52,7 +53,12 @@ export function NavItem({ href, label, icon: Icon, soon, tooltip, active }: NavI
       )}
     >
       <Icon className="h-4 w-4" />
-      <span>{label}</span>
+      <span className="flex-1">{label}</span>
+      {badgeCount != null && badgeCount > 0 && (
+        <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-medium text-primary-foreground">
+          {badgeCount > 99 ? '99+' : badgeCount}
+        </span>
+      )}
     </Link>
   )
 }

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 import { Sidebar } from './Sidebar'
 
-export function MobileNav() {
+export function MobileNav({ alertCount = 0 }: { alertCount?: number }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -20,7 +20,7 @@ export function MobileNav() {
         <SheetContent side="left" className="w-64 p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div onClick={() => setOpen(false)}>
-            <Sidebar />
+            <Sidebar alertCount={alertCount} />
           </div>
         </SheetContent>
       </Sheet>

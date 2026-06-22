@@ -63,6 +63,7 @@ export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
   const router = useRouter()
   const [rowsState, setRowsState] = useState<RowState[]>(() => rows.map(toRowState))
   const [confirming, setConfirming] = useState(false)
+  const [progress, setProgress] = useState<{ imported: number; total: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [incompleteRowIds, setIncompleteRowIds] = useState<Set<string>>(new Set())
   const autoSkipped = useRef(false)
@@ -131,23 +132,61 @@ export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
   async function handleConfirm() {
     setConfirming(true)
     setError(null)
+    setProgress(null)
     setIncompleteRowIds(new Set())
 
     try {
       const res = await fetch(`/api/import/${importId}/confirm`, { method: 'POST' })
-      const body = await res.json().catch(() => null)
 
-      if (!res.ok) {
-        if (Array.isArray(body?.rowIds)) {
-          setIncompleteRowIds(new Set(body.rowIds))
+      if (res.headers.get('content-type')?.includes('application/json')) {
+        const body = await res.json().catch(() => null)
+        if (!res.ok) {
+          if (Array.isArray(body?.rowIds)) {
+            setIncompleteRowIds(new Set(body.rowIds))
+          }
+          throw new Error(body?.error || 'Could not confirm import')
         }
-        throw new Error(body?.error || 'Could not confirm import')
+        router.push('/dashboard/cellar')
+        return
+      }
+
+      const reader = res.body?.getReader()
+      if (!reader) throw new Error('No response stream')
+
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (!line.trim()) continue
+          try {
+            const msg = JSON.parse(line)
+            if (msg.type === 'progress') {
+              setProgress({ imported: msg.imported, total: msg.total })
+            } else if (msg.type === 'complete') {
+              router.push('/dashboard/cellar')
+              return
+            } else if (msg.type === 'error') {
+              throw new Error(msg.error)
+            }
+          } catch (parseErr) {
+            if (parseErr instanceof Error && parseErr.message !== line) throw parseErr
+          }
+        }
       }
 
       router.push('/dashboard/cellar')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not confirm import')
       setConfirming(false)
+      setProgress(null)
     }
   }
 
@@ -246,11 +285,29 @@ export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
 
       <div className="flex items-center gap-3">
         <Button onClick={handleConfirm} disabled={confirming || includedCount === 0}>
-          {confirming ? 'Importing...' : `Confirm Import (${includedCount})`}
+          {confirming
+            ? progress
+              ? `Importing ${progress.imported} of ${progress.total}...`
+              : 'Importing...'
+            : `Confirm Import (${includedCount})`}
         </Button>
-        <p className="text-sm text-muted-foreground">
-          {rowsState.length - includedCount} row{rowsState.length - includedCount === 1 ? '' : 's'} skipped
-        </p>
+        {confirming && progress ? (
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-32 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${(progress.imported / progress.total) * 100}%` }}
+              />
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {Math.round((progress.imported / progress.total) * 100)}%
+            </span>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            {rowsState.length - includedCount} row{rowsState.length - includedCount === 1 ? '' : 's'} skipped
+          </p>
+        )}
       </div>
     </div>
   )

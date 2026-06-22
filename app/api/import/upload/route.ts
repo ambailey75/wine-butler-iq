@@ -20,6 +20,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 })
   }
 
+  const sourceHint = (formData.get('sourceHint') as string | null) || undefined
+
   if (file.size > MAX_FILE_SIZE) {
     return NextResponse.json({ error: 'File must be smaller than 25MB' }, { status: 400 })
   }
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
 
   await prisma.import.update({ where: { id: importRecord.id }, data: { storagePath } })
 
-  const result = await processImport(importRecord.id, file)
+  const result = await processImport(importRecord.id, file, sourceHint)
   const updated = await prisma.import.findUnique({ where: { id: importRecord.id } })
 
   revalidatePath('/dashboard/import')
@@ -76,5 +78,6 @@ export async function POST(request: NextRequest) {
     errorMessage: updated?.errorMessage,
     mappingSuggestion: result.mappingSuggestion,
     regionSplitColumns: result.regionSplitColumns,
+    countryStateSplitColumns: result.countryStateSplitColumns,
   })
 }

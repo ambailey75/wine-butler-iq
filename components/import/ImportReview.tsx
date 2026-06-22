@@ -10,9 +10,10 @@ interface ImportReviewProps {
   rows: ImportRowWithDuplicate[]
   mappingSuggestion: Record<string, string | null>
   regionSplitColumns?: Record<string, string>
+  countryStateSplitColumns?: Record<string, string>
 }
 
-export function ImportReview({ importRecord, rows, mappingSuggestion, regionSplitColumns }: ImportReviewProps) {
+export function ImportReview({ importRecord, rows, mappingSuggestion, regionSplitColumns, countryStateSplitColumns }: ImportReviewProps) {
   if (importRecord.status === 'FAILED') {
     return (
       <div className="flex items-start gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-4">
@@ -71,6 +72,7 @@ export function ImportReview({ importRecord, rows, mappingSuggestion, regionSpli
         sampleRow={rawData}
         suggestion={mappingSuggestion}
         regionSplitColumns={regionSplitColumns}
+        countryStateSplitColumns={countryStateSplitColumns}
       />
     )
   }
