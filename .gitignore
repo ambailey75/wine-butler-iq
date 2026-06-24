@@ -28,3 +28,6 @@ npm-debug.log*
 
 /lib/generated/prisma
 *.tsbuildinfo
+
+# test coverage
+coverage/
