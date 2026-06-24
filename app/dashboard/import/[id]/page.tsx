@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Clock } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { getImport } from '@/lib/import/queries'
 import { findDuplicates } from '@/lib/import/duplicate-detector'
@@ -80,7 +80,22 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
         </div>
       </div>
 
-      <ImportReview importRecord={importRecord} rows={rows} mappingSuggestion={mappingSuggestion} regionSplitColumns={regionSplitColumns} countryStateSplitColumns={countryStateSplitColumns} />
+      {importRecord.isHistoricalImport && (
+        <div className="flex items-start gap-3 rounded-md border border-primary/30 bg-primary/5 p-4">
+          <Clock className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <div>
+            <p className="font-medium text-foreground">Historical import</p>
+            <p className="text-sm text-muted-foreground">
+              All wines will be marked as consumed and added to your drinking history
+              {importRecord.historicalConsumedDate
+                ? ` (consumed date: ${new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(importRecord.historicalConsumedDate)})`
+                : ''}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <ImportReview importRecord={importRecord} rows={rows} mappingSuggestion={mappingSuggestion} regionSplitColumns={regionSplitColumns} countryStateSplitColumns={countryStateSplitColumns} isHistoricalImport={importRecord.isHistoricalImport} />
     </div>
   )
 }

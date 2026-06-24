@@ -11,9 +11,10 @@ interface ImportReviewProps {
   mappingSuggestion: Record<string, string | null>
   regionSplitColumns?: Record<string, string>
   countryStateSplitColumns?: Record<string, string>
+  isHistoricalImport?: boolean
 }
 
-export function ImportReview({ importRecord, rows, mappingSuggestion, regionSplitColumns, countryStateSplitColumns }: ImportReviewProps) {
+export function ImportReview({ importRecord, rows, mappingSuggestion, regionSplitColumns, countryStateSplitColumns, isHistoricalImport }: ImportReviewProps) {
   if (importRecord.status === 'FAILED') {
     return (
       <div className="flex items-start gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-4">
@@ -85,7 +86,7 @@ export function ImportReview({ importRecord, rows, mappingSuggestion, regionSpli
           <p className="text-sm text-muted-foreground">{importRecord.errorMessage}</p>
         </div>
       )}
-      <ImportRowTable importId={importRecord.id} rows={rows} />
+      <ImportRowTable importId={importRecord.id} rows={rows} isHistoricalImport={isHistoricalImport} />
     </div>
   )
 }

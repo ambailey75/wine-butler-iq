@@ -1,5 +1,5 @@
-const BRAND_BURGUNDY = '#6B212E'
-const BRAND_GOLD = '#B89600'
+const BRAND_BURGUNDY = '#8B2E3F'
+const BRAND_GOLD = '#C9A84C'
 
 function layout(title: string, body: string) {
   return `<!DOCTYPE html>

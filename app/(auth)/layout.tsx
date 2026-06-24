@@ -1,32 +1,23 @@
+import Image from 'next/image'
+
 export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#1a0a0e',
-        fontFamily: 'Georgia, serif',
-        color: '#f5f0eb',
-        padding: '2rem',
-      }}
-    >
-      <div className="dark" style={{ width: '100%', maxWidth: '400px' }}>
+    <main className="dark flex min-h-screen items-center justify-center bg-background p-8 font-serif text-foreground">
+      <div style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🍷</div>
-          <h1
-            style={{
-              fontSize: '1.75rem',
-              fontWeight: 'bold',
-              color: '#c9a84c',
-              letterSpacing: '0.05em',
-            }}
-          >
+          <Image
+            src="/wine-butler-ai-logo.png"
+            alt="Wine Butler AI"
+            width={120}
+            height={120}
+            className="mx-auto mb-4"
+            priority
+          />
+          <h1 className="text-[1.75rem] font-bold tracking-wide text-primary">
             Wine Butler AI
           </h1>
         </div>

@@ -167,9 +167,11 @@ model Import {
   status           ImportStatus     @default(PENDING)
   recordCount      Int              @default(0)
   skippedCount     Int              @default(0)
-  errorMessage     String?
-  createdAt        DateTime         @default(now())
-  completedAt      DateTime?
+  errorMessage          String?
+  isHistoricalImport    Boolean          @default(false)
+  historicalConsumedDate DateTime?
+  createdAt             DateTime         @default(now())
+  completedAt           DateTime?
 
   user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   wines Wine[]

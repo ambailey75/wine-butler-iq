@@ -51,9 +51,12 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         wine: {
-          dark: '#1a0a0e',
-          burgundy: '#6B212E',
-          gold: '#B89600',
+          dark: '#2D1B1E',
+          burgundy: '#8B2E3F',
+          gold: '#C9A84C',
+        },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar))',
         },
       },
       borderRadius: {

@@ -60,7 +60,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="border-[#6B212E] bg-[#2a1115] text-[#f5f0eb] placeholder:text-[#7a5a60] focus-visible:ring-[#B89600]"
+          className="border-secondary bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function LoginPage() {
       <Button
         type="submit"
         disabled={status === 'sending'}
-        className="w-full bg-[#B89600] text-[#1a0a0e] hover:bg-[#c9a84c]"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
       >
         {status === 'sending' ? 'Sending...' : 'Send magic link'}
       </Button>

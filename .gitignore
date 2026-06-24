@@ -31,3 +31,7 @@ npm-debug.log*
 
 # test coverage
 coverage/
+
+# planning docs and sample files (not for repo)
+Cellar ai planning.docx
+sample files/

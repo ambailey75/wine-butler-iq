@@ -13,9 +13,11 @@ interface UploadCardProps {
   icon: ReactNode
   accept: Record<string, string[]>
   sourceHint?: 'invoice' | 'label'
+  isHistoricalImport?: boolean
+  historicalConsumedDate?: string
 }
 
-export function UploadCard({ title, description, icon, accept, sourceHint }: UploadCardProps) {
+export function UploadCard({ title, description, icon, accept, sourceHint, isHistoricalImport, historicalConsumedDate }: UploadCardProps) {
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -31,6 +33,10 @@ export function UploadCard({ title, description, icon, accept, sourceHint }: Upl
       const formData = new FormData()
       formData.append('file', file)
       if (sourceHint) formData.append('sourceHint', sourceHint)
+      if (isHistoricalImport) {
+        formData.append('isHistoricalImport', 'true')
+        if (historicalConsumedDate) formData.append('historicalConsumedDate', historicalConsumedDate)
+      }
 
       try {
         const res = await fetch('/api/import/upload', { method: 'POST', body: formData })
@@ -56,7 +62,7 @@ export function UploadCard({ title, description, icon, accept, sourceHint }: Upl
         setUploading(false)
       }
     },
-    [router, sourceHint]
+    [router, sourceHint, isHistoricalImport, historicalConsumedDate]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

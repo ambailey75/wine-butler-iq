@@ -3,9 +3,54 @@ import { redirect } from 'next/navigation'
 import { FileSpreadsheet, FileText, Image as ImageIcon } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { getRecentImports } from '@/lib/import/queries'
-import { UploadCard } from '@/components/import/UploadCard'
+import { ImportUploadSection } from '@/components/import/ImportUploadSection'
 import { ImportStatusBadge } from '@/components/import/ImportStatusBadge'
 import { Button } from '@/components/ui/button'
+
+const UPLOAD_CARDS: {
+  title: string
+  description: string
+  icon: React.ReactNode
+  accept: Record<string, string[]>
+  sourceHint?: 'invoice' | 'label'
+}[] = [
+  {
+    title: 'Spreadsheet',
+    description: 'Excel or CSV export of your cellar',
+    icon: <FileSpreadsheet className="h-8 w-8 text-primary" />,
+    accept: {
+      'text/csv': ['.csv'],
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    },
+  },
+  {
+    title: 'PDF, HTML, or Image Invoice',
+    description: 'Upload purchase invoices as PDF, saved webpage, or photo of a paper invoice',
+    icon: <FileText className="h-8 w-8 text-primary" />,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'text/html': ['.html', '.htm'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
+      'image/heic': ['.heic'],
+    },
+    sourceHint: 'invoice' as const,
+  },
+  {
+    title: 'Label Photos',
+    description: 'Photo of a single wine label',
+    icon: <ImageIcon className="h-8 w-8 text-primary" />,
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
+      'image/heic': ['.heic'],
+    },
+    sourceHint: 'label' as const,
+  },
+]
 
 export default async function ImportHubPage() {
   const user = await getCurrentUser()
@@ -29,44 +74,7 @@ export default async function ImportHubPage() {
         </Button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <UploadCard
-          title="Spreadsheet"
-          description="Excel or CSV export of your cellar"
-          icon={<FileSpreadsheet className="h-8 w-8 text-primary" />}
-          accept={{
-            'text/csv': ['.csv'],
-            'application/vnd.ms-excel': ['.xls'],
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-          }}
-        />
-        <UploadCard
-          title="PDF, HTML, or Image Invoice"
-          description="Upload purchase invoices as PDF, saved webpage, or photo of a paper invoice"
-          icon={<FileText className="h-8 w-8 text-primary" />}
-          accept={{
-            'application/pdf': ['.pdf'],
-            'text/html': ['.html', '.htm'],
-            'image/jpeg': ['.jpg', '.jpeg'],
-            'image/png': ['.png'],
-            'image/webp': ['.webp'],
-            'image/heic': ['.heic'],
-          }}
-          sourceHint="invoice"
-        />
-        <UploadCard
-          title="Label Photos"
-          description="Photo of a single wine label"
-          icon={<ImageIcon className="h-8 w-8 text-primary" />}
-          accept={{
-            'image/jpeg': ['.jpg', '.jpeg'],
-            'image/png': ['.png'],
-            'image/webp': ['.webp'],
-            'image/heic': ['.heic'],
-          }}
-          sourceHint="label"
-        />
-      </div>
+      <ImportUploadSection cards={UPLOAD_CARDS} />
 
       {recentImports.length > 0 && (
         <div className="space-y-3">

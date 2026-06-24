@@ -22,7 +22,7 @@ export default async function DashboardLayout({
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex min-h-screen bg-background text-foreground">
-        <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-border">
+        <aside className="hidden bg-sidebar md:flex md:w-64 md:flex-col md:border-r md:border-border">
           <Sidebar alertCount={alertCount} />
         </aside>
         <div className="flex flex-1 flex-col">

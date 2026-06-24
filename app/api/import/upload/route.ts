@@ -21,6 +21,9 @@ export async function POST(request: NextRequest) {
   }
 
   const sourceHint = (formData.get('sourceHint') as string | null) || undefined
+  const isHistoricalImport = formData.get('isHistoricalImport') === 'true'
+  const historicalConsumedDateStr = formData.get('historicalConsumedDate') as string | null
+  const historicalConsumedDate = historicalConsumedDateStr ? new Date(historicalConsumedDateStr) : null
 
   if (file.size > MAX_FILE_SIZE) {
     return NextResponse.json({ error: 'File must be smaller than 25MB' }, { status: 400 })
@@ -38,6 +41,8 @@ export async function POST(request: NextRequest) {
       originalFilename: file.name,
       storagePath: '',
       status: 'PENDING',
+      isHistoricalImport,
+      historicalConsumedDate: isHistoricalImport ? historicalConsumedDate : null,
     },
   })
 

@@ -1,64 +1,40 @@
+import Image from 'next/image'
+
 export default function Home() {
   return (
-    <main style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#1a0a0e',
-      fontFamily: 'Georgia, serif',
-      color: '#f5f0eb',
-      padding: '2rem',
-      textAlign: 'center',
-    }}>
-      <div style={{ marginBottom: '1.5rem', fontSize: '3rem' }}>🍷</div>
+    <main className="dark flex min-h-screen flex-col items-center justify-center bg-background p-8 text-center font-serif text-foreground">
+      <Image
+        src="/wine-butler-ai-logo.png"
+        alt="Wine Butler AI"
+        width={160}
+        height={160}
+        className="mb-6"
+        priority
+      />
 
-      <h1 style={{
+      <h1 className="mb-4 text-primary" style={{
         fontSize: 'clamp(2rem, 5vw, 3.5rem)',
         fontWeight: 'bold',
-        color: '#c9a84c',
-        marginBottom: '1rem',
         letterSpacing: '0.05em',
       }}>
         Wine Butler AI
       </h1>
 
-      <p style={{
+      <p className="mb-10 text-muted-foreground" style={{
         fontSize: 'clamp(1rem, 2.5vw, 1.35rem)',
-        color: '#d4b8be',
         maxWidth: '520px',
         lineHeight: '1.7',
-        marginBottom: '2.5rem',
+        fontFamily: 'Arial, sans-serif',
       }}>
         Your personal wine inventory tracker and AI sommelier. Track your collection,
         discover drinking windows, and get expert pairing recommendations — all in one place.
       </p>
 
-      <div style={{
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(201,168,76,0.3)',
-        borderRadius: '12px',
-        padding: '1.5rem 2rem',
-        maxWidth: '420px',
-        width: '100%',
-      }}>
-        <p style={{
-          fontSize: '0.95rem',
-          color: '#c9a84c',
-          fontFamily: 'Arial, sans-serif',
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          marginBottom: '0.5rem',
-        }}>
+      <div className="w-full max-w-[420px] rounded-xl border border-border bg-card p-6 px-8">
+        <p className="mb-2 font-sans text-[0.95rem] uppercase tracking-widest text-primary">
           Coming Soon
         </p>
-        <p style={{
-          fontSize: '0.9rem',
-          color: '#a08890',
-          fontFamily: 'Arial, sans-serif',
-          margin: 0,
-        }}>
+        <p className="m-0 font-sans text-[0.9rem] text-muted-foreground">
           Private beta launching in 2026. Built for serious collectors.
         </p>
       </div>

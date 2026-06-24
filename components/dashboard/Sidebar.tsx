@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -44,11 +45,16 @@ export function Sidebar({ alertCount = 0 }: { alertCount?: number }) {
 
   return (
     <nav className="flex h-full flex-col gap-1 p-4">
-      <Link
-        href="/dashboard"
-        className="mb-4 px-3 font-serif text-lg font-bold text-primary"
-      >
-        Wine Butler AI
+      <Link href="/dashboard" className="mb-4 flex flex-col items-center px-3">
+        <Image
+          src="/wine-butler-ai-logo.png"
+          alt="Wine Butler AI"
+          width={140}
+          height={140}
+          className="mb-1"
+          priority
+        />
+        <span className="text-xs text-muted-foreground">Wine Butler AI</span>
       </Link>
       {NAV_ITEMS.map((item) => (
         <NavItem

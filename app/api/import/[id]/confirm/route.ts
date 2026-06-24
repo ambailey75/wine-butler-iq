@@ -82,7 +82,7 @@ async function copyLabelPhoto(userId: string, sourcePath: string): Promise<strin
   return data.publicUrl
 }
 
-export async function POST(_request: Request, { params }: RouteParams) {
+export async function POST(request: Request, { params }: RouteParams) {
   const user = await getCurrentUser()
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -96,6 +96,18 @@ export async function POST(_request: Request, { params }: RouteParams) {
   if (importRecord.status !== 'REVIEW') {
     return NextResponse.json({ error: 'This import is not ready to confirm' }, { status: 400 })
   }
+
+  let consumedRowIds: Set<string> = new Set()
+  try {
+    const body = await request.json().catch(() => ({}))
+    if (Array.isArray(body?.consumedRowIds)) {
+      consumedRowIds = new Set(body.consumedRowIds as string[])
+    }
+  } catch {
+    // No body or invalid JSON is fine -- defaults to no consumed rows
+  }
+
+  const historicalDate = importRecord.historicalConsumedDate ?? new Date()
 
   const rowsToImport = importRecord.rows.filter((row) => row.status !== 'SKIPPED')
   const skippedRows = importRecord.rows.filter((row) => row.status === 'SKIPPED')
@@ -140,11 +152,14 @@ export async function POST(_request: Request, { params }: RouteParams) {
 
           const wineDataBatch = batch.map((row) => {
             const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
+            const isConsumed = consumedRowIds.has(row.id)
+            const quantity = mapped.quantity && mapped.quantity > 0 ? Math.round(mapped.quantity) : 1
             return {
               userId: user.id,
               importId: importRecord.id,
               ...toWineCreateData(mapped),
               ...(labelPhotoUrl ? { labelPhotoUrl } : {}),
+              ...(isConsumed ? { isFullyConsumed: true, consumedQuantity: quantity } : {}),
             }
           })
 
@@ -152,7 +167,7 @@ export async function POST(_request: Request, { params }: RouteParams) {
 
           const createdWines = await prisma.wine.findMany({
             where: { importId: importRecord.id },
-            select: { id: true, producer: true, wineName: true, vintage: true },
+            select: { id: true, producer: true, wineName: true, vintage: true, quantity: true },
             orderBy: { createdAt: 'asc' },
             skip: i,
             take: BATCH_SIZE,
@@ -166,6 +181,26 @@ export async function POST(_request: Request, { params }: RouteParams) {
             })
           })
           await Promise.all(rowUpdates)
+
+          const consumptionLogs = batch
+            .map((row, idx) => {
+              if (!consumedRowIds.has(row.id)) return null
+              const wine = createdWines[idx]
+              if (!wine) return null
+              return {
+                wineId: wine.id,
+                userId: user.id,
+                quantity: wine.quantity,
+                consumedDate: historicalDate,
+                occasion: 'Historical import',
+                notes: 'Imported from historical collection',
+              }
+            })
+            .filter((log): log is NonNullable<typeof log> => log !== null)
+
+          if (consumptionLogs.length > 0) {
+            await prisma.consumptionLog.createMany({ data: consumptionLogs })
+          }
 
           totalImported += batch.length
           sendProgress(totalImported, rowsToImport.length)

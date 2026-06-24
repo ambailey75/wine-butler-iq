@@ -74,8 +74,8 @@ export function BreakdownChart({ data }: { data: InsightsBreakdown[] }) {
             name === 'value' ? [formatCurrency(value as number), 'Est. Value'] : [value, 'Bottles']
           }
         />
-        <Bar yAxisId="bottles" dataKey="bottles" fill="#6B212E" radius={[4, 4, 0, 0]} />
-        <Bar yAxisId="value" dataKey="value" fill="#B89600" radius={[4, 4, 0, 0]} />
+        <Bar yAxisId="bottles" dataKey="bottles" fill="#8B2E3F" radius={[4, 4, 0, 0]} />
+        <Bar yAxisId="value" dataKey="value" fill="#C9A84C" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )

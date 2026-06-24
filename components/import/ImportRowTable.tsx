@@ -42,26 +42,29 @@ interface RowState {
   confidenceScores: ConfidenceScores
   status: ImportRowStatus
   duplicateOf: DuplicateMatch | null
+  markConsumed: boolean
 }
 
-function toRowState(row: ImportRowWithDuplicate): RowState {
+function toRowState(row: ImportRowWithDuplicate, defaultConsumed: boolean): RowState {
   return {
     id: row.id,
     mappedData: (row.mappedData ?? {}) as unknown as MappedWineData,
     confidenceScores: (row.confidenceScores ?? {}) as unknown as ConfidenceScores,
     status: row.status,
     duplicateOf: row.duplicateOf,
+    markConsumed: defaultConsumed,
   }
 }
 
 interface ImportRowTableProps {
   importId: string
   rows: ImportRowWithDuplicate[]
+  isHistoricalImport?: boolean
 }
 
-export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
+export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRowTableProps) {
   const router = useRouter()
-  const [rowsState, setRowsState] = useState<RowState[]>(() => rows.map(toRowState))
+  const [rowsState, setRowsState] = useState<RowState[]>(() => rows.map((r) => toRowState(r, !!isHistoricalImport)))
   const [confirming, setConfirming] = useState(false)
   const [progress, setProgress] = useState<{ imported: number; total: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -136,7 +139,12 @@ export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
     setIncompleteRowIds(new Set())
 
     try {
-      const res = await fetch(`/api/import/${importId}/confirm`, { method: 'POST' })
+      const consumedRowIds = rowsState.filter((r) => r.markConsumed && r.status !== 'SKIPPED').map((r) => r.id)
+      const res = await fetch(`/api/import/${importId}/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consumedRowIds }),
+      })
 
       if (res.headers.get('content-type')?.includes('application/json')) {
         const body = await res.json().catch(() => null)
@@ -207,6 +215,7 @@ export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
           <TableHeader>
             <TableRow>
               <TableHead className="sticky left-0 bg-card">Include</TableHead>
+              {isHistoricalImport && <TableHead>Consumed</TableHead>}
               <TableHead>Match</TableHead>
               {IMPORT_TARGET_FIELDS.map((field) => (
                 <TableHead key={field.key} className="whitespace-nowrap">
@@ -236,6 +245,29 @@ export function ImportRowTable({ importId, rows }: ImportRowTableProps) {
                     </SelectContent>
                   </Select>
                 </TableCell>
+                {isHistoricalImport && (
+                  <TableCell>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={row.markConsumed}
+                      onClick={() =>
+                        setRowsState((prev) =>
+                          prev.map((r) => (r.id === row.id ? { ...r, markConsumed: !r.markConsumed } : r))
+                        )
+                      }
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+                        row.markConsumed ? 'bg-primary' : 'bg-muted'
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-foreground shadow transition-transform ${
+                          row.markConsumed ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </TableCell>
+                )}
                 <TableCell>
                   {row.duplicateOf ? (
                     <Badge variant="secondary" className="whitespace-nowrap">
