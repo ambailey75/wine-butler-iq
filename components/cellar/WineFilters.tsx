@@ -91,6 +91,7 @@ const RATING_OPTIONS = [
 export interface WineFilterOptions {
   countries: string[]
   regions: string[]
+  subRegions: string[]
   varietals: string[]
   vintages: number[]
 }
@@ -98,11 +99,14 @@ export interface WineFilterOptions {
 interface WineFiltersProps {
   table: Table<SerializedWine>
   options: WineFilterOptions
+  globalFilter?: string
+  onClearSearch?: () => void
 }
 
-export function WineFilters({ table, options }: WineFiltersProps) {
+export function WineFilters({ table, options, globalFilter, onClearSearch }: WineFiltersProps) {
   const countryFilter = (table.getColumn('countryState')?.getFilterValue() as string[]) ?? []
   const regionFilter = (table.getColumn('regionSubRegion')?.getFilterValue() as string[]) ?? []
+  const subRegionFilter = (table.getColumn('subRegion')?.getFilterValue() as string[]) ?? []
   const varietalFilter = (table.getColumn('varietal')?.getFilterValue() as string[]) ?? []
   const ratingFilter = table.getColumn('rating')?.getFilterValue() as number | undefined
   const vintageFilter = table.getColumn('vintage')?.getFilterValue() as number | undefined
@@ -110,16 +114,20 @@ export function WineFilters({ table, options }: WineFiltersProps) {
   const hasFilters =
     countryFilter.length > 0 ||
     regionFilter.length > 0 ||
+    subRegionFilter.length > 0 ||
     varietalFilter.length > 0 ||
     ratingFilter !== undefined ||
-    vintageFilter !== undefined
+    vintageFilter !== undefined ||
+    (globalFilter?.length ?? 0) > 0
 
   const clearAll = () => {
     table.getColumn('countryState')?.setFilterValue(undefined)
     table.getColumn('regionSubRegion')?.setFilterValue(undefined)
+    table.getColumn('subRegion')?.setFilterValue(undefined)
     table.getColumn('varietal')?.setFilterValue(undefined)
     table.getColumn('rating')?.setFilterValue(undefined)
     table.getColumn('vintage')?.setFilterValue(undefined)
+    onClearSearch?.()
   }
 
   const content = (
@@ -138,6 +146,14 @@ export function WineFilters({ table, options }: WineFiltersProps) {
         selected={regionFilter}
         onChange={(values) =>
           table.getColumn('regionSubRegion')?.setFilterValue(values.length ? values : undefined)
+        }
+      />
+      <FacetedFilter
+        title="Sub-Region"
+        options={options.subRegions}
+        selected={subRegionFilter}
+        onChange={(values) =>
+          table.getColumn('subRegion')?.setFilterValue(values.length ? values : undefined)
         }
       />
       <FacetedFilter
@@ -227,9 +243,14 @@ export function WineFilters({ table, options }: WineFiltersProps) {
         </PopoverContent>
       </Popover>
       {hasFilters && (
-        <Button variant="ghost" size="sm" onClick={clearAll} className="gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearAll}
+          className="ml-auto gap-1 text-secondary hover:bg-secondary/10 hover:text-secondary"
+        >
           <X className="h-3.5 w-3.5" />
-          Clear
+          Clear all
         </Button>
       )}
     </div>

@@ -17,7 +17,7 @@ export function MobileNav({ alertCount = 0 }: { alertCount?: number }) {
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="left" className="dark w-64 bg-sidebar p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div onClick={() => setOpen(false)}>
             <Sidebar alertCount={alertCount} />

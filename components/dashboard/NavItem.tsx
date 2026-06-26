@@ -49,7 +49,7 @@ export function NavItem({ href, label, icon: Icon, soon, tooltip, active, badgeC
         baseClasses,
         active
           ? 'bg-accent text-accent-foreground'
-          : 'text-foreground/80 hover:bg-accent/50 hover:text-foreground'
+          : 'text-foreground/80 hover:bg-accent/30 hover:text-foreground'
       )}
     >
       <Icon className="h-4 w-4" />

@@ -573,6 +573,14 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
         filterFn: multiSelectFilter,
       },
       {
+        id: 'subRegion',
+        accessorKey: 'subRegion',
+        filterFn: multiSelectFilter,
+        enableSorting: false,
+        header: () => null,
+        cell: () => null,
+      },
+      {
         accessorKey: 'varietal',
         header: ({ column }) => <SortHeader column={column} label="Varietal" />,
         cell: ({ row }) => (
@@ -828,12 +836,14 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
   const filterOptions = useMemo(() => {
     const countries = new Set<string>()
     const regions = new Set<string>()
+    const subRegions = new Set<string>()
     const varietals = new Set<string>()
     const vintages = new Set<number>()
 
     for (const wine of filteredWines) {
       if (wine.country) countries.add(wine.country)
       if (wine.region) regions.add(wine.region)
+      if (wine.subRegion) subRegions.add(wine.subRegion)
       if (wine.varietal) varietals.add(wine.varietal)
       if (wine.vintage) vintages.add(wine.vintage)
     }
@@ -841,6 +851,7 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
     return {
       countries: Array.from(countries).sort(),
       regions: Array.from(regions).sort(),
+      subRegions: Array.from(subRegions).sort(),
       varietals: Array.from(varietals).sort(),
       vintages: Array.from(vintages).sort((a, b) => b - a),
     }
@@ -858,7 +869,7 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 25 } },
+    initialState: { pagination: { pageSize: 40 }, columnVisibility: { subRegion: false } },
   })
 
   return (
@@ -887,7 +898,12 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
             ))}
           </div>
         </div>
-        <WineFilters table={table} options={filterOptions} />
+        <WineFilters
+          table={table}
+          options={filterOptions}
+          globalFilter={globalFilter}
+          onClearSearch={() => setGlobalFilter('')}
+        />
       </div>
 
       <div className="overflow-x-auto rounded-md border border-border">

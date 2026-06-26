@@ -29,27 +29,27 @@
   }
 
   .dark {
-    /* Dark sidebar palette — cream text on dark burgundy-brown */
-    --background: 350 25% 14%;
-    --foreground: 36 43% 93%;
-    --card: 350 24% 19%;
+    /* Dark sidebar palette — cream text on deep dark wine #1A0510 */
+    --background: 329 68% 6%;          /* #1A0510 deep wine */
+    --foreground: 36 43% 93%;          /* cream */
+    --card: 329 55% 10%;
     --card-foreground: 36 43% 93%;
-    --popover: 350 24% 19%;
+    --popover: 329 55% 10%;
     --popover-foreground: 36 43% 93%;
-    --primary: 44 54% 54%;
-    --primary-foreground: 350 25% 14%;
+    --primary: 44 54% 54%;             /* gold */
+    --primary-foreground: 329 68% 6%;
     --secondary: 349 50% 36%;
     --secondary-foreground: 36 43% 93%;
-    --muted: 350 20% 17%;
+    --muted: 329 40% 13%;
     --muted-foreground: 36 25% 72%;
-    --accent: 349 50% 36%;
+    --accent: 350 53% 27%;             /* #6B212E active nav */
     --accent-foreground: 36 43% 93%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 350 20% 22%;
-    --input: 350 24% 22%;
+    --border: 329 30% 20%;
+    --input: 329 30% 20%;
     --ring: 44 54% 54%;
-    --sidebar: 350 25% 14%;
+    --sidebar: 329 68% 6%;             /* #1A0510 */
   }
 }
 
