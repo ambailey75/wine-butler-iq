@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Select,
   SelectContent,
@@ -214,7 +215,7 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="sticky left-0 bg-card">Include</TableHead>
+              <TableHead className="sticky left-0 bg-secondary text-secondary-foreground">Include</TableHead>
               {isHistoricalImport && <TableHead>Consumed</TableHead>}
               <TableHead>Match</TableHead>
               {IMPORT_TARGET_FIELDS.map((field) => (
@@ -247,25 +248,16 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
                 </TableCell>
                 {isHistoricalImport && (
                   <TableCell>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={row.markConsumed}
-                      onClick={() =>
+                    <Checkbox
+                      checked={row.markConsumed}
+                      onCheckedChange={(checked) =>
                         setRowsState((prev) =>
-                          prev.map((r) => (r.id === row.id ? { ...r, markConsumed: !r.markConsumed } : r))
+                          prev.map((r) => (r.id === row.id ? { ...r, markConsumed: !!checked } : r))
                         )
                       }
-                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-                        row.markConsumed ? 'bg-primary' : 'bg-muted'
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-foreground shadow transition-transform ${
-                          row.markConsumed ? 'translate-x-4' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
+                      aria-label="Mark as consumed"
+                      className="border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground"
+                    />
                   </TableCell>
                 )}
                 <TableCell>

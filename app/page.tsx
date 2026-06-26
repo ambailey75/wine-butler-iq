@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-    <main className="dark flex min-h-screen flex-col items-center justify-center bg-background p-8 text-center font-serif text-foreground">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-8 text-center font-serif text-foreground">
       <Image
         src="/wine-butler-ai-logo.png"
         alt="Wine Butler AI"

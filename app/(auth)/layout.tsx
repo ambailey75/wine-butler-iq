@@ -6,14 +6,14 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="dark flex min-h-screen items-center justify-center bg-background p-8 font-serif text-foreground">
+    <main className="flex min-h-screen items-center justify-center bg-background p-8 font-serif text-foreground">
       <div style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Image
             src="/wine-butler-ai-logo.png"
             alt="Wine Butler AI"
-            width={120}
-            height={120}
+            width={200}
+            height={200}
             className="mx-auto mb-4"
             priority
           />

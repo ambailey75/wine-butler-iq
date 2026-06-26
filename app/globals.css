@@ -4,49 +4,52 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    /* Light mode — warm cream, gold primary, burgundy accents */
+    --background: 36 43% 93%;          /* #F5EFE6 warm cream */
+    --foreground: 345 44% 7%;          /* #1A0A0E near-black */
+    --card: 0 0% 100%;                 /* #FFFFFF white */
+    --card-foreground: 345 44% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 345 44% 7%;
+    --primary: 44 54% 54%;             /* #C9A84C gold */
+    --primary-foreground: 350 25% 14%; /* #2D1B1E dark on gold */
+    --secondary: 349 50% 36%;          /* #8B2E3F burgundy */
+    --secondary-foreground: 36 43% 93%; /* cream on burgundy */
+    --muted: 33 47% 96%;               /* #FAF6F1 alternate row */
+    --muted-foreground: 22 13% 37%;    /* #6B5B52 medium brown */
+    --accent: 349 50% 36%;
+    --accent-foreground: 36 43% 93%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
+    --border: 13 32% 85%;              /* warm pinkish border */
+    --input: 13 32% 85%;
+    --ring: 44 54% 54%;
     --radius: 0.5rem;
+    --sidebar: 350 25% 14%;            /* #2D1B1E dark sidebar */
   }
 
   .dark {
-    --background: 350 24% 14%;
+    /* Dark sidebar palette — cream text on dark burgundy-brown */
+    --background: 350 25% 14%;
     --foreground: 36 43% 93%;
     --card: 350 24% 19%;
     --card-foreground: 36 43% 93%;
     --popover: 350 24% 19%;
     --popover-foreground: 36 43% 93%;
     --primary: 44 54% 54%;
-    --primary-foreground: 350 24% 14%;
-    --secondary: 347 50% 36%;
+    --primary-foreground: 350 25% 14%;
+    --secondary: 349 50% 36%;
     --secondary-foreground: 36 43% 93%;
     --muted: 350 20% 17%;
-    --muted-foreground: 28 16% 66%;
-    --accent: 347 50% 36%;
+    --muted-foreground: 36 25% 72%;
+    --accent: 349 50% 36%;
     --accent-foreground: 36 43% 93%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 98%;
     --border: 350 20% 22%;
     --input: 350 24% 22%;
     --ring: 44 54% 54%;
-    --sidebar: 348 27% 10%;
+    --sidebar: 350 25% 14%;
   }
 }
 
@@ -56,5 +59,16 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Table headers — burgundy background with cream text */
+  thead tr {
+    background-color: hsl(var(--secondary));
+  }
+  thead th {
+    color: hsl(var(--secondary-foreground)) !important;
+  }
+  /* Alternate table rows */
+  tbody tr:nth-child(even) {
+    background-color: hsl(var(--muted));
   }
 }
