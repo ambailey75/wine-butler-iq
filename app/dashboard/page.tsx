@@ -1,10 +1,12 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Wine } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { getDashboardSummary, getRecentWines, getRecentConsumptionLogs } from '@/lib/wines/queries'
 import { KpiCard } from '@/components/dashboard/KpiCard'
-import { EmptyState } from '@/components/dashboard/EmptyState'
 import { RecentWines } from '@/components/dashboard/RecentWines'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 function formatCurrency(value: number) {
@@ -37,13 +39,39 @@ export default async function DashboardPage() {
         <h1 className="mb-6 text-2xl font-bold text-foreground">
           Welcome to your cellar
         </h1>
-        <EmptyState
-          icon={Wine}
-          title="Your cellar is empty"
-          description="Add your first bottle to start tracking your collection, or import your existing cellar."
-          action={{ label: 'Add a wine', href: '/dashboard/cellar/new' }}
-          secondaryAction={{ label: 'Import your collection', href: '/dashboard/import' }}
-        />
+        <div className="relative overflow-hidden rounded-xl" style={{ minHeight: '440px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Image
+            src="/images/cellar-tunnel.png"
+            alt="Wine cellar"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0" style={{ background: 'rgba(45, 27, 30, 0.68)' }} />
+          <div
+            className="relative z-10 flex flex-col items-center justify-center px-8 py-12 text-center"
+            style={{
+              maxWidth: '380px',
+              background: 'rgba(255, 255, 255, 0.92)',
+              borderRadius: '14px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.35)',
+            }}
+          >
+            <Wine className="mb-4 h-10 w-10 text-secondary" />
+            <h2 className="text-lg font-semibold text-foreground">Your cellar is empty</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Add your first bottle to start tracking your collection, or import your existing cellar.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild>
+                <Link href="/dashboard/cellar/new">Add a wine</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/dashboard/import">Import your collection</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

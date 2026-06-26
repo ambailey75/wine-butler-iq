@@ -6,18 +6,53 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-8 font-serif text-foreground">
-      <div style={{ width: '100%', maxWidth: '400px' }}>
+    <main style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      {/* Vineyard background */}
+      <Image
+        src="/images/vineyard-rows.png"
+        alt=""
+        fill
+        style={{ objectFit: 'cover' }}
+        priority
+      />
+      {/* Dark overlay */}
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(45, 27, 30, 0.75)' }} />
+
+      {/* Frosted card */}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          maxWidth: '420px',
+          background: 'rgba(45, 27, 30, 0.88)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderRadius: '16px',
+          border: '1px solid rgba(201, 168, 76, 0.25)',
+          padding: '2.5rem 2.25rem',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
+        }}
+      >
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Image
             src="/wine-butler-ai-logo.png"
             alt="Wine Butler AI"
             width={200}
             height={200}
-            className="mx-auto mb-4"
+            style={{ margin: '0 auto 1rem' }}
             priority
           />
-          <h1 className="text-[1.75rem] font-bold tracking-wide text-primary">
+          <h1
+            style={{
+              fontSize: '1.75rem',
+              fontWeight: 'bold',
+              letterSpacing: '0.05em',
+              color: '#C9A84C',
+              fontFamily: 'Georgia, serif',
+              margin: 0,
+            }}
+          >
             Wine Butler AI
           </h1>
         </div>

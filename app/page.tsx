@@ -1,43 +1,131 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background p-8 text-center font-serif text-foreground">
-      <Image
-        src="/wine-butler-ai-logo.png"
-        alt="Wine Butler AI"
-        width={160}
-        height={160}
-        className="mb-6"
-        priority
-      />
+    <div className="min-h-screen bg-background font-sans text-foreground">
 
-      <h1 className="mb-4 text-primary" style={{
-        fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-        fontWeight: 'bold',
-        letterSpacing: '0.05em',
-      }}>
-        Wine Butler AI
-      </h1>
+      {/* Hero */}
+      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+        <Image
+          src="/images/vineyard-rows.png"
+          alt="Vineyard rows at sunset"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'rgba(45, 27, 30, 0.65)' }}
+        />
+        <div className="relative z-10 flex flex-col items-center px-6 text-center">
+          <Image
+            src="/wine-butler-ai-logo.png"
+            alt="Wine Butler AI"
+            width={220}
+            height={220}
+            className="mb-6 drop-shadow-xl"
+            priority
+          />
+          <h1
+            className="mb-4 font-bold text-white drop-shadow-lg"
+            style={{
+              fontFamily: 'Georgia, serif',
+              fontSize: 'clamp(2.25rem, 6vw, 4rem)',
+              letterSpacing: '0.02em',
+            }}
+          >
+            Meet Your Wine Butler
+          </h1>
+          <p
+            className="mb-10 text-white/80"
+            style={{
+              fontFamily: 'Arial, sans-serif',
+              fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+              maxWidth: '480px',
+              lineHeight: '1.7',
+            }}
+          >
+            An AI sommelier that knows your cellar
+          </p>
+          <Link
+            href="/login"
+            className="inline-block rounded-md px-9 py-3.5 text-sm font-semibold uppercase tracking-widest transition-opacity hover:opacity-90"
+            style={{ background: '#C9A84C', color: '#2D1B1E' }}
+          >
+            Get Started
+          </Link>
+        </div>
+      </section>
 
-      <p className="mb-10 text-muted-foreground" style={{
-        fontSize: 'clamp(1rem, 2.5vw, 1.35rem)',
-        maxWidth: '520px',
-        lineHeight: '1.7',
-        fontFamily: 'Arial, sans-serif',
-      }}>
-        Your personal wine inventory tracker and AI sommelier. Track your collection,
-        discover drinking windows, and get expert pairing recommendations — all in one place.
-      </p>
+      {/* Feature cards — row 1 */}
+      <section className="bg-background px-6 py-16">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-6 sm:grid-cols-3">
+            <FeatureCard
+              image="/images/cellar-tunnel.png"
+              title="Track Your Collection"
+              body="Every bottle catalogued with producer, vintage, region, and drinking window. Import from a spreadsheet or snap a label photo."
+            />
+            <FeatureCard
+              image="/images/wine-glasses-vineyard.png"
+              title="Get Expert Guidance"
+              body="Ask your AI butler anything. Pairing recommendations, drinking window advice, and reorder suggestions tailored to your cellar."
+            />
+            <FeatureCard
+              image="/images/modern-cellar.png"
+              title="Never Miss a Peak"
+              body="Automated alerts when bottles are entering their prime. Know exactly when to open each wine for the best experience."
+            />
+          </div>
 
-      <div className="w-full max-w-[420px] rounded-xl border border-border bg-card p-6 px-8">
-        <p className="mb-2 font-sans text-[0.95rem] uppercase tracking-widest text-primary">
-          Coming Soon
-        </p>
-        <p className="m-0 font-sans text-[0.9rem] text-muted-foreground">
-          Private beta launching in 2026. Built for serious collectors.
-        </p>
+          {/* Feature cards — row 2 */}
+          <div className="mt-6 grid gap-6 sm:grid-cols-2">
+            <FeatureCard
+              image="/images/grapes-vineyard.png"
+              title="Import from Anything"
+              body="Upload a spreadsheet, a PDF invoice, or a photo of a wine label. Wine Butler AI extracts and maps every field automatically."
+            />
+            <FeatureCard
+              image="/images/wine-barrel-still.png"
+              title="Know What You're Drinking"
+              body="Log tasting notes, track bottles consumed, and build a personal drinking history that informs every future recommendation."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground">
+        © 2026 Bailey Applied Intelligence · winebutlerai.com
+      </footer>
+    </div>
+  )
+}
+
+function FeatureCard({
+  image,
+  title,
+  body,
+}: {
+  image: string
+  title: string
+  body: string
+}) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="relative h-48">
+        <Image src={image} alt={title} fill className="object-cover" />
       </div>
-    </main>
+      <div className="p-5">
+        <h3
+          className="mb-2 text-lg font-semibold text-foreground"
+          style={{ fontFamily: 'Georgia, serif' }}
+        >
+          {title}
+        </h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+      </div>
+    </div>
   )
 }

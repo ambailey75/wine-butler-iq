@@ -37,10 +37,10 @@ export default function LoginPage() {
   if (status === 'sent') {
     return (
       <div style={{ textAlign: 'center' }}>
-        <p style={{ color: '#c9a84c', marginBottom: '0.75rem', fontSize: '1.1rem' }}>
+        <p style={{ color: '#C9A84C', marginBottom: '0.75rem', fontSize: '1.1rem' }}>
           Check your email
         </p>
-        <p style={{ color: '#6B5B52', fontFamily: 'Arial, sans-serif', fontSize: '0.9rem', lineHeight: '1.6' }}>
+        <p style={{ color: '#F5EFE6', fontFamily: 'Arial, sans-serif', fontSize: '0.9rem', lineHeight: '1.6' }}>
           We sent a magic link to <strong>{email}</strong>. Click it to sign in.
         </p>
       </div>
@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <Label htmlFor="email" style={{ color: '#6B5B52', fontFamily: 'Arial, sans-serif' }}>
+        <Label htmlFor="email" style={{ color: '#F5EFE6', fontFamily: 'Arial, sans-serif' }}>
           Email
         </Label>
         <Input
@@ -60,7 +60,8 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="border-secondary bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+          style={{ background: 'rgba(245, 239, 230, 0.12)', borderColor: 'rgba(201, 168, 76, 0.35)', color: '#F5EFE6' }}
+          className="placeholder:text-white/40 focus-visible:ring-primary"
         />
       </div>
 
