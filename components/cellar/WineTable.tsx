@@ -14,7 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { ArrowUpDown, Check, Eye, MoreHorizontal, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Check, Eye, GlassWater, MoreHorizontal, Trash2 } from 'lucide-react'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { getEstimatedValue } from '@/lib/wines/queries'
 import {
@@ -37,6 +37,7 @@ import {
 import { Pagination } from '@/components/ui/pagination'
 import { WineFilters } from './WineFilters'
 import { DeleteWineDialog } from './DeleteWineDialog'
+import { MarkConsumedDialog } from './MarkConsumedDialog'
 
 const STYLE_OPTIONS = ['Red', 'White', 'Rosé', 'Sparkling', 'Dessert', 'Fortified']
 
@@ -451,7 +452,15 @@ function NotesEditCell({
 
 // ─── Row Actions ────────────────────────────────────────────────────────────
 
-function WineRowActions({ wine, onDelete }: { wine: SerializedWine; onDelete: () => void }) {
+function WineRowActions({
+  wine,
+  onDelete,
+  onConsume,
+}: {
+  wine: SerializedWine
+  onDelete: () => void
+  onConsume: () => void
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -466,6 +475,15 @@ function WineRowActions({ wine, onDelete }: { wine: SerializedWine; onDelete: ()
             View Details
           </Link>
         </DropdownMenuItem>
+        {!wine.isFullyConsumed && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={onConsume}>
+              <GlassWater className="mr-2 h-4 w-4" />
+              Mark as Consumed
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={onDelete} className="text-destructive focus:text-destructive">
           <Trash2 className="mr-2 h-4 w-4" />
@@ -486,6 +504,7 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<SerializedWine | null>(null)
+  const [consumeTarget, setConsumeTarget] = useState<SerializedWine | null>(null)
   const [cellarView, setCellarView] = useState<CellarView>('in-cellar')
 
   useEffect(() => { setWines(initialWines) }, [initialWines])
@@ -826,7 +845,11 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
       {
         id: 'actions',
         cell: ({ row }) => (
-          <WineRowActions wine={row.original} onDelete={() => setDeleteTarget(row.original)} />
+          <WineRowActions
+            wine={row.original}
+            onDelete={() => setDeleteTarget(row.original)}
+            onConsume={() => setConsumeTarget(row.original)}
+          />
         ),
       },
     ],
@@ -957,6 +980,16 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
         wineLabel={deleteTarget ? `${deleteTarget.producer} ${deleteTarget.wineName}` : ''}
         open={deleteTarget !== null}
         onOpenChange={(open) => { if (!open) setDeleteTarget(null) }}
+      />
+
+      <MarkConsumedDialog
+        wine={consumeTarget}
+        open={consumeTarget !== null}
+        onOpenChange={(open) => { if (!open) setConsumeTarget(null) }}
+        onConsumed={(wineId, update) => {
+          setWines((prev) => prev.map((w) => (w.id === wineId ? { ...w, ...update } : w)))
+          setConsumeTarget(null)
+        }}
       />
     </div>
   )

@@ -97,6 +97,102 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: 'This import is not ready to confirm' }, { status: 400 })
   }
 
+  // ─── Match-consumed confirmation (separate non-streaming flow) ───────────────
+  if (importRecord.importType === 'MATCH_CONSUMED') {
+    const body = await request.json().catch(() => ({}))
+    const matchActions: Array<{
+      importRowId: string
+      matchedWineId: string | null
+      action: 'consume' | 'add_new' | 'skip'
+    }> = body.matchActions ?? []
+    const consumedDate = body.consumedDate ? new Date(body.consumedDate) : new Date()
+
+    let confirmed = 0
+    let skipped = 0
+
+    for (const item of matchActions) {
+      if (item.action === 'skip') {
+        await prisma.importRow.update({ where: { id: item.importRowId }, data: { status: 'SKIPPED' } }).catch(() => {})
+        skipped++
+        continue
+      }
+
+      if (item.action === 'consume' && item.matchedWineId) {
+        const wine = await prisma.wine.findFirst({
+          where: { id: item.matchedWineId, userId: user.id },
+        })
+        if (wine) {
+          const remaining = wine.quantity - wine.consumedQuantity
+          if (remaining > 0) {
+            await prisma.$transaction([
+              prisma.wine.update({
+                where: { id: wine.id },
+                data: { consumedQuantity: wine.quantity, isFullyConsumed: true },
+              }),
+              prisma.consumptionLog.create({
+                data: {
+                  wineId: wine.id,
+                  userId: user.id,
+                  quantity: remaining,
+                  consumedDate,
+                  occasion: 'Cellar match import',
+                },
+              }),
+            ])
+          }
+          await prisma.importRow.update({
+            where: { id: item.importRowId },
+            data: { status: 'CONFIRMED', wineId: wine.id },
+          }).catch(() => {})
+          confirmed++
+        }
+      } else if (item.action === 'add_new') {
+        const row = importRecord.rows.find((r) => r.id === item.importRowId)
+        if (row?.mappedData) {
+          const mapped = row.mappedData as unknown as MappedWineData
+          if (mapped.producer?.trim() && mapped.wineName?.trim()) {
+            const qty = mapped.quantity && mapped.quantity > 0 ? Math.round(mapped.quantity) : 1
+            const wine = await prisma.wine.create({
+              data: {
+                userId: user.id,
+                importId: importRecord.id,
+                ...toWineCreateData(mapped),
+                isFullyConsumed: true,
+                consumedQuantity: qty,
+              },
+            })
+            await prisma.consumptionLog.create({
+              data: {
+                wineId: wine.id,
+                userId: user.id,
+                quantity: qty,
+                consumedDate,
+                occasion: 'Cellar match import — new record',
+              },
+            })
+            await prisma.importRow.update({
+              where: { id: item.importRowId },
+              data: { status: 'CONFIRMED', wineId: wine.id },
+            }).catch(() => {})
+            confirmed++
+          }
+        }
+      }
+    }
+
+    await prisma.import.update({
+      where: { id: importRecord.id },
+      data: { status: 'COMPLETE', recordCount: confirmed, skippedCount: skipped, completedAt: new Date() },
+    })
+
+    revalidatePath('/dashboard')
+    revalidatePath('/dashboard/cellar')
+    revalidatePath('/dashboard/import')
+    revalidatePath(`/dashboard/import/${importRecord.id}`)
+
+    return NextResponse.json({ success: true, confirmed, skipped })
+  }
+
   let consumedRowIds: Set<string> = new Set()
   try {
     const body = await request.json().catch(() => ({}))

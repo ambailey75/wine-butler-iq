@@ -158,6 +158,12 @@ enum ImportStatus {
   FAILED
 }
 
+enum ImportType {
+  NEW_INVENTORY
+  MATCH_CONSUMED
+  HISTORICAL_CONSUMED
+}
+
 model Import {
   id               String           @id @default(cuid())
   userId           String
@@ -168,6 +174,7 @@ model Import {
   recordCount      Int              @default(0)
   skippedCount     Int              @default(0)
   errorMessage          String?
+  importType            ImportType       @default(NEW_INVENTORY)
   isHistoricalImport    Boolean          @default(false)
   historicalConsumedDate DateTime?
   createdAt             DateTime         @default(now())

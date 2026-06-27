@@ -4,6 +4,7 @@ import { AlertTriangle, CheckCircle2, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ColumnMappingForm } from './ColumnMappingForm'
 import { ImportRowTable, type ImportRowWithDuplicate } from './ImportRowTable'
+import { MatchConsumedReview } from './MatchConsumedReview'
 
 interface ImportReviewProps {
   importRecord: Import
@@ -78,14 +79,25 @@ export function ImportReview({ importRecord, rows, mappingSuggestion, regionSpli
     )
   }
 
+  const errorBanner = importRecord.errorMessage ? (
+    <div className="flex items-start gap-3 rounded-md border border-border bg-card p-4">
+      <Info className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+      <p className="text-sm text-muted-foreground">{importRecord.errorMessage}</p>
+    </div>
+  ) : null
+
+  if (importRecord.importType === 'MATCH_CONSUMED') {
+    return (
+      <div className="space-y-4">
+        {errorBanner}
+        <MatchConsumedReview importId={importRecord.id} />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
-      {importRecord.errorMessage && (
-        <div className="flex items-start gap-3 rounded-md border border-border bg-card p-4">
-          <Info className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">{importRecord.errorMessage}</p>
-        </div>
-      )}
+      {errorBanner}
       <ImportRowTable importId={importRecord.id} rows={rows} isHistoricalImport={isHistoricalImport} />
     </div>
   )

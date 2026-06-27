@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-import { ArrowLeft, Clock } from 'lucide-react'
+import { ArrowLeft, Clock, Users } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { getImport } from '@/lib/import/queries'
 import { findDuplicates } from '@/lib/import/duplicate-detector'
@@ -80,7 +80,7 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
         </div>
       </div>
 
-      {importRecord.isHistoricalImport && (
+      {importRecord.importType === 'HISTORICAL_CONSUMED' && (
         <div className="flex items-start gap-3 rounded-md border border-primary/30 bg-primary/5 p-4">
           <Clock className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <div>
@@ -90,6 +90,17 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
               {importRecord.historicalConsumedDate
                 ? ` (consumed date: ${new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(importRecord.historicalConsumedDate)})`
                 : ''}
+            </p>
+          </div>
+        </div>
+      )}
+      {importRecord.importType === 'MATCH_CONSUMED' && (
+        <div className="flex items-start gap-3 rounded-md border border-secondary/30 bg-secondary/5 p-4">
+          <Users className="mt-0.5 h-5 w-5 shrink-0 text-secondary" />
+          <div>
+            <p className="font-medium text-foreground">Match and consume</p>
+            <p className="text-sm text-muted-foreground">
+              Each row will be matched against wines in your cellar. You confirm every match before anything changes.
             </p>
           </div>
         </div>

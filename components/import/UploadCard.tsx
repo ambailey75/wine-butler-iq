@@ -13,11 +13,11 @@ interface UploadCardProps {
   icon: ReactNode
   accept: Record<string, string[]>
   sourceHint?: 'invoice' | 'label'
-  isHistoricalImport?: boolean
+  importType: 'NEW_INVENTORY' | 'MATCH_CONSUMED' | 'HISTORICAL_CONSUMED'
   historicalConsumedDate?: string
 }
 
-export function UploadCard({ title, description, icon, accept, sourceHint, isHistoricalImport, historicalConsumedDate }: UploadCardProps) {
+export function UploadCard({ title, description, icon, accept, sourceHint, importType, historicalConsumedDate }: UploadCardProps) {
   const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -33,9 +33,9 @@ export function UploadCard({ title, description, icon, accept, sourceHint, isHis
       const formData = new FormData()
       formData.append('file', file)
       if (sourceHint) formData.append('sourceHint', sourceHint)
-      if (isHistoricalImport) {
-        formData.append('isHistoricalImport', 'true')
-        if (historicalConsumedDate) formData.append('historicalConsumedDate', historicalConsumedDate)
+      formData.append('importType', importType)
+      if (importType === 'HISTORICAL_CONSUMED' && historicalConsumedDate) {
+        formData.append('historicalConsumedDate', historicalConsumedDate)
       }
 
       try {
@@ -62,7 +62,7 @@ export function UploadCard({ title, description, icon, accept, sourceHint, isHis
         setUploading(false)
       }
     },
-    [router, sourceHint, isHistoricalImport, historicalConsumedDate]
+    [router, sourceHint, importType, historicalConsumedDate]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -21,7 +21,13 @@ export async function POST(request: NextRequest) {
   }
 
   const sourceHint = (formData.get('sourceHint') as string | null) || undefined
-  const isHistoricalImport = formData.get('isHistoricalImport') === 'true'
+  const importTypeStr = (formData.get('importType') as string) || 'NEW_INVENTORY'
+  const importType = (['NEW_INVENTORY', 'MATCH_CONSUMED', 'HISTORICAL_CONSUMED'] as const).includes(
+    importTypeStr as 'NEW_INVENTORY' | 'MATCH_CONSUMED' | 'HISTORICAL_CONSUMED'
+  )
+    ? (importTypeStr as 'NEW_INVENTORY' | 'MATCH_CONSUMED' | 'HISTORICAL_CONSUMED')
+    : ('NEW_INVENTORY' as const)
+  const isHistoricalImport = importType === 'HISTORICAL_CONSUMED'
   const historicalConsumedDateStr = formData.get('historicalConsumedDate') as string | null
   const historicalConsumedDate = historicalConsumedDateStr ? new Date(historicalConsumedDateStr) : null
 
@@ -41,6 +47,7 @@ export async function POST(request: NextRequest) {
       originalFilename: file.name,
       storagePath: '',
       status: 'PENDING',
+      importType,
       isHistoricalImport,
       historicalConsumedDate: isHistoricalImport ? historicalConsumedDate : null,
     },

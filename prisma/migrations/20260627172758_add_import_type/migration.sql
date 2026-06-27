@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "ImportType" AS ENUM ('NEW_INVENTORY', 'MATCH_CONSUMED', 'HISTORICAL_CONSUMED');
+
+-- AlterTable
+ALTER TABLE "imports" ADD COLUMN     "importType" "ImportType" NOT NULL DEFAULT 'NEW_INVENTORY';

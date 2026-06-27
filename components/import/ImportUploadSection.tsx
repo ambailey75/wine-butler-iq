@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useState, type ReactNode } from 'react'
-import { HistoricalImportToggle } from './HistoricalImportToggle'
+import { ImportTypeSelector, type ImportTypeValue } from './ImportTypeSelector'
 import { UploadCard } from './UploadCard'
 
 interface ImportUploadSectionProps {
@@ -15,25 +15,35 @@ interface ImportUploadSectionProps {
 }
 
 export function ImportUploadSection({ cards }: ImportUploadSectionProps) {
-  const [historicalState, setHistoricalState] = useState({ isHistorical: false, date: '' })
+  const [importType, setImportType] = useState<ImportTypeValue | null>(null)
+  const [historicalDate, setHistoricalDate] = useState(() => new Date().toISOString().split('T')[0])
 
-  const handleToggle = useCallback((isHistorical: boolean, date: string) => {
-    setHistoricalState({ isHistorical, date })
+  const handleDateChange = useCallback((date: string) => {
+    setHistoricalDate(date)
   }, [])
 
   return (
-    <div className="space-y-4">
-      <HistoricalImportToggle onChange={handleToggle} />
-      <div className="grid gap-4 sm:grid-cols-3">
-        {cards.map((card) => (
-          <UploadCard
-            key={card.title}
-            {...card}
-            isHistoricalImport={historicalState.isHistorical}
-            historicalConsumedDate={historicalState.isHistorical ? historicalState.date : undefined}
-          />
-        ))}
-      </div>
+    <div className="space-y-5">
+      <ImportTypeSelector
+        importType={importType}
+        onSelect={setImportType}
+        historicalDate={historicalDate}
+        onDateChange={handleDateChange}
+      />
+      {importType && (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {cards.map((card) => (
+            <UploadCard
+              key={card.title}
+              {...card}
+              importType={importType}
+              historicalConsumedDate={
+                importType === 'HISTORICAL_CONSUMED' ? historicalDate : undefined
+              }
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
