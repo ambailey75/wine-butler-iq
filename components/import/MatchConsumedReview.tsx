@@ -61,11 +61,13 @@ export function MatchConsumedReview({ importId }: { importId: string }) {
     fetch(`/api/import/${importId}/match`)
       .then((r) => r.json())
       .then((data) => {
-        setMatches(data.matches ?? [])
+        const loadedMatches: MatchRow[] = data.matches ?? []
+        setMatches(loadedMatches)
         setCellarOptions(data.cellarOptions ?? [])
         setRowStates(
-          (data.matches ?? []).map((m: MatchRow) => ({
+          loadedMatches.map((m) => ({
             importRowId: m.importRowId,
+            // exact + fuzzy default to Include; none defaults to Skip
             action:
               m.confidence === 'exact' || m.confidence === 'fuzzy'
                 ? ('consume' as RowAction)
@@ -84,6 +86,22 @@ export function MatchConsumedReview({ importId }: { importId: string }) {
   function updateRow(importRowId: string, patch: Partial<RowState>) {
     setRowStates((prev) =>
       prev.map((r) => (r.importRowId === importRowId ? { ...r, ...patch } : r))
+    )
+  }
+
+  function bulkSetAction(include: boolean) {
+    if (!include) {
+      setRowStates((prev) => prev.map((r) => ({ ...r, action: 'skip' })))
+      return
+    }
+    setRowStates((prev) =>
+      prev.map((r) => {
+        const match = matches.find((m) => m.importRowId === r.importRowId)
+        return {
+          ...r,
+          action: match?.confidence !== 'none' ? 'consume' : 'add_new',
+        }
+      })
     )
   }
 
@@ -125,28 +143,52 @@ export function MatchConsumedReview({ importId }: { importId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-medium text-foreground">
             {matches.length} rows matched against your cellar
           </p>
           <p className="text-xs text-muted-foreground">
-            Review each match and confirm. Only checked rows will be updated.
+            Exact and fuzzy matches default to Include. No-match rows default to Skip.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <label htmlFor="consumed-date" className="text-xs text-muted-foreground whitespace-nowrap">
-              Consumed date
-            </label>
-            <Input
-              id="consumed-date"
-              type="date"
-              value={consumedDate}
-              onChange={(e) => setConsumedDate(e.target.value)}
-              className="w-40"
-            />
-          </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="consumed-date" className="text-xs text-muted-foreground whitespace-nowrap">
+            Consumed date
+          </label>
+          <Input
+            id="consumed-date"
+            type="date"
+            value={consumedDate}
+            onChange={(e) => setConsumedDate(e.target.value)}
+            className="w-40"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-muted/30 px-3 py-2">
+        <span className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{includeCount}</span> of {matches.length} wines will be imported
+        </span>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => bulkSetAction(true)}
+            disabled={submitting}
+          >
+            Include All
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => bulkSetAction(false)}
+            disabled={submitting}
+          >
+            Skip All
+          </Button>
         </div>
       </div>
 

@@ -72,9 +72,10 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
   const [incompleteRowIds, setIncompleteRowIds] = useState<Set<string>>(new Set())
   const autoSkipped = useRef(false)
 
-  // Possible duplicates default to "Skip" the first time the review loads.
+  // Auto-skip possible duplicates on first load — only for NEW_INVENTORY flows.
+  // Historical consumed imports expect to match existing cellar wines, so duplicates are intentional.
   useEffect(() => {
-    if (autoSkipped.current) return
+    if (autoSkipped.current || isHistoricalImport) return
     autoSkipped.current = true
 
     const toSkip = rowsState.filter((row) => row.duplicateOf && row.status === 'PENDING')
@@ -96,6 +97,16 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     })
+  }
+
+  function bulkSetStatus(status: 'PENDING' | 'SKIPPED') {
+    const snapshot = rowsState
+    setRowsState((prev) => prev.map((row) => ({ ...row, status })))
+    for (const row of snapshot) {
+      if (row.status !== status) {
+        void patchRow(row.id, { status })
+      }
+    }
   }
 
   function updateField(rowId: string, key: keyof MappedWineData, rawValue: string) {
@@ -207,8 +218,34 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
         <h2 className="font-serif text-lg font-semibold text-foreground">Review your wines</h2>
         <p className="text-sm text-muted-foreground">
           Edit any fields that need correcting. Amber fields had low extraction confidence — please
-          verify them. Possible duplicates default to Skip.
+          verify them.{!isHistoricalImport && ' Possible duplicates default to Skip.'}
         </p>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-muted/30 px-3 py-2">
+        <span className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{includedCount}</span> of {rowsState.length} wines will be imported
+        </span>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => bulkSetStatus('PENDING')}
+            disabled={confirming}
+          >
+            Select All
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => bulkSetStatus('SKIPPED')}
+            disabled={confirming}
+          >
+            Deselect All
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-md border border-border">
