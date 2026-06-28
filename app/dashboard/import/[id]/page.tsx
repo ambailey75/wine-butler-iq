@@ -29,10 +29,16 @@ export default async function ImportReviewPage({ params, searchParams }: ImportR
   )
   const duplicates = await findDuplicates(user.id, candidates)
 
-  const rows = importRecord.rows.map((row, index) => ({
-    ...row,
-    duplicateOf: duplicates[index],
-  }))
+  const rows = importRecord.rows.map((row, index) => {
+    const scores = (row.confidenceScores ?? {}) as Record<string, unknown>
+    const enrichedSources: Record<string, string> = {}
+    for (const [key, val] of Object.entries(scores)) {
+      if (key.startsWith('_src_') && typeof val === 'string') {
+        enrichedSources[key.slice(5)] = val
+      }
+    }
+    return { ...row, duplicateOf: duplicates[index], enrichedSources }
+  })
 
   const mappingParam = searchParams.mapping
   let mappingSuggestion: Record<string, string | null> = {}

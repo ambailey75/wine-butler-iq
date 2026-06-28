@@ -35,6 +35,7 @@ import type { ImportRow } from '@prisma/client'
 
 export interface ImportRowWithDuplicate extends ImportRow {
   duplicateOf: DuplicateMatch | null
+  enrichedSources?: Record<string, string>
 }
 
 interface RowState {
@@ -44,6 +45,7 @@ interface RowState {
   status: ImportRowStatus
   duplicateOf: DuplicateMatch | null
   markConsumed: boolean
+  enrichedSources: Record<string, string>
 }
 
 function toRowState(row: ImportRowWithDuplicate, defaultConsumed: boolean): RowState {
@@ -54,6 +56,7 @@ function toRowState(row: ImportRowWithDuplicate, defaultConsumed: boolean): RowS
     status: row.status,
     duplicateOf: row.duplicateOf,
     markConsumed: defaultConsumed,
+    enrichedSources: row.enrichedSources ?? {},
   }
 }
 
@@ -310,6 +313,8 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
                   const value = row.mappedData[field.key]
                   const confidence = row.confidenceScores[field.key]
                   const lowConfidence = confidence !== undefined && confidence < LOW_CONFIDENCE_THRESHOLD
+                  const enrichSource = row.enrichedSources[field.key]
+                  const badgeLabel = enrichSource === 'static' ? 'Matched' : enrichSource === 'ai-suggested' ? 'AI suggested' : null
 
                   const input = (
                     <Input
@@ -323,16 +328,33 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
                     />
                   )
 
+                  const inputWithTooltip = lowConfidence ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>{input}</TooltipTrigger>
+                      <TooltipContent>Low confidence — please verify</TooltipContent>
+                    </Tooltip>
+                  ) : input
+
                   return (
                     <TableCell key={field.key}>
-                      {lowConfidence ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>{input}</TooltipTrigger>
-                          <TooltipContent>Low confidence — please verify</TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        input
-                      )}
+                      {badgeLabel ? (
+                        <div className="flex flex-col gap-1">
+                          {inputWithTooltip}
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className={cn(
+                                'inline-flex w-fit cursor-default items-center rounded-sm px-1 py-0.5 text-[10px] font-medium leading-none',
+                                enrichSource === 'static'
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'
+                              )}>
+                                {badgeLabel}
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>Auto-filled from wine knowledge — verify before confirming</TooltipContent>
+                          </Tooltip>
+                        </div>
+                      ) : inputWithTooltip}
                     </TableCell>
                   )
                 })}

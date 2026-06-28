@@ -27,10 +27,19 @@ export async function GET(_request: Request, { params }: RouteParams) {
   )
   const duplicates = await findDuplicates(user.id, candidates)
 
-  const rows = importRecord.rows.map((row, index) => ({
-    ...row,
-    duplicateOf: duplicates[index],
-  }))
+  const rows = importRecord.rows.map((row, index) => {
+    const scores = (row.confidenceScores ?? {}) as Record<string, unknown>
+    const enrichedFields: string[] = []
+    const enrichedSources: Record<string, string> = {}
+    for (const [key, val] of Object.entries(scores)) {
+      if (key.startsWith('_src_') && typeof val === 'string') {
+        const field = key.slice(5)
+        enrichedFields.push(field)
+        enrichedSources[field] = val
+      }
+    }
+    return { ...row, duplicateOf: duplicates[index], enrichedFields, enrichedSources }
+  })
 
   return NextResponse.json({ ...importRecord, rows })
 }

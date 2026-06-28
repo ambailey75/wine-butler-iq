@@ -4,7 +4,9 @@ import { parseSpreadsheet } from './excel'
 import { extractPdfPages } from './pdf'
 import { fileToBase64 } from './image'
 import { extractWinesFromPdf, extractWinesFromImage, extractWinesFromInvoiceImage, extractWinesFromText, suggestColumnMapping } from './claude-extractor'
-import { PDF_PAGE_BATCH_SIZE } from './constants'
+import { PDF_PAGE_BATCH_SIZE, type MappedWineData } from './constants'
+import { enrichFromStaticDataset, type EnrichableRow } from './enrich-from-static'
+import { enrichFromClaude } from './enrich-from-claude'
 
 export interface ProcessResult {
   mappingSuggestion?: Record<string, string | null>
@@ -86,8 +88,15 @@ async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResu
     return {}
   }
 
+  const enrichableRows: EnrichableRow[] = extracted.map((r) => ({
+    mappedData: r.mappedData,
+    confidenceScores: { ...(r.confidenceScores as unknown as Record<string, unknown>) },
+  }))
+  const staticEnriched = enrichFromStaticDataset(enrichableRows)
+  const enriched = await enrichFromClaude(staticEnriched)
+
   await prisma.importRow.createMany({
-    data: extracted.map((row) => ({
+    data: enriched.map((row) => ({
       importId,
       rawData: row.mappedData as unknown as Prisma.InputJsonValue,
       mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
@@ -97,7 +106,7 @@ async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResu
 
   await prisma.import.update({
     where: { id: importId },
-    data: { status: 'REVIEW', recordCount: extracted.length },
+    data: { status: 'REVIEW', recordCount: enriched.length },
   })
 
   return {}
@@ -164,8 +173,15 @@ async function processImage(importId: string, file: File, isInvoice = false): Pr
       return {}
     }
 
+    const enrichableHtmlRows: EnrichableRow[] = extracted.map((r) => ({
+      mappedData: r.mappedData,
+      confidenceScores: { ...(r.confidenceScores as unknown as Record<string, unknown>) },
+    }))
+    const staticEnrichedHtml = enrichFromStaticDataset(enrichableHtmlRows)
+    const enrichedHtml = await enrichFromClaude(staticEnrichedHtml)
+
     await prisma.importRow.createMany({
-      data: extracted.map((row) => ({
+      data: enrichedHtml.map((row) => ({
         importId,
         rawData: row.mappedData as unknown as Prisma.InputJsonValue,
         mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
@@ -175,7 +191,7 @@ async function processImage(importId: string, file: File, isInvoice = false): Pr
 
     await prisma.import.update({
       where: { id: importId },
-      data: { status: 'REVIEW', recordCount: extracted.length },
+      data: { status: 'REVIEW', recordCount: enrichedHtml.length },
     })
 
     return {}
