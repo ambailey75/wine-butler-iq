@@ -44,26 +44,41 @@ export function Sidebar({ alertCount = 0 }: { alertCount?: number }) {
   const pathname = usePathname()
 
   return (
-    <nav className="flex h-full flex-col gap-1 p-4">
-      <Link href="/dashboard" className="mb-4 flex flex-col items-center px-3">
-        <Image
-          src="/wine-butler-ai-logo.png"
-          alt="Wine Butler AI"
-          width={140}
-          height={140}
-          className="mb-1"
-          priority
-        />
-        <span className="text-xs text-muted-foreground">Wine Butler AI</span>
-      </Link>
-      {NAV_ITEMS.map((item) => (
-        <NavItem
-          key={item.label}
-          {...item}
-          active={pathname.startsWith(item.href)}
-          badgeCount={item.href === '/dashboard/alerts' ? alertCount : undefined}
-        />
-      ))}
-    </nav>
+    <div className="flex h-full flex-col">
+      <nav className="flex flex-1 flex-col gap-1 p-4">
+        <Link href="/dashboard" className="mb-4 flex flex-col items-center px-3">
+          <Image
+            src="/wine-butler-ai-logo.png"
+            alt="Wine Butler AI"
+            width={200}
+            height={200}
+            className="mb-1"
+            priority
+          />
+          <span className="text-xs text-muted-foreground">Wine Butler AI</span>
+        </Link>
+        {NAV_ITEMS.map((item) => (
+          <NavItem
+            key={item.label}
+            {...item}
+            active={pathname.startsWith(item.href)}
+            badgeCount={item.href === '/dashboard/alerts' ? alertCount : undefined}
+          />
+        ))}
+      </nav>
+      <div
+        className="relative w-full overflow-hidden rounded-t-lg"
+        style={{ height: 200 }}
+      >
+        <div style={{ position: 'absolute', left: 0, top: 0, width: '200%', height: '100%' }}>
+          <Image
+            src="/images/grapes-vineyard.png"
+            alt="Vineyard grapes"
+            fill
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
+      </div>
+    </div>
   )
 }

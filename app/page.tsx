@@ -6,17 +6,29 @@ export default function Home() {
     <div className="min-h-screen bg-background font-sans text-foreground">
 
       {/* Hero */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+      <section
+        className="relative flex w-full flex-col items-center justify-end overflow-hidden pb-20"
+        style={{ minHeight: '100vh' }}
+      >
         <Image
           src="/images/vineyard-rows.png"
           alt="Vineyard rows at sunset"
           fill
-          className="object-cover"
+          style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
+          sizes="100vw"
           priority
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'rgba(45, 27, 30, 0.65)' }}
+          style={{ background: 'rgba(45, 27, 30, 0.15)' }}
+        />
+        <div
+          className="absolute inset-x-0 bottom-0"
+          style={{
+            height: '40%',
+            background:
+              'linear-gradient(to bottom, rgba(45, 27, 30, 0) 0%, rgba(45, 27, 30, 0.5) 100%)',
+          }}
         />
         <div className="relative z-10 flex flex-col items-center px-6 text-center">
           <Image

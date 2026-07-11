@@ -12,11 +12,12 @@ export default function AuthLayout({
         src="/images/vineyard-rows.png"
         alt=""
         fill
-        style={{ objectFit: 'cover' }}
+        style={{ objectFit: 'cover', objectPosition: 'center' }}
+        sizes="100vw"
         priority
       />
       {/* Dark overlay */}
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(45, 27, 30, 0.75)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(45, 27, 30, 0.15)' }} />
 
       {/* Frosted card */}
       <div
@@ -25,11 +26,11 @@ export default function AuthLayout({
           zIndex: 10,
           width: '100%',
           maxWidth: '420px',
-          background: 'rgba(45, 27, 30, 0.88)',
+          background: 'rgba(26, 5, 16, 0.92)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
           borderRadius: '16px',
-          border: '1px solid rgba(201, 168, 76, 0.25)',
+          border: '1px solid rgba(201, 168, 76, 0.4)',
           padding: '2.5rem 2.25rem',
           boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
         }}
