@@ -7,51 +7,42 @@ export default function Home() {
 
       {/* Hero */}
       <section
-        className="relative flex w-full flex-col items-center justify-end overflow-hidden pb-20"
-        style={{ minHeight: '100vh' }}
+        className="relative flex w-full items-center justify-center overflow-hidden"
+        style={{ height: '55vh', background: '#2D1B1E' }}
       >
-        <Image
+        <img
           src="/images/vineyard-rows.png"
           alt="Vineyard rows at sunset"
-          fill
-          style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
-          sizes="100vw"
-          priority
+          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
         />
-        <div
-          className="absolute inset-x-0 bottom-0"
-          style={{
-            height: '25%',
-            background:
-              'linear-gradient(to bottom, rgba(45, 27, 30, 0) 0%, rgba(45, 27, 30, 0.5) 100%)',
-          }}
-        />
-        <div className="relative z-10 flex flex-col items-center px-6 text-center">
+        <div className="absolute z-10 flex flex-col items-center px-6 text-center">
           <Image
             src="/wine-butler-ai-logo.png"
             alt="Wine Butler AI"
-            width={220}
-            height={220}
-            className="mb-6 drop-shadow-xl"
+            width={140}
+            height={140}
+            className="mb-4 drop-shadow-xl"
             priority
           />
           <h1
-            className="mb-4 font-bold text-white drop-shadow-lg"
+            className="mb-3 rounded-lg px-4 py-1 font-bold text-white drop-shadow-lg"
             style={{
               fontFamily: 'Georgia, serif',
-              fontSize: 'clamp(2.25rem, 6vw, 4rem)',
+              fontSize: 'clamp(1.75rem, 5vw, 3rem)',
               letterSpacing: '0.02em',
+              background: 'rgba(45, 27, 30, 0.55)',
             }}
           >
             Meet Your Wine Butler
           </h1>
           <p
-            className="mb-10 text-white/80"
+            className="mb-6 rounded-lg px-4 py-1 text-white/90"
             style={{
               fontFamily: 'Arial, sans-serif',
-              fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+              fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
               maxWidth: '480px',
-              lineHeight: '1.7',
+              lineHeight: '1.6',
+              background: 'rgba(45, 27, 30, 0.55)',
             }}
           >
             An AI sommelier that knows your cellar

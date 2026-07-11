@@ -50,8 +50,8 @@ export function Sidebar({ alertCount = 0 }: { alertCount?: number }) {
           <Image
             src="/wine-butler-ai-logo.png"
             alt="Wine Butler AI"
-            width={200}
-            height={200}
+            width={230}
+            height={230}
             className="mb-1"
             priority
           />

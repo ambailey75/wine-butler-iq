@@ -8,16 +8,20 @@ export default function AuthLayout({
   return (
     <main style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
       {/* Vineyard background */}
-      <div style={{ position: 'fixed', inset: 0 }}>
-        <Image
-          src="/images/vineyard-rows.png"
-          alt=""
-          fill
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
-          sizes="100vw"
-          priority
-        />
-      </div>
+      <img
+        src="/images/vineyard-rows.png"
+        alt=""
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          objectPosition: 'center',
+          background: '#2D1B1E',
+        }}
+      />
 
       {/* Frosted card */}
       <div
