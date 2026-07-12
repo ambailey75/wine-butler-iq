@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ImportRowStatus } from '@prisma/client'
+import { AlertTriangle } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -66,14 +67,31 @@ interface ImportRowTableProps {
   isHistoricalImport?: boolean
 }
 
+interface ConfirmResult {
+  imported: number
+  skipped: number
+  errors: Array<{ rowId: string; producer?: string; wineName?: string; error: string }>
+}
+
 export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRowTableProps) {
   const router = useRouter()
   const [rowsState, setRowsState] = useState<RowState[]>(() => rows.map((r) => toRowState(r, !!isHistoricalImport)))
   const [confirming, setConfirming] = useState(false)
   const [progress, setProgress] = useState<{ imported: number; total: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [incompleteRowIds, setIncompleteRowIds] = useState<Set<string>>(new Set())
+  const [result, setResult] = useState<ConfirmResult | null>(null)
   const autoSkipped = useRef(false)
+
+  const missingRequiredRowIds = useMemo(() => {
+    const ids = new Set<string>()
+    for (const row of rowsState) {
+      if (row.status === 'SKIPPED') continue
+      if (!row.mappedData.producer?.trim() || !row.mappedData.wineName?.trim()) {
+        ids.add(row.id)
+      }
+    }
+    return ids
+  }, [rowsState])
 
   // Auto-skip possible duplicates on first load — only for NEW_INVENTORY flows.
   // Historical consumed imports expect to match existing cellar wines, so duplicates are intentional.
@@ -151,7 +169,7 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
     setConfirming(true)
     setError(null)
     setProgress(null)
-    setIncompleteRowIds(new Set())
+    setResult(null)
 
     try {
       const consumedRowIds = rowsState.filter((r) => r.markConsumed && r.status !== 'SKIPPED').map((r) => r.id)
@@ -164,9 +182,6 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
       if (res.headers.get('content-type')?.includes('application/json')) {
         const body = await res.json().catch(() => null)
         if (!res.ok) {
-          if (Array.isArray(body?.rowIds)) {
-            setIncompleteRowIds(new Set(body.rowIds))
-          }
           throw new Error(body?.error || 'Could not confirm import')
         }
         router.push('/dashboard/cellar')
@@ -194,6 +209,12 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
             if (msg.type === 'progress') {
               setProgress({ imported: msg.imported, total: msg.total })
             } else if (msg.type === 'complete') {
+              if (Array.isArray(msg.errors) && msg.errors.length > 0) {
+                setConfirming(false)
+                setProgress(null)
+                setResult({ imported: msg.imported ?? 0, skipped: msg.skipped ?? 0, errors: msg.errors })
+                return
+              }
               router.push('/dashboard/cellar')
               return
             } else if (msg.type === 'error') {
@@ -251,6 +272,16 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
         </div>
       </div>
 
+      {missingRequiredRowIds.size > 0 && (
+        <div className="flex items-start gap-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <p>
+            Some rows are missing a producer or wine name — these fields will need to be filled in
+            after import.
+          </p>
+        </div>
+      )}
+
       <div className="overflow-x-auto rounded-md border border-border">
         <Table>
           <TableHeader>
@@ -270,7 +301,7 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
             {rowsState.map((row) => (
               <TableRow
                 key={row.id}
-                className={cn(incompleteRowIds.has(row.id) && 'bg-destructive/5')}
+                className={cn(missingRequiredRowIds.has(row.id) && 'bg-amber-50 dark:bg-amber-950/20')}
               >
                 <TableCell className="sticky left-0 bg-card">
                   <Select
@@ -366,32 +397,52 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <div className="flex items-center gap-3">
-        <Button onClick={handleConfirm} disabled={confirming || includedCount === 0}>
-          {confirming
-            ? progress
-              ? `Importing ${progress.imported} of ${progress.total}...`
-              : 'Importing...'
-            : `Confirm Import (${includedCount})`}
-        </Button>
-        {confirming && progress ? (
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-32 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary transition-all"
-                style={{ width: `${(progress.imported / progress.total) * 100}%` }}
-              />
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {Math.round((progress.imported / progress.total) * 100)}%
-            </span>
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            {rowsState.length - includedCount} row{rowsState.length - includedCount === 1 ? '' : 's'} skipped
+      {result && (
+        <div className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+          <p className="font-medium">
+            Import finished with some issues — {result.imported} imported, {result.skipped} skipped.
           </p>
-        )}
-      </div>
+          <ul className="list-disc space-y-0.5 pl-5 text-xs">
+            {result.errors.map((e) => (
+              <li key={e.rowId}>
+                {[e.producer, e.wineName].filter(Boolean).join(' — ') || 'Row'}: {e.error}
+              </li>
+            ))}
+          </ul>
+          <Button size="sm" onClick={() => router.push('/dashboard/cellar')}>
+            Go to cellar
+          </Button>
+        </div>
+      )}
+
+      {!result && (
+        <div className="flex items-center gap-3">
+          <Button onClick={handleConfirm} disabled={confirming || includedCount === 0}>
+            {confirming
+              ? progress
+                ? `Importing ${progress.imported} of ${progress.total}...`
+                : 'Importing...'
+              : `Confirm Import (${includedCount})`}
+          </Button>
+          {confirming && progress ? (
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-32 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${(progress.imported / progress.total) * 100}%` }}
+                />
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {Math.round((progress.imported / progress.total) * 100)}%
+              </span>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {rowsState.length - includedCount} row{rowsState.length - includedCount === 1 ? '' : 's'} skipped
+            </p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

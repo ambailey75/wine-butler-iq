@@ -200,4 +200,43 @@ describe('extractWinesFromPdf', () => {
 
     expect(anthropic.messages.create).toHaveBeenCalledTimes(3)
   })
+
+  it('strips placeholder strings and a zero vintage from extracted rows', async () => {
+    ;(anthropic.messages.create as jest.Mock).mockResolvedValue(
+      toolUseResponse('extract_wines', {
+        wines: [
+          {
+            mappedData: {
+              producer: 'Unknown',
+              wineName: 'Domaine des Étoile Brut Rosé',
+              vintage: 0,
+              vendor: 'N/A',
+              region: 'Not specified',
+              country: 'France',
+            },
+            confidenceScores: {
+              producer: 0.4,
+              wineName: 0.9,
+              vintage: 0.5,
+              vendor: 0.3,
+              region: 0.2,
+              country: 0.9,
+            },
+          },
+        ],
+      })
+    )
+
+    const result = await extractWinesFromPdf(['Page 1 text with wine data'], 5)
+
+    expect(result).toHaveLength(1)
+    expect(result[0].mappedData.producer).toBeUndefined()
+    expect(result[0].mappedData.vintage).toBeUndefined()
+    expect(result[0].mappedData.vendor).toBeUndefined()
+    expect(result[0].mappedData.region).toBeUndefined()
+    expect(result[0].mappedData.country).toBe('France')
+    expect(result[0].mappedData.wineName).toBe('Domaine des Étoile Brut Rosé')
+    expect(result[0].confidenceScores.producer).toBeUndefined()
+    expect(result[0].confidenceScores.vintage).toBeUndefined()
+  })
 })

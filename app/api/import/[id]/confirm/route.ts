@@ -19,8 +19,8 @@ function toWineCreateData(mapped: MappedWineData) {
   const purchaseDate = mapped.purchaseDate ? new Date(mapped.purchaseDate) : null
 
   return {
-    producer: mapped.producer!.trim(),
-    wineName: mapped.wineName!.trim(),
+    producer: mapped.producer?.trim() || 'Unknown',
+    wineName: mapped.wineName?.trim() || 'Unknown Wine',
     vintage: mapped.vintage ?? null,
     country: mapped.country ?? null,
     state: mapped.state ?? null,
@@ -212,20 +212,6 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: 'No rows selected to import' }, { status: 400 })
   }
 
-  const incompleteRowIds = rowsToImport
-    .filter((row) => {
-      const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
-      return !mapped.producer?.trim() || !mapped.wineName?.trim()
-    })
-    .map((row) => row.id)
-
-  if (incompleteRowIds.length > 0) {
-    return NextResponse.json(
-      { error: 'Some rows are missing a producer or wine name', rowIds: incompleteRowIds },
-      { status: 400 }
-    )
-  }
-
   let labelPhotoUrl: string | null = null
   if (importRecord.sourceType === 'IMAGE') {
     labelPhotoUrl = await copyLabelPhoto(user.id, importRecord.storagePath)
@@ -240,80 +226,97 @@ export async function POST(request: Request, { params }: RouteParams) {
         )
       }
 
-      try {
-        let totalImported = 0
+      let totalImported = 0
+      let totalFailed = 0
+      const rowErrors: Array<{ rowId: string; producer?: string; wineName?: string; error: string }> = []
 
+      try {
         for (let i = 0; i < rowsToImport.length; i += BATCH_SIZE) {
           const batch = rowsToImport.slice(i, i + BATCH_SIZE)
 
-          const wineDataBatch = batch.map((row) => {
-            const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
-            const isConsumed = consumedRowIds.has(row.id)
-            const quantity = mapped.quantity && mapped.quantity > 0 ? Math.round(mapped.quantity) : 1
-            return {
-              userId: user.id,
-              importId: importRecord.id,
-              ...toWineCreateData(mapped),
-              ...(labelPhotoUrl ? { labelPhotoUrl } : {}),
-              ...(isConsumed ? { isFullyConsumed: true, consumedQuantity: quantity } : {}),
-            }
-          })
+          const results = await Promise.allSettled(
+            batch.map(async (row) => {
+              const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
+              const isConsumed = consumedRowIds.has(row.id)
+              const quantity = mapped.quantity && mapped.quantity > 0 ? Math.round(mapped.quantity) : 1
 
-          await prisma.wine.createMany({ data: wineDataBatch })
+              const wine = await prisma.wine.create({
+                data: {
+                  userId: user.id,
+                  importId: importRecord.id,
+                  ...toWineCreateData(mapped),
+                  ...(labelPhotoUrl ? { labelPhotoUrl } : {}),
+                  ...(isConsumed ? { isFullyConsumed: true, consumedQuantity: quantity } : {}),
+                },
+              })
 
-          const createdWines = await prisma.wine.findMany({
-            where: { importId: importRecord.id },
-            select: { id: true, producer: true, wineName: true, vintage: true, quantity: true },
-            orderBy: { createdAt: 'asc' },
-            skip: i,
-            take: BATCH_SIZE,
-          })
+              await prisma.importRow.update({
+                where: { id: row.id },
+                data: { status: 'CONFIRMED', wineId: wine.id },
+              })
 
-          const rowUpdates = batch.map((row, idx) => {
-            const wineId = createdWines[idx]?.id
-            return prisma.importRow.update({
-              where: { id: row.id },
-              data: { status: 'CONFIRMED', ...(wineId ? { wineId } : {}) },
-            })
-          })
-          await Promise.all(rowUpdates)
-
-          const consumptionLogs = batch
-            .map((row, idx) => {
-              if (!consumedRowIds.has(row.id)) return null
-              const wine = createdWines[idx]
-              if (!wine) return null
-              return {
-                wineId: wine.id,
-                userId: user.id,
-                quantity: wine.quantity,
-                consumedDate: historicalDate,
-                occasion: 'Historical import',
-                notes: 'Imported from historical collection',
+              if (isConsumed) {
+                await prisma.consumptionLog.create({
+                  data: {
+                    wineId: wine.id,
+                    userId: user.id,
+                    quantity,
+                    consumedDate: historicalDate,
+                    occasion: 'Historical import',
+                    notes: 'Imported from historical collection',
+                  },
+                })
               }
             })
-            .filter((log): log is NonNullable<typeof log> => log !== null)
+          )
 
-          if (consumptionLogs.length > 0) {
-            await prisma.consumptionLog.createMany({ data: consumptionLogs })
+          for (let j = 0; j < results.length; j++) {
+            const outcome = results[j]
+            const row = batch[j]
+
+            if (outcome.status === 'fulfilled') {
+              totalImported++
+              continue
+            }
+
+            totalFailed++
+            const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
+            const message = outcome.reason instanceof Error ? outcome.reason.message : 'Failed to import row'
+            rowErrors.push({ rowId: row.id, producer: mapped.producer, wineName: mapped.wineName, error: message })
+
+            await prisma.importRow.update({
+              where: { id: row.id },
+              data: { status: 'SKIPPED' },
+            }).catch(() => {})
           }
 
-          totalImported += batch.length
-          sendProgress(totalImported, rowsToImport.length)
+          sendProgress(totalImported + totalFailed, rowsToImport.length)
         }
+
+        const allRowsFailed = totalImported === 0 && rowsToImport.length > 0
 
         await prisma.import.update({
           where: { id: importRecord.id },
           data: {
-            status: 'COMPLETE',
-            recordCount: rowsToImport.length,
-            skippedCount: skippedRows.length,
+            status: allRowsFailed ? 'FAILED' : 'COMPLETE',
+            recordCount: totalImported,
+            skippedCount: skippedRows.length + totalFailed,
             completedAt: new Date(),
+            ...(rowErrors.length > 0
+              ? { errorMessage: `${rowErrors.length} row(s) failed to import` }
+              : {}),
           },
         })
 
         controller.enqueue(
-          encoder.encode(JSON.stringify({ type: 'complete', imported: totalImported }) + '\n')
+          encoder.encode(
+            JSON.stringify({
+              type: 'complete',
+              imported: totalImported,
+              skipped: skippedRows.length + totalFailed,
+              errors: rowErrors,
+            }) + '\n'
+          )
         )
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Import failed'

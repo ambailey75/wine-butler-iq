@@ -22,22 +22,24 @@ jest.mock('next/cache', () => ({
   revalidatePath: jest.fn(),
 }))
 
-const mockCreateMany = jest.fn()
-const mockFindMany = jest.fn()
+const mockCreate = jest.fn()
 const mockImportRowUpdate = jest.fn()
 const mockImportUpdate = jest.fn()
+const mockConsumptionLogCreate = jest.fn()
 
 jest.mock('@/lib/prisma/client', () => ({
   prisma: {
     wine: {
-      createMany: (...args: unknown[]) => mockCreateMany(...args),
-      findMany: (...args: unknown[]) => mockFindMany(...args),
+      create: (...args: unknown[]) => mockCreate(...args),
     },
     importRow: {
       update: (...args: unknown[]) => mockImportRowUpdate(...args),
     },
     import: {
       update: (...args: unknown[]) => mockImportUpdate(...args),
+    },
+    consumptionLog: {
+      create: (...args: unknown[]) => mockConsumptionLogCreate(...args),
     },
   },
 }))
@@ -84,12 +86,18 @@ async function readStream(response: Response): Promise<unknown[]> {
 }
 
 describe('POST /api/import/[id]/confirm', () => {
+  let createIdCounter = 0
+
   beforeEach(() => {
     jest.clearAllMocks()
-    mockCreateMany.mockResolvedValue({ count: 0 })
-    mockFindMany.mockResolvedValue([])
+    createIdCounter = 0
+    mockCreate.mockImplementation(async ({ data }: { data: Record<string, unknown> }) => ({
+      id: `wine-${++createIdCounter}`,
+      ...data,
+    }))
     mockImportRowUpdate.mockResolvedValue({})
     mockImportUpdate.mockResolvedValue({})
+    mockConsumptionLogCreate.mockResolvedValue({})
   })
 
   it('returns 401 when not authenticated', async () => {
@@ -127,21 +135,16 @@ describe('POST /api/import/[id]/confirm', () => {
     ]
     getCurrentUser.mockResolvedValue(mockUser)
     getImport.mockResolvedValue(makeImportRecord({ rows }))
-    mockCreateMany.mockResolvedValue({ count: 2 })
-    mockFindMany.mockResolvedValue([
-      { id: 'wine-1', producer: 'Opus One', wineName: 'Opus One', vintage: 2019 },
-      { id: 'wine-2', producer: 'Caymus', wineName: 'Special Selection', vintage: 2018 },
-    ])
 
     const response = await POST(new Request('http://localhost'), makeParams('import-1'))
     const events = await readStream(response)
 
-    expect(mockCreateMany).toHaveBeenCalledTimes(1)
-    expect(mockCreateMany).toHaveBeenCalledWith({
-      data: expect.arrayContaining([
-        expect.objectContaining({ producer: 'Opus One', userId: 'user-123' }),
-        expect.objectContaining({ producer: 'Caymus', userId: 'user-123' }),
-      ]),
+    expect(mockCreate).toHaveBeenCalledTimes(2)
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ producer: 'Opus One', userId: 'user-123' }),
+    })
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ producer: 'Caymus', userId: 'user-123' }),
     })
 
     expect(mockImportRowUpdate).toHaveBeenCalledTimes(2)
@@ -171,19 +174,13 @@ describe('POST /api/import/[id]/confirm', () => {
     ]
     getCurrentUser.mockResolvedValue(mockUser)
     getImport.mockResolvedValue(makeImportRecord({ rows }))
-    mockCreateMany.mockResolvedValue({ count: 1 })
-    mockFindMany.mockResolvedValue([
-      { id: 'wine-1', producer: 'Opus One', wineName: 'Opus One', vintage: 2019 },
-    ])
 
     const response = await POST(new Request('http://localhost'), makeParams('import-1'))
     const events = await readStream(response)
 
-    expect(mockCreateMany).toHaveBeenCalledWith({
-      data: [expect.objectContaining({ producer: 'Opus One' })],
-    })
-    expect(mockCreateMany).not.toHaveBeenCalledWith({
-      data: expect.arrayContaining([expect.objectContaining({ producer: 'Bad Data' })]),
+    expect(mockCreate).toHaveBeenCalledTimes(1)
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ producer: 'Opus One' }),
     })
 
     expect(events).toContainEqual(
@@ -210,38 +207,75 @@ describe('POST /api/import/[id]/confirm', () => {
 
     expect(response.status).toBe(400)
     expect(body.error).toMatch(/No rows selected/)
-    expect(mockCreateMany).not.toHaveBeenCalled()
+    expect(mockCreate).not.toHaveBeenCalled()
   })
 
-  it('marks import as FAILED and streams error when createMany throws', async () => {
+  it('continues importing remaining rows when one row fails, returning partial success', async () => {
+    const rows = [
+      makeRow('row-1', 'PENDING', { producer: 'Opus One', wineName: 'Opus One' }),
+      makeRow('row-2', 'PENDING', { producer: 'Caymus', wineName: 'Special Selection' }),
+    ]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+    mockCreate
+      .mockImplementationOnce(async ({ data }: { data: Record<string, unknown> }) => ({ id: 'wine-1', ...data }))
+      .mockImplementationOnce(async () => {
+        throw new Error('Missing required field')
+      })
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    const events = await readStream(response)
+
+    const complete = events.find((e) => (e as { type: string }).type === 'complete') as {
+      imported: number
+      skipped: number
+      errors: Array<{ rowId: string; error: string }>
+    }
+    expect(complete.imported).toBe(1)
+    expect(complete.skipped).toBe(1)
+    expect(complete.errors).toEqual([
+      expect.objectContaining({ rowId: 'row-2', error: 'Missing required field' }),
+    ])
+
+    expect(mockImportRowUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'row-2' }, data: { status: 'SKIPPED' } })
+    )
+
+    expect(mockImportUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: 'COMPLETE', recordCount: 1, skippedCount: 1 }),
+      })
+    )
+  })
+
+  it('marks import as FAILED only when every row fails to import', async () => {
     const rows = [
       makeRow('row-1', 'PENDING', { producer: 'Opus One', wineName: 'Opus One' }),
     ]
     getCurrentUser.mockResolvedValue(mockUser)
     getImport.mockResolvedValue(makeImportRecord({ rows }))
-    mockCreateMany.mockRejectedValue(new Error('Database connection lost'))
+    mockCreate.mockRejectedValue(new Error('Database connection lost'))
 
     const response = await POST(new Request('http://localhost'), makeParams('import-1'))
     const events = await readStream(response)
 
-    expect(events).toContainEqual(
-      expect.objectContaining({ type: 'error', error: 'Database connection lost' })
-    )
+    const complete = events.find((e) => (e as { type: string }).type === 'complete') as {
+      imported: number
+      errors: Array<{ rowId: string; error: string }>
+    }
+    expect(complete.imported).toBe(0)
+    expect(complete.errors).toEqual([
+      expect.objectContaining({ rowId: 'row-1', error: 'Database connection lost' }),
+    ])
 
     expect(mockImportUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ status: 'FAILED', errorMessage: 'Database connection lost' }),
-      })
-    )
-
-    expect(mockImportRowUpdate).not.toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({ status: 'CONFIRMED' }),
+        data: expect.objectContaining({ status: 'FAILED', recordCount: 0 }),
       })
     )
   })
 
-  it('returns 400 when rows are missing required producer or wineName', async () => {
+  it('defaults a blank producer to "Unknown" instead of blocking the import', async () => {
     const rows = [
       makeRow('row-1', 'PENDING', { wineName: 'No Producer' }),
     ]
@@ -249,11 +283,13 @@ describe('POST /api/import/[id]/confirm', () => {
     getImport.mockResolvedValue(makeImportRecord({ rows }))
 
     const response = await POST(new Request('http://localhost'), makeParams('import-1'))
-    const body = await response.json()
+    const events = await readStream(response)
 
-    expect(response.status).toBe(400)
-    expect(body.error).toMatch(/missing a producer or wine name/)
-    expect(body.rowIds).toContain('row-1')
-    expect(mockCreateMany).not.toHaveBeenCalled()
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ producer: 'Unknown', wineName: 'No Producer' }),
+    })
+    expect(events).toContainEqual(
+      expect.objectContaining({ type: 'complete', imported: 1 })
+    )
   })
 })

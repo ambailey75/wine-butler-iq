@@ -82,6 +82,41 @@ export interface ExtractedRow {
   confidenceScores: ConfidenceScores
 }
 
+// Claude sometimes returns a placeholder string instead of omitting a field it
+// couldn't determine. Strip these (and a literal vintage of 0) to null/omitted
+// so they don't get imported as real data or trip required-field validation.
+const PLACEHOLDER_VALUES = [
+  'unknown', 'n/a', 'not specified', 'not available',
+  'none', 'na', 'unspecified', '-', '--',
+]
+
+function isPlaceholderString(value: unknown): boolean {
+  return typeof value === 'string' && PLACEHOLDER_VALUES.includes(value.trim().toLowerCase())
+}
+
+function stripPlaceholders(row: ExtractedRow): ExtractedRow {
+  const mappedData = { ...row.mappedData } as Record<string, unknown>
+  const confidenceScores = { ...row.confidenceScores } as Record<string, number>
+
+  for (const key of Object.keys(mappedData)) {
+    const value = mappedData[key]
+    const isZeroVintage = key === 'vintage' && (value === 0 || value === '0')
+    if (isPlaceholderString(value) || isZeroVintage) {
+      delete mappedData[key]
+      delete confidenceScores[key]
+    }
+  }
+
+  return {
+    mappedData: mappedData as MappedWineData,
+    confidenceScores: confidenceScores as ConfidenceScores,
+  }
+}
+
+function stripPlaceholdersFromRows(rows: ExtractedRow[]): ExtractedRow[] {
+  return rows.map(stripPlaceholders)
+}
+
 function extractToolInput(
   message: { content: Array<{ type: string; name?: string; input?: unknown }> },
   toolName: string
@@ -332,7 +367,7 @@ export async function extractWinesFromText(text: string, attempt = 0): Promise<E
     messages: [
       {
         role: 'user',
-        content: `Extract every individual wine line item from this invoice/inventory text. For each wine, fill in as many fields as you can confidently determine and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nPRICE HANDLING — many invoices show two prices per wine:\n- Patterns: "Retail: $150 / Member: $95", "$150 $95", "List: $150 You Pay: $95", "MSRP $150 Sale $95", "Regular Price ... Sale Price"\n- When two prices are present: the higher price (retail/list/regular/MSRP) goes into currentEstValue; the lower price (member/sale/you-pay/actual) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but it is unclear which is retail vs. paid: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III", "Bien Nacido") and extract them into the vineyard field, separate from sub-region.\n\nInfer the country from the state or region when possible (e.g. California/Oregon/Washington → United States, South Australia/Victoria → Australia, Ontario/British Columbia → Canada). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal, region, or wine name when style is not explicitly stated.\n\nText:\n${text}`,
+        content: `Extract every individual wine line item from this invoice/inventory text. For each wine, fill in as many fields as you can confidently determine and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing — never return placeholder text such as "Unknown", "N/A", "Not specified", "Not available", or "None" as a field value, and never return 0 for vintage when the year is unknown; simply leave the key out of mappedData.\n\nPRICE HANDLING — many invoices show two prices per wine:\n- Patterns: "Retail: $150 / Member: $95", "$150 $95", "List: $150 You Pay: $95", "MSRP $150 Sale $95", "Regular Price ... Sale Price"\n- When two prices are present: the higher price (retail/list/regular/MSRP) goes into currentEstValue; the lower price (member/sale/you-pay/actual) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but it is unclear which is retail vs. paid: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III", "Bien Nacido") and extract them into the vineyard field, separate from sub-region.\n\nInfer the country from the state or region when possible (e.g. California/Oregon/Washington → United States, South Australia/Victoria → Australia, Ontario/British Columbia → Canada). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal, region, or wine name when style is not explicitly stated.\n\nText:\n${text}`,
       },
     ],
   })
@@ -342,7 +377,7 @@ export async function extractWinesFromText(text: string, attempt = 0): Promise<E
     if (attempt === 0) return extractWinesFromText(text, 1)
     return []
   }
-  return parsed.data.wines
+  return stripPlaceholdersFromRows(parsed.data.wines)
 }
 
 export async function extractWinesFromPdf(pages: string[], batchSize: number): Promise<ExtractedRow[]> {
@@ -411,7 +446,7 @@ export async function extractWinesFromImage(
           },
           {
             type: 'text',
-            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nPRICE HANDLING — invoices often show two prices per wine:\n- Look for visual strikethrough/crossed-out formatting on the higher price, or labels like "retail", "regular", "list", "MSRP" vs. "you pay", "member price", "sale price", "club price".\n- When two prices are present: the higher (retail/list/strikethrough) goes into currentEstValue; the lower (actual/member/sale) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but which is retail vs. paid is ambiguous: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III") and extract them into the vineyard field, separate from sub-region. Infer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
+            text: 'This image is one of: a photo of a wine label, a photo of a paper invoice or receipt, or a screenshot of an HTML invoice/order confirmation. Extract every distinct wine. A label photo is typically a single wine; an invoice or receipt may list several. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing — never return placeholder text such as "Unknown", "N/A", "Not specified", "Not available", or "None" as a field value, and never return 0 for vintage when the year is unknown; simply leave the key out of mappedData.\n\nPRICE HANDLING — invoices often show two prices per wine:\n- Look for visual strikethrough/crossed-out formatting on the higher price, or labels like "retail", "regular", "list", "MSRP" vs. "you pay", "member price", "sale price", "club price".\n- When two prices are present: the higher (retail/list/strikethrough) goes into currentEstValue; the lower (actual/member/sale) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but which is retail vs. paid is ambiguous: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n\nFor Napa Valley and Sonoma wines, look for vineyard designations (e.g. "To Kalon Vineyard", "Beckstoffer Georges III") and extract them into the vineyard field, separate from sub-region. Infer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
           },
         ],
       },
@@ -423,7 +458,7 @@ export async function extractWinesFromImage(
     if (attempt === 0) return extractWinesFromImage(base64, mimeType, 1)
     return []
   }
-  return parsed.data.wines
+  return stripPlaceholdersFromRows(parsed.data.wines)
 }
 
 export async function extractWinesFromInvoiceImage(
@@ -477,7 +512,7 @@ export async function extractWinesFromInvoiceImage(
           },
           {
             type: 'text',
-            text: 'This image is a wine purchase invoice, receipt, or order confirmation — either a photo of a paper invoice or a screenshot of an online order. It likely contains MULTIPLE wine line items. Extract EVERY distinct wine line item you can see. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, order number, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing.\n\nPRICE HANDLING — invoices often show two prices per wine:\n- Look for visual strikethrough/crossed-out formatting on the higher price, or labels like "retail", "regular", "list", "MSRP" vs. "you pay", "member price", "sale price", "club price".\n- When two prices are present: the higher (retail/list/strikethrough) goes into currentEstValue; the lower (actual/member/sale) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but which is retail vs. paid is ambiguous: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n- Look for order totals or subtotals to distinguish per-bottle vs. per-case pricing. If a line shows "6 x $45" or "Qty: 6 @ $45", quantity is 6 and purchasePrice is 45.\n\nInfer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
+            text: 'This image is a wine purchase invoice, receipt, or order confirmation — either a photo of a paper invoice or a screenshot of an online order. It likely contains MULTIPLE wine line items. Extract EVERY distinct wine line item you can see. For each wine, fill in as many fields as you can confidently determine (producer, wine name, vintage, country, state/province, region, varietal, classification, vineyard designation, format, style, quantity, purchase price, purchase date, vendor, current estimated value, rating, drink window, tasting/pairing notes, wine ID, order number, etc.) and give a confidence score (0-1) for each field you populate. Omit fields you cannot determine rather than guessing — never return placeholder text such as "Unknown", "N/A", "Not specified", "Not available", or "None" as a field value, and never return 0 for vintage when the year is unknown; simply leave the key out of mappedData.\n\nPRICE HANDLING — invoices often show two prices per wine:\n- Look for visual strikethrough/crossed-out formatting on the higher price, or labels like "retail", "regular", "list", "MSRP" vs. "you pay", "member price", "sale price", "club price".\n- When two prices are present: the higher (retail/list/strikethrough) goes into currentEstValue; the lower (actual/member/sale) goes into purchasePrice.\n- When only one price is present: it goes into purchasePrice.\n- When two prices exist but which is retail vs. paid is ambiguous: assign the lower to purchasePrice and the higher to currentEstValue, and set confidence for BOTH price fields below 0.6.\n- Look for order totals or subtotals to distinguish per-bottle vs. per-case pricing. If a line shows "6 x $45" or "Qty: 6 @ $45", quantity is 6 and purchasePrice is 45.\n\nInfer country from state/region when possible (California → United States, South Australia → Australia). Populate the state field for US states, Australian states, and Canadian provinces. Infer style (Red, White, Rosé, Sparkling, Dessert, Fortified) from the varietal or wine name when not explicitly stated.',
           },
         ],
       },
@@ -489,5 +524,5 @@ export async function extractWinesFromInvoiceImage(
     if (attempt === 0) return extractWinesFromInvoiceImage(base64, mimeType, 1)
     return []
   }
-  return parsed.data.wines
+  return stripPlaceholdersFromRows(parsed.data.wines)
 }
