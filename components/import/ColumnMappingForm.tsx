@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { HEADER_ALIASES, IMPORT_TARGET_FIELDS, type MappedWineData } from '@/lib/import/constants'
+import { HEADER_ALIASES, IMPORT_TARGET_FIELDS, MAPPING_FIELD_OPTIONS, type MappedWineData } from '@/lib/import/constants'
 
 const SKIP_VALUE = '__skip__'
 const SPLIT_REGION_VALUE = '__split_region__'
@@ -133,7 +133,16 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
       }
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not apply mapping')
+      // A raw "Failed to fetch" means the request never got a response at all
+      // (dropped connection, timeout) rather than a server-reported error.
+      const isNetworkFailure = err instanceof TypeError
+      setError(
+        isNetworkFailure
+          ? 'Could not reach the server. This can happen with very large files — please try again in a moment.'
+          : err instanceof Error
+            ? err.message
+            : 'Could not apply mapping'
+      )
       setSubmitting(false)
     }
   }
@@ -192,8 +201,8 @@ export function ColumnMappingForm({ importId, headers, sampleRow, suggestion, re
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value={SKIP_VALUE}>Don&apos;t import</SelectItem>
-                          {IMPORT_TARGET_FIELDS.map((field) => (
-                            <SelectItem key={field.key} value={field.key}>
+                          {MAPPING_FIELD_OPTIONS.map((field) => (
+                            <SelectItem key={field.id} value={field.key}>
                               {field.label}
                               {field.required ? ' *' : ''}
                             </SelectItem>

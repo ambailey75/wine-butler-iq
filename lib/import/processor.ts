@@ -7,6 +7,7 @@ import { extractWinesFromPdf, extractWinesFromImage, extractWinesFromInvoiceImag
 import { PDF_PAGE_BATCH_SIZE, type MappedWineData } from './constants'
 import { enrichFromStaticDataset, type EnrichableRow } from './enrich-from-static'
 import { enrichFromClaude } from './enrich-from-claude'
+import { cleanMappedData } from './clean-field-values'
 
 export interface ProcessResult {
   mappingSuggestion?: Record<string, string | null>
@@ -96,12 +97,15 @@ async function processPdf(importId: string, buffer: Buffer): Promise<ProcessResu
   const enriched = await enrichFromClaude(staticEnriched)
 
   await prisma.importRow.createMany({
-    data: enriched.map((row) => ({
-      importId,
-      rawData: row.mappedData as unknown as Prisma.InputJsonValue,
-      mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
-      confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
-    })),
+    data: enriched.map((row) => {
+      const mappedData = cleanMappedData(row.mappedData)
+      return {
+        importId,
+        rawData: mappedData as unknown as Prisma.InputJsonValue,
+        mappedData: mappedData as unknown as Prisma.InputJsonValue,
+        confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
+      }
+    }),
   })
 
   await prisma.import.update({
@@ -181,12 +185,15 @@ async function processImage(importId: string, file: File, isInvoice = false): Pr
     const enrichedHtml = await enrichFromClaude(staticEnrichedHtml)
 
     await prisma.importRow.createMany({
-      data: enrichedHtml.map((row) => ({
-        importId,
-        rawData: row.mappedData as unknown as Prisma.InputJsonValue,
-        mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
-        confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
-      })),
+      data: enrichedHtml.map((row) => {
+        const mappedData = cleanMappedData(row.mappedData)
+        return {
+          importId,
+          rawData: mappedData as unknown as Prisma.InputJsonValue,
+          mappedData: mappedData as unknown as Prisma.InputJsonValue,
+          confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
+        }
+      }),
     })
 
     await prisma.import.update({
@@ -230,12 +237,15 @@ async function processImage(importId: string, file: File, isInvoice = false): Pr
   }
 
   await prisma.importRow.createMany({
-    data: extracted.map((row) => ({
-      importId,
-      rawData: row.mappedData as unknown as Prisma.InputJsonValue,
-      mappedData: row.mappedData as unknown as Prisma.InputJsonValue,
-      confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
-    })),
+    data: extracted.map((row) => {
+      const mappedData = cleanMappedData(row.mappedData)
+      return {
+        importId,
+        rawData: mappedData as unknown as Prisma.InputJsonValue,
+        mappedData: mappedData as unknown as Prisma.InputJsonValue,
+        confidenceScores: row.confidenceScores as unknown as Prisma.InputJsonValue,
+      }
+    }),
   })
 
   await prisma.import.update({

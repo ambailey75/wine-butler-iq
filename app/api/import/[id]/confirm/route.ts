@@ -15,6 +15,65 @@ interface RouteParams {
 
 const BATCH_SIZE = 50
 
+// Fields backed by a Decimal or Int column that can trip a Postgres numeric
+// overflow (22003) if a bad extraction slips an out-of-range value through.
+// Ordered with the most common offender (rating) first since Fallback 1
+// retries by nulling one of these at a time until the insert succeeds.
+const OPTIONAL_NUMERIC_FIELDS = [
+  'rating',
+  'purchasePrice',
+  'currentEstValue',
+  'totalCostOverride',
+  'totalValueOverride',
+  'drinkWindowStart',
+  'drinkWindowEnd',
+  'vintage',
+] as const
+
+function isNumericOverflowError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err)
+  return /22003|numeric field overflow/i.test(message)
+}
+
+function appendNote(existing: string | null | undefined, note: string): string {
+  return existing && existing.trim() ? `${existing.trim()}\n${note}` : note
+}
+
+// Pre-insert clamping for the known overflow cases (e.g. a rating extracted
+// as "940" instead of "94.0") so most rows never need the fallback cascade.
+function clampNumericFields(mapped: MappedWineData): MappedWineData {
+  const result: MappedWineData = { ...mapped }
+
+  if (typeof result.rating === 'number') {
+    const scaled = result.rating > 100 ? result.rating / 10 : result.rating
+    result.rating = scaled >= 0 && scaled <= 100 ? scaled : undefined
+  }
+
+  for (const key of ['purchasePrice', 'currentEstValue'] as const) {
+    const value = result[key]
+    if (typeof value === 'number' && (value < 0 || value > 100000)) {
+      result[key] = undefined
+    }
+  }
+
+  if (typeof result.vintage === 'number' && (result.vintage < 1800 || result.vintage > 2030)) {
+    result.vintage = undefined
+  }
+
+  for (const key of ['drinkWindowStart', 'drinkWindowEnd'] as const) {
+    const value = result[key]
+    if (typeof value === 'number' && (value < 1800 || value > 2100)) {
+      result[key] = undefined
+    }
+  }
+
+  if (typeof result.quantity !== 'number' || result.quantity < 1 || result.quantity > 999) {
+    result.quantity = 1
+  }
+
+  return result
+}
+
 function toWineCreateData(mapped: MappedWineData) {
   const purchaseDate = mapped.purchaseDate ? new Date(mapped.purchaseDate) : null
 
@@ -46,6 +105,73 @@ function toWineCreateData(mapped: MappedWineData) {
     tastingNotes: mapped.tastingNotes ?? null,
     pairingNotes: mapped.pairingNotes ?? null,
     wineId: mapped.wineId ?? null,
+  }
+}
+
+type WineCreateData = ReturnType<typeof toWineCreateData> & {
+  userId: string
+  importId: string
+  labelPhotoUrl?: string
+  isFullyConsumed?: boolean
+  consumedQuantity?: number
+}
+
+// Every row must land in the cellar — a numeric overflow should never cause a
+// row to be dropped or silently marked Skipped. Retries with progressively
+// more data stripped out until an insert succeeds; only the true last resort
+// (producer/wineName/quantity only) is allowed to fail upward.
+async function createWineWithFallback(
+  data: WineCreateData,
+  mapped: MappedWineData
+): Promise<{ wine: { id: string; notes: string | null }; note: string | null }> {
+  try {
+    const wine = await prisma.wine.create({ data })
+    return { wine, note: null }
+  } catch (err) {
+    if (!isNumericOverflowError(err)) throw err
+  }
+
+  // Fallback 1 — null out one numeric field at a time (most likely culprit first) and retry.
+  for (const field of OPTIONAL_NUMERIC_FIELDS) {
+    if ((data as Record<string, unknown>)[field] == null) continue
+    try {
+      const retryData = { ...data, [field]: null }
+      const wine = await prisma.wine.create({ data: retryData })
+      return { wine, note: `Field ${field} was cleared due to a value error` }
+    } catch (err) {
+      if (!isNumericOverflowError(err)) throw err
+    }
+  }
+
+  // Fallback 2 — strip every optional numeric field at once and retry.
+  try {
+    const stripped: Record<string, unknown> = { ...data }
+    for (const field of OPTIONAL_NUMERIC_FIELDS) {
+      stripped[field] = null
+    }
+    const wine = await prisma.wine.create({ data: stripped as WineCreateData })
+    return {
+      wine,
+      note: 'All numeric fields cleared due to value errors — please update manually in your cellar',
+    }
+  } catch (err) {
+    if (!isNumericOverflowError(err)) throw err
+  }
+
+  // Fallback 3 — last resort minimum record. producer/wineName/quantity are
+  // plain string/int values so this cannot itself hit a numeric overflow.
+  const wine = await prisma.wine.create({
+    data: {
+      userId: data.userId,
+      importId: data.importId,
+      producer: mapped.producer?.trim() || 'Unknown',
+      wineName: mapped.wineName?.trim() || 'Unknown Wine',
+      quantity: 1,
+    },
+  })
+  return {
+    wine,
+    note: 'Only producer, wine name, and quantity were imported due to repeated value errors — please update manually in your cellar',
   }
 }
 
@@ -227,6 +353,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       }
 
       let totalImported = 0
+      let totalFallback = 0
       let totalFailed = 0
       const rowErrors: Array<{ rowId: string; producer?: string; wineName?: string; error: string }> = []
 
@@ -236,19 +363,27 @@ export async function POST(request: Request, { params }: RouteParams) {
 
           const results = await Promise.allSettled(
             batch.map(async (row) => {
-              const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
+              const mapped = clampNumericFields((row.mappedData ?? {}) as unknown as MappedWineData)
               const isConsumed = consumedRowIds.has(row.id)
               const quantity = mapped.quantity && mapped.quantity > 0 ? Math.round(mapped.quantity) : 1
 
-              const wine = await prisma.wine.create({
-                data: {
+              const { wine, note } = await createWineWithFallback(
+                {
                   userId: user.id,
                   importId: importRecord.id,
                   ...toWineCreateData(mapped),
                   ...(labelPhotoUrl ? { labelPhotoUrl } : {}),
                   ...(isConsumed ? { isFullyConsumed: true, consumedQuantity: quantity } : {}),
                 },
-              })
+                mapped
+              )
+
+              if (note) {
+                await prisma.wine.update({
+                  where: { id: wine.id },
+                  data: { notes: appendNote(wine.notes, note) },
+                })
+              }
 
               await prisma.importRow.update({
                 where: { id: row.id },
@@ -267,6 +402,8 @@ export async function POST(request: Request, { params }: RouteParams) {
                   },
                 })
               }
+
+              return { usedFallback: !!note }
             })
           )
 
@@ -276,18 +413,17 @@ export async function POST(request: Request, { params }: RouteParams) {
 
             if (outcome.status === 'fulfilled') {
               totalImported++
+              if (outcome.value.usedFallback) totalFallback++
               continue
             }
 
+            // Every fallback tier failed — this is a genuine failure, not a
+            // user Skip, so the row is left untouched (still PENDING) rather
+            // than marked SKIPPED. It's surfaced in the summary instead.
             totalFailed++
             const mapped = (row.mappedData ?? {}) as unknown as MappedWineData
             const message = outcome.reason instanceof Error ? outcome.reason.message : 'Failed to import row'
             rowErrors.push({ rowId: row.id, producer: mapped.producer, wineName: mapped.wineName, error: message })
-
-            await prisma.importRow.update({
-              where: { id: row.id },
-              data: { status: 'SKIPPED' },
-            }).catch(() => {})
           }
 
           sendProgress(totalImported + totalFailed, rowsToImport.length)
@@ -300,10 +436,10 @@ export async function POST(request: Request, { params }: RouteParams) {
           data: {
             status: allRowsFailed ? 'FAILED' : 'COMPLETE',
             recordCount: totalImported,
-            skippedCount: skippedRows.length + totalFailed,
+            skippedCount: skippedRows.length,
             completedAt: new Date(),
             ...(rowErrors.length > 0
-              ? { errorMessage: `${rowErrors.length} row(s) failed to import` }
+              ? { errorMessage: `${rowErrors.length} row(s) could not be imported even after fallback` }
               : {}),
           },
         })
@@ -313,7 +449,9 @@ export async function POST(request: Request, { params }: RouteParams) {
             JSON.stringify({
               type: 'complete',
               imported: totalImported,
-              skipped: skippedRows.length + totalFailed,
+              skipped: skippedRows.length,
+              fallback: totalFallback,
+              failed: totalFailed,
               errors: rowErrors,
             }) + '\n'
           )

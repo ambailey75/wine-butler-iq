@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ColumnMappingForm } from './ColumnMappingForm'
 import { ImportRowTable, type ImportRowWithDuplicate } from './ImportRowTable'
 import { MatchConsumedReview } from './MatchConsumedReview'
+import { ResetMappingButton } from './ResetMappingButton'
 
 interface ImportReviewProps {
   importRecord: Import
@@ -89,6 +90,7 @@ export function ImportReview({ importRecord, rows, mappingSuggestion, regionSpli
   if (importRecord.importType === 'MATCH_CONSUMED') {
     return (
       <div className="space-y-4">
+        <ResetMappingButton importId={importRecord.id} />
         {errorBanner}
         <MatchConsumedReview importId={importRecord.id} />
       </div>
@@ -97,6 +99,7 @@ export function ImportReview({ importRecord, rows, mappingSuggestion, regionSpli
 
   return (
     <div className="space-y-4">
+      <ResetMappingButton importId={importRecord.id} />
       {errorBanner}
       <ImportRowTable importId={importRecord.id} rows={rows} isHistoricalImport={isHistoricalImport} />
     </div>

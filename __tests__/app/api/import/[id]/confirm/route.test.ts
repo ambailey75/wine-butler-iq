@@ -23,6 +23,7 @@ jest.mock('next/cache', () => ({
 }))
 
 const mockCreate = jest.fn()
+const mockWineUpdate = jest.fn()
 const mockImportRowUpdate = jest.fn()
 const mockImportUpdate = jest.fn()
 const mockConsumptionLogCreate = jest.fn()
@@ -31,6 +32,7 @@ jest.mock('@/lib/prisma/client', () => ({
   prisma: {
     wine: {
       create: (...args: unknown[]) => mockCreate(...args),
+      update: (...args: unknown[]) => mockWineUpdate(...args),
     },
     importRow: {
       update: (...args: unknown[]) => mockImportRowUpdate(...args),
@@ -77,6 +79,10 @@ function makeImportRecord(overrides: Record<string, unknown> = {}) {
   }
 }
 
+function overflowError() {
+  return new Error('numeric field overflow (22003)')
+}
+
 async function readStream(response: Response): Promise<unknown[]> {
   const text = await response.text()
   return text
@@ -95,6 +101,7 @@ describe('POST /api/import/[id]/confirm', () => {
       id: `wine-${++createIdCounter}`,
       ...data,
     }))
+    mockWineUpdate.mockResolvedValue({})
     mockImportRowUpdate.mockResolvedValue({})
     mockImportUpdate.mockResolvedValue({})
     mockConsumptionLogCreate.mockResolvedValue({})
@@ -210,7 +217,7 @@ describe('POST /api/import/[id]/confirm', () => {
     expect(mockCreate).not.toHaveBeenCalled()
   })
 
-  it('continues importing remaining rows when one row fails, returning partial success', async () => {
+  it('continues importing remaining rows when one row fails for a non-overflow reason, leaving it PENDING (never SKIPPED)', async () => {
     const rows = [
       makeRow('row-1', 'PENDING', { producer: 'Opus One', wineName: 'Opus One' }),
       makeRow('row-2', 'PENDING', { producer: 'Caymus', wineName: 'Special Selection' }),
@@ -220,7 +227,7 @@ describe('POST /api/import/[id]/confirm', () => {
     mockCreate
       .mockImplementationOnce(async ({ data }: { data: Record<string, unknown> }) => ({ id: 'wine-1', ...data }))
       .mockImplementationOnce(async () => {
-        throw new Error('Missing required field')
+        throw new Error('Connection reset')
       })
 
     const response = await POST(new Request('http://localhost'), makeParams('import-1'))
@@ -229,21 +236,25 @@ describe('POST /api/import/[id]/confirm', () => {
     const complete = events.find((e) => (e as { type: string }).type === 'complete') as {
       imported: number
       skipped: number
+      failed: number
       errors: Array<{ rowId: string; error: string }>
     }
     expect(complete.imported).toBe(1)
-    expect(complete.skipped).toBe(1)
+    expect(complete.skipped).toBe(0)
+    expect(complete.failed).toBe(1)
     expect(complete.errors).toEqual([
-      expect.objectContaining({ rowId: 'row-2', error: 'Missing required field' }),
+      expect.objectContaining({ rowId: 'row-2', error: 'Connection reset' }),
     ])
 
-    expect(mockImportRowUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'row-2' }, data: { status: 'SKIPPED' } })
+    // A DB-error failure must never be marked SKIPPED — that status is
+    // reserved for rows the user explicitly chose to skip.
+    expect(mockImportRowUpdate).not.toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'row-2' }, data: expect.objectContaining({ status: 'SKIPPED' }) })
     )
 
     expect(mockImportUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ status: 'COMPLETE', recordCount: 1, skippedCount: 1 }),
+        data: expect.objectContaining({ status: 'COMPLETE', recordCount: 1, skippedCount: 0 }),
       })
     )
   })
@@ -273,6 +284,160 @@ describe('POST /api/import/[id]/confirm', () => {
         data: expect.objectContaining({ status: 'FAILED', recordCount: 0 }),
       })
     )
+  })
+
+  it('clamps a rating extracted as 940 down to 94.0 instead of overflowing', async () => {
+    const rows = [
+      makeRow('row-1', 'PENDING', { producer: 'Silver Ridge', wineName: 'Sonoma Coast Pinot Noir', rating: 940 }),
+    ]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    await readStream(response)
+
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ rating: 94 }),
+    })
+  })
+
+  it('nulls a rating that is still out of range after the /10 correction', async () => {
+    const rows = [makeRow('row-1', 'PENDING', { producer: 'A', wineName: 'B', rating: 5000 })]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    await readStream(response)
+
+    expect(mockCreate).toHaveBeenCalledWith({ data: expect.objectContaining({ rating: null }) })
+  })
+
+  it('nulls an out-of-range vintage instead of storing it', async () => {
+    const rows = [makeRow('row-1', 'PENDING', { producer: 'A', wineName: 'B', vintage: 3050 })]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    await readStream(response)
+
+    expect(mockCreate).toHaveBeenCalledWith({ data: expect.objectContaining({ vintage: null }) })
+  })
+
+  it('nulls a negative purchasePrice', async () => {
+    const rows = [makeRow('row-1', 'PENDING', { producer: 'A', wineName: 'B', purchasePrice: -50 })]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    await readStream(response)
+
+    expect(mockCreate).toHaveBeenCalledWith({ data: expect.objectContaining({ purchasePrice: null }) })
+  })
+
+  it('defaults an out-of-range quantity to 1', async () => {
+    const rows = [makeRow('row-1', 'PENDING', { producer: 'A', wineName: 'B', quantity: 5000 })]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    await readStream(response)
+
+    expect(mockCreate).toHaveBeenCalledWith({ data: expect.objectContaining({ quantity: 1 }) })
+  })
+
+  it('falls back to nulling one numeric field on a 22003 overflow and confirms the row with a note', async () => {
+    const rows = [
+      makeRow('row-1', 'PENDING', { producer: 'Silver Ridge', wineName: 'Sonoma Coast Pinot Noir', rating: 94 }),
+    ]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+    mockCreate
+      .mockRejectedValueOnce(overflowError())
+      .mockImplementationOnce(async ({ data }: { data: Record<string, unknown> }) => ({
+        id: 'wine-1',
+        notes: null,
+        ...data,
+      }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    const events = await readStream(response)
+
+    expect(mockCreate).toHaveBeenNthCalledWith(2, {
+      data: expect.objectContaining({ rating: null }),
+    })
+    expect(mockWineUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'wine-1' },
+        data: { notes: 'Field rating was cleared due to a value error' },
+      })
+    )
+    expect(mockImportRowUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'row-1' }, data: { status: 'CONFIRMED', wineId: 'wine-1' } })
+    )
+    const complete = events.find((e) => (e as { type: string }).type === 'complete') as { imported: number; fallback: number }
+    expect(complete.imported).toBe(1)
+    expect(complete.fallback).toBe(1)
+  })
+
+  it('falls back to a minimum producer/wineName/quantity record as a last resort', async () => {
+    const rows = [
+      makeRow('row-1', 'PENDING', { producer: 'Silver Ridge', wineName: 'Sonoma Coast Pinot Noir', rating: 94 }),
+    ]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+    mockCreate
+      .mockRejectedValueOnce(overflowError()) // initial attempt
+      .mockRejectedValueOnce(overflowError()) // fallback 1 (null rating)
+      .mockRejectedValueOnce(overflowError()) // fallback 2 (null all numeric fields)
+      .mockImplementationOnce(async ({ data }: { data: Record<string, unknown> }) => ({
+        id: 'wine-1',
+        notes: null,
+        ...data,
+      }))
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    await readStream(response)
+
+    expect(mockCreate).toHaveBeenCalledTimes(4)
+    expect(mockCreate).toHaveBeenNthCalledWith(4, {
+      data: {
+        userId: 'user-123',
+        importId: 'import-1',
+        producer: 'Silver Ridge',
+        wineName: 'Sonoma Coast Pinot Noir',
+        quantity: 1,
+      },
+    })
+    expect(mockWineUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: {
+          notes:
+            'Only producer, wine name, and quantity were imported due to repeated value errors — please update manually in your cellar',
+        },
+      })
+    )
+  })
+
+  it('reports a row as failed (not Skipped) when every fallback tier also overflows', async () => {
+    const rows = [
+      makeRow('row-1', 'PENDING', { producer: 'Silver Ridge', wineName: 'Sonoma Coast Pinot Noir', rating: 94 }),
+    ]
+    getCurrentUser.mockResolvedValue(mockUser)
+    getImport.mockResolvedValue(makeImportRecord({ rows }))
+    mockCreate.mockRejectedValue(overflowError())
+
+    const response = await POST(new Request('http://localhost'), makeParams('import-1'))
+    const events = await readStream(response)
+
+    const complete = events.find((e) => (e as { type: string }).type === 'complete') as {
+      imported: number
+      failed: number
+      errors: Array<{ rowId: string; error: string }>
+    }
+    expect(complete.imported).toBe(0)
+    expect(complete.failed).toBe(1)
+    expect(complete.errors[0].rowId).toBe('row-1')
+    expect(mockImportRowUpdate).not.toHaveBeenCalled()
   })
 
   it('defaults a blank producer to "Unknown" instead of blocking the import', async () => {

@@ -122,6 +122,19 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
   { key: 'notes', label: 'Notes', type: 'string' },
 ]
 
+// Extra dropdown synonyms for the column-mapping UI only. Each option maps to
+// an existing IMPORT_TARGET_FIELDS key (e.g. "Appellation" -> subRegion) so
+// users can pick the term their spreadsheet uses without the review table
+// growing a duplicate column for the same underlying field.
+export interface MappingFieldOption extends ImportTargetField {
+  id: string
+}
+
+export const MAPPING_FIELD_OPTIONS: MappingFieldOption[] = [
+  ...IMPORT_TARGET_FIELDS.map((field) => ({ ...field, id: field.key as string })),
+  { id: 'appellation', key: 'subRegion', label: 'Appellation', type: 'string' },
+]
+
 // Maps common CSV column header variants (normalized: lowercase, alphanumeric
 // only) to a target field key, or `null` to force-skip a computed column.
 // Checked before the generic key/label match in ColumnMappingForm so e.g. a
@@ -131,6 +144,10 @@ export const IMPORT_TARGET_FIELDS: ImportTargetField[] = [
 export const HEADER_ALIASES: Record<string, keyof MappedWineData | null> = {
   notes: 'tastingNotes',
   appellation: 'subRegion',
+  ava: 'subRegion',
+  doc: 'subRegion',
+  docg: 'subRegion',
+  aoc: 'subRegion',
   vineyard: 'vineyard',
   vineyarddesignation: 'vineyard',
   bottlesize: 'format',

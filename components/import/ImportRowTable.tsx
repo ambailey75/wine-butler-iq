@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { ImportRowStatus } from '@prisma/client'
 import { AlertTriangle } from 'lucide-react'
@@ -70,6 +70,8 @@ interface ImportRowTableProps {
 interface ConfirmResult {
   imported: number
   skipped: number
+  fallback: number
+  failed: number
   errors: Array<{ rowId: string; producer?: string; wineName?: string; error: string }>
 }
 
@@ -80,7 +82,6 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
   const [progress, setProgress] = useState<{ imported: number; total: number } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<ConfirmResult | null>(null)
-  const autoSkipped = useRef(false)
 
   const missingRequiredRowIds = useMemo(() => {
     const ids = new Set<string>()
@@ -92,25 +93,6 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
     }
     return ids
   }, [rowsState])
-
-  // Auto-skip possible duplicates on first load — only for NEW_INVENTORY flows.
-  // Historical consumed imports expect to match existing cellar wines, so duplicates are intentional.
-  useEffect(() => {
-    if (autoSkipped.current || isHistoricalImport) return
-    autoSkipped.current = true
-
-    const toSkip = rowsState.filter((row) => row.duplicateOf && row.status === 'PENDING')
-    if (toSkip.length === 0) return
-
-    setRowsState((prev) =>
-      prev.map((row) => (row.duplicateOf && row.status === 'PENDING' ? { ...row, status: 'SKIPPED' } : row))
-    )
-
-    for (const row of toSkip) {
-      void patchRow(row.id, { status: 'SKIPPED' })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   async function patchRow(rowId: string, body: { mappedData?: MappedWineData; status?: ImportRowStatus }) {
     await fetch(`/api/import/${importId}/rows/${rowId}`, {
@@ -209,10 +191,16 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
             if (msg.type === 'progress') {
               setProgress({ imported: msg.imported, total: msg.total })
             } else if (msg.type === 'complete') {
-              if (Array.isArray(msg.errors) && msg.errors.length > 0) {
+              if (typeof msg.failed === 'number' && msg.failed > 0) {
                 setConfirming(false)
                 setProgress(null)
-                setResult({ imported: msg.imported ?? 0, skipped: msg.skipped ?? 0, errors: msg.errors })
+                setResult({
+                  imported: msg.imported ?? 0,
+                  skipped: msg.skipped ?? 0,
+                  fallback: msg.fallback ?? 0,
+                  failed: msg.failed ?? 0,
+                  errors: Array.isArray(msg.errors) ? msg.errors : [],
+                })
                 return
               }
               router.push('/dashboard/cellar')
@@ -242,7 +230,7 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
         <h2 className="font-serif text-lg font-semibold text-foreground">Review your wines</h2>
         <p className="text-sm text-muted-foreground">
           Edit any fields that need correcting. Amber fields had low extraction confidence — please
-          verify them.{!isHistoricalImport && ' Possible duplicates default to Skip.'}
+          verify them.{!isHistoricalImport && ' Possible duplicates are flagged below — review before confirming.'}
         </p>
       </div>
 
@@ -400,8 +388,16 @@ export function ImportRowTable({ importId, rows, isHistoricalImport }: ImportRow
       {result && (
         <div className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
           <p className="font-medium">
-            Import finished with some issues — {result.imported} imported, {result.skipped} skipped.
+            Import finished — {result.imported} imported, {result.skipped} skipped,{' '}
+            {result.failed} could not be imported.
           </p>
+          {result.fallback > 0 && (
+            <p className="text-xs">
+              {result.fallback} row{result.fallback === 1 ? '' : 's'} imported with a field cleared
+              due to a value error — check the notes on those wines in your cellar.
+            </p>
+          )}
+          <p className="text-xs">The rows below could not be imported. Add them manually:</p>
           <ul className="list-disc space-y-0.5 pl-5 text-xs">
             {result.errors.map((e) => (
               <li key={e.rowId}>

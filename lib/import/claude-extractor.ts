@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { anthropic, CLAUDE_MODEL } from '@/lib/ai/client'
 import { IMPORT_TARGET_FIELDS, type ConfidenceScores, type MappedWineData } from './constants'
+import { cleanMappedData } from './clean-field-values'
 
 const WINE_FIELD_PROPERTIES = {
   producer: { type: 'string', description: 'Producer / winery name' },
@@ -9,7 +10,7 @@ const WINE_FIELD_PROPERTIES = {
   country: { type: 'string', description: 'e.g. France, Italy, United States. Infer from state/region when possible (California → United States, South Australia → Australia).' },
   state: { type: 'string', description: 'US state, Australian state, Canadian province, etc. e.g. California, Oregon, South Australia, Ontario' },
   region: { type: 'string', description: 'e.g. Bordeaux, Napa Valley' },
-  subRegion: { type: 'string' },
+  subRegion: { type: 'string', description: 'Sub-region or appellation (e.g. AVA, DOC, DOCG, AOC) — treat "appellation" and "sub-region" as the same field.' },
   vineyard: { type: 'string', description: 'Specific vineyard designation (e.g. To Kalon Vineyard, Beckstoffer Georges III). Common in Napa/Sonoma. Distinct from sub-region.' },
   classification: { type: 'string', description: 'e.g. Grand Cru, 1er Cru, DOCG' },
   varietal: { type: 'string', description: 'Primary grape variety or blend name' },
@@ -113,8 +114,18 @@ function stripPlaceholders(row: ExtractedRow): ExtractedRow {
   }
 }
 
+// Post-processing applied to every row Claude extracts, before the row is
+// handed back to the caller: strip separator artifacts (e.g. "Napa Valley >
+// Spring Mountain") first, then drop placeholder values like "Unknown".
+function postProcessExtractedRow(row: ExtractedRow): ExtractedRow {
+  return stripPlaceholders({
+    mappedData: cleanMappedData(row.mappedData),
+    confidenceScores: row.confidenceScores,
+  })
+}
+
 function stripPlaceholdersFromRows(rows: ExtractedRow[]): ExtractedRow[] {
-  return rows.map(stripPlaceholders)
+  return rows.map(postProcessExtractedRow)
 }
 
 function extractToolInput(

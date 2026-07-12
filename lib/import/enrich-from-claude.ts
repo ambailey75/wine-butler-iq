@@ -32,6 +32,7 @@ export async function enrichFromClaude(rows: EnrichableRow[]): Promise<Enrichabl
 
   const systemPrompt =
     'You are a wine expert. Given a JSON array of wines, fill any blank fields from your knowledge. ' +
+    'For "subRegion", provide the appellation (e.g. AVA, DOC, DOCG, AOC) if you don\'t know a more specific sub-region — treat appellation and sub-region as the same field. ' +
     'Return ONLY a JSON array — no explanation. Each element: {"index":<number>,"filled":{<field>:<value>,...}}. ' +
     'Only fill fields listed in blankFields. Omit fields you are uncertain about. Never guess.'
 

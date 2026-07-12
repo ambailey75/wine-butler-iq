@@ -1,5 +1,6 @@
 import * as XLSX from 'xlsx'
 import { IMPORT_TARGET_FIELDS, MAX_CSV_ROWS, type ConfidenceScores, type MappedWineData } from './constants'
+import { cleanMappedData } from './clean-field-values'
 
 export interface ParsedSpreadsheet {
   headers: string[]
@@ -64,5 +65,5 @@ export function applyColumnMapping(
     }
   }
 
-  return { mappedData: mappedData as MappedWineData, confidenceScores }
+  return { mappedData: cleanMappedData(mappedData as MappedWineData), confidenceScores }
 }
