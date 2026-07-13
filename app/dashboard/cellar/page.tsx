@@ -43,7 +43,20 @@ export default async function CellarPage() {
           secondaryAction={{ label: 'Import your collection', href: '/dashboard/import' }}
         />
       ) : (
-        <WineTable wines={serializeWines(wines)} />
+        <div className="relative overflow-hidden rounded-lg">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: "url('/images/cellar-tunnel.png')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+          <div className="absolute inset-0" style={{ background: 'rgba(245, 240, 230, 0.85)' }} />
+          <div className="relative z-10 p-4">
+            <WineTable wines={serializeWines(wines)} />
+          </div>
+        </div>
       )}
     </div>
   )

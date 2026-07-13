@@ -47,7 +47,6 @@ export default async function DashboardPage() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0" style={{ background: 'rgba(45, 27, 30, 0.68)' }} />
           <div
             className="relative z-10 flex flex-col items-center justify-center px-8 py-12 text-center"
             style={{
