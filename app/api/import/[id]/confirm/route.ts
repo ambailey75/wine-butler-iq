@@ -142,7 +142,10 @@ type WineCreateData = ReturnType<typeof toWineCreateData> & {
 async function createWineWithFallback(
   data: WineCreateData,
   mapped: MappedWineData
-): Promise<{ wine: { id: string; notes: string | null }; note: string | null }> {
+): Promise<{
+  wine: { id: string; notes: string | null; vintage: number | null; producer: string; wineName: string }
+  note: string | null
+}> {
   try {
     const wine = await prisma.wine.create({ data })
     return { wine, note: null }
@@ -583,6 +586,23 @@ export async function POST(request: Request, { params }: RouteParams) {
                   where: { id: wine.id },
                   data: { notes: appendNote(wine.notes, note) },
                 })
+              }
+
+              if (wine.vintage === null) {
+                try {
+                  await prisma.cellarAlert.create({
+                    data: {
+                      userId: user.id,
+                      wineId: wine.id,
+                      alertType: 'MISSING_DATA',
+                      message: `Wine imported without a vintage year: ${wine.producer} ${wine.wineName} — please update manually`,
+                      triggerDate: new Date(),
+                    },
+                  })
+                } catch {
+                  // Non-fatal — the wine is already saved; a missing alert
+                  // just means no reminder surfaces, not a broken import.
+                }
               }
 
               await prisma.importRow.update({

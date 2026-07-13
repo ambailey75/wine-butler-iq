@@ -47,6 +47,7 @@ const DEFAULT_COLUMN_VISIBILITY: VisibilityState = {
   subRegion: false,
   countryState: false,
   appellation: false,
+  classification: false,
   vineyard: false,
   totalCost: false,
   format: false,
@@ -567,6 +568,12 @@ function WineMobileCard({
               <p>{wine.vineyard}</p>
             </div>
           )}
+          {wine.classification && (
+            <div>
+              <p className="text-xs text-muted-foreground">Classification</p>
+              <p>{wine.classification}</p>
+            </div>
+          )}
           {wine.format && (
             <div>
               <p className="text-xs text-muted-foreground">Format</p>
@@ -774,6 +781,18 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
           <TextEditCell
             value={row.original.appellation}
             wineId={row.original.id} field="appellation"
+            editing={editing} savedCell={savedCell}
+            onStart={startEditWithDismiss} onSave={saveField} onCancel={cancelEdit}
+          />
+        ),
+      },
+      {
+        accessorKey: 'classification',
+        header: ({ column }) => <SortHeader column={column} label="Classification" />,
+        cell: ({ row }) => (
+          <TextEditCell
+            value={row.original.classification}
+            wineId={row.original.id} field="classification"
             editing={editing} savedCell={savedCell}
             onStart={startEditWithDismiss} onSave={saveField} onCancel={cancelEdit}
           />

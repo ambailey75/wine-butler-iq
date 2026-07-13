@@ -39,6 +39,8 @@ export const COLUMN_GROUPS: { label: string; columns: { id: string; label: strin
     columns: [
       { id: 'countryState', label: 'Country / State' },
       { id: 'regionSubRegion', label: 'Region' },
+      { id: 'appellation', label: 'Appellation' },
+      { id: 'classification', label: 'Classification' },
       { id: 'vineyard', label: 'Vineyard' },
     ],
   },

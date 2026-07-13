@@ -1,5 +1,5 @@
-import type { MappedWineData } from '@/lib/import/constants'
-import { cleanFieldValue } from '@/lib/import/clean-field-values'
+import type { MappedWineData } from '../import/constants'
+import { cleanFieldValue } from '../import/clean-field-values'
 import { VARIETAL_MAP, PROTECTED_BLEND_NAMES } from './varietal-data'
 import { REGION_SUBREGION_PAIRS, REGION_SPELLING_CORRECTIONS, KNOWN_APPELLATIONS, AMBIGUOUS_SUBREGIONS } from './region-data'
 
