@@ -20,7 +20,7 @@ PRD: `C:\Users\amand\ClaudeWorkspace\Projects\OneOff\cellar-ai\CellarAI_PRD_v1.1
 - **AI:** Anthropic Claude API (`claude-sonnet-4-6`)
 - **Email:** Resend
 - **Deployment:** Vercel — auto-deploys on push to `main`
-- **Repo:** https://github.com/ambailey75/wine-butler-ai (rename on GitHub — see external steps below)
+- **Repo:** https://github.com/ambailey75/wine-butler-iq
 
 ## Environment Variables
 Add these to `C:\Users\amand\.claude\session-env\.env` and to Vercel dashboard:
@@ -128,7 +128,7 @@ For manual deploy: `vercel --prod`
 
 ## External Setup Steps (one-time, do manually)
 1. **GitHub** — Go to https://github.com/ambailey75/Cellar-ai > Settings > rename repo to `wine-butler-ai`
-2. **Git remote** — After GitHub rename, run: `git remote set-url origin https://github.com/ambailey75/wine-butler-ai`
+2. **Git remote** — After GitHub rename, run: `git remote set-url origin https://github.com/ambailey75/wine-butler-iq`
 3. **Vercel project rename** — Vercel dashboard > Project Settings > rename from `cellar-ai` to `wine-butler-ai`
 4. **Custom domain** — Vercel dashboard > Domains > add `winebutleriq.com` and follow DNS instructions
 5. **Rename folder** (optional) — Rename `cellar-ai/` to `wine-butler-ai/` and update this file's paths
