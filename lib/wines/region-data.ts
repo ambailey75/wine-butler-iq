@@ -7,14 +7,14 @@
 // Region -> known sub-regions/appellations nested under it. Lowercase keys
 // and values throughout.
 export const REGION_SUBREGION_PAIRS: Record<string, string[]> = {
-  'napa valley': ['oakville', 'rutherford', 'st. helena', 'stags leap', 'calistoga', 'yountville', 'howell mountain', 'atlas peak', 'spring mountain', 'diamond mountain', 'los carneros', 'mount veeder', 'coombsville', 'chiles valley'],
+  'napa valley': ['oakville', 'rutherford', 'st. helena', 'stags leap district', 'calistoga', 'yountville', 'howell mountain', 'atlas peak', 'spring mountain district', 'diamond mountain district', 'los carneros', 'mount veeder', 'coombsville', 'chiles valley'],
   'sonoma': ['russian river valley', 'sonoma coast', 'alexander valley', 'dry creek valley', 'knights valley', 'sonoma mountain', 'sonoma valley', 'bennett valley', 'chalk hill', 'green valley', 'moon mountain', 'petaluma gap', 'pine mountain-cloverdale peak'],
-  'bordeaux': ['pauillac', 'margaux', 'saint-julien', 'saint-estèphe', 'pessac-léognan', 'saint-émilion', 'pomerol', 'médoc', 'haut-médoc', 'graves', 'sauternes', 'barsac', 'entre-deux-mers', 'fronsac', 'côtes de bourg'],
-  'burgundy': ['chablis', 'côte de nuits', 'côte de beaune', 'côte chalonnaise', 'mâconnais', 'gevrey-chambertin', 'vosne-romanée', 'nuits-saint-georges', 'meursault', 'puligny-montrachet', 'chassagne-montrachet', 'pommard', 'volnay', 'beaune', 'corton', 'pouilly-fuissé'],
+  'bordeaux': ['pauillac', 'margaux', 'saint-julien', 'saint-estèphe', 'pessac-léognan', 'saint-émilion', 'pomerol', 'médoc', 'haut-médoc', 'graves', 'sauternes', 'barsac', 'entre-deux-mers', 'fronsac', 'côtes de bourg', 'moulis', 'listrac'],
+  'burgundy': ['chablis', 'côte de nuits', 'côte de beaune', 'côte chalonnaise', 'mâconnais', 'mâcon', 'gevrey-chambertin', 'chambolle-musigny', 'vosne-romanée', 'nuits-saint-georges', 'meursault', 'puligny-montrachet', 'chassagne-montrachet', 'pommard', 'volnay', 'beaune', 'corton', 'pouilly-fuissé'],
   'rhône': ['châteauneuf-du-pape', 'hermitage', 'côte-rôtie', 'gigondas', 'vacqueyras', 'crozes-hermitage', 'saint-joseph', 'condrieu', 'tavel', 'lirac', 'rasteau', 'vinsobres', 'cornas'],
   'tuscany': ['chianti', 'chianti classico', 'brunello di montalcino', 'bolgheri', 'montepulciano', 'montalcino', 'san gimignano', 'maremma'],
   'piedmont': ['barolo', 'barbaresco', 'langhe', 'roero', 'gavi', 'asti', 'alba'],
-  'rioja': ['rioja alta', 'rioja alavesa', 'rioja baja', 'rioja oriental'],
+  'rioja': ['rioja alta', 'rioja alavesa', 'rioja oriental'],
   'willamette valley': ['dundee hills', 'eola-amity hills', 'yamhill-carlton', 'ribbon ridge', 'chehalem mountains', 'mcminnville'],
   'russian river valley': ['green valley', 'middle reach', 'east side'],
   'paso robles': ['adelaida district', 'willow creek', 'templeton gap', 'estrella district', 'geneseo district'],
@@ -24,6 +24,9 @@ export const REGION_SUBREGION_PAIRS: Record<string, string[]> = {
   'washington': ['columbia valley', 'walla walla valley', 'red mountain', 'yakima valley', 'horse heaven hills'],
   'mosel': ['bernkastel', 'piesport', 'wehlen', 'graach'],
   'barossa': ['barossa valley', 'eden valley'],
+  'marlborough': ['wairau valley', 'awatere valley'],
+  'western cape': ['stellenbosch', 'franschhoek', 'paarl', 'swartland', 'constantia', 'walker bay'],
+  'abruzzo': [],
 }
 
 // Country -> known states/provinces/regions treated as "state" level.
@@ -58,6 +61,10 @@ export const REGION_SPELLING_CORRECTIONS: Record<string, string> = {
   'saint helena': 'St. Helena',
   'stags leap': 'Stags Leap District',
   'stags leap district': 'Stags Leap District',
+  'spring mountain': 'Spring Mountain District',
+  'spring mountain district': 'Spring Mountain District',
+  'diamond mountain': 'Diamond Mountain District',
+  'diamond mountain district': 'Diamond Mountain District',
   'willamette valley': 'Willamette Valley',
   'willamette': 'Willamette Valley',
   'cotes du rhone': 'Côtes du Rhône',
@@ -71,6 +78,7 @@ export const REGION_SPELLING_CORRECTIONS: Record<string, string> = {
   'st. emilion': 'Saint-Émilion',
   'pessac leognan': 'Pessac-Léognan',
   'gevrey chambertin': 'Gevrey-Chambertin',
+  'chambolle musigny': 'Chambolle-Musigny',
   'vosne romanee': 'Vosne-Romanée',
   'nuits st georges': 'Nuits-Saint-Georges',
   'nuits-st-georges': 'Nuits-Saint-Georges',
@@ -108,70 +116,192 @@ export const REGION_SPELLING_CORRECTIONS: Record<string, string> = {
   'washington': 'Washington',
 }
 
-// Normalized (lowercase) sub-region name -> full legal appellation
-// designation. Deliberately a direct lookup rather than a generic
-// "append AVA/AOC" suffix rule — Italian DOCG names in particular bundle a
-// wine name with the place name (Brunello di Montalcino DOCG, not
-// "Montalcino DOCG"), which a suffix rule would get wrong.
-export const KNOWN_APPELLATIONS: Record<string, string> = {
-  'stags leap district': 'Stags Leap District AVA',
-  'oakville': 'Oakville AVA',
-  'rutherford': 'Rutherford AVA',
-  'howell mountain': 'Howell Mountain AVA',
-  'st. helena': 'St. Helena AVA',
-  'calistoga': 'Calistoga AVA',
-  'yountville': 'Yountville AVA',
-  'atlas peak': 'Atlas Peak AVA',
-  'spring mountain': 'Spring Mountain District AVA',
-  'diamond mountain': 'Diamond Mountain District AVA',
-  'mount veeder': 'Mount Veeder AVA',
-  'coombsville': 'Coombsville AVA',
-  'russian river valley': 'Russian River Valley AVA',
-  'alexander valley': 'Alexander Valley AVA',
-  'dry creek valley': 'Dry Creek Valley AVA',
-  'knights valley': 'Knights Valley AVA',
-  'chalk hill': 'Chalk Hill AVA',
-  'bennett valley': 'Bennett Valley AVA',
-  'sonoma valley': 'Sonoma Valley AVA',
-  'sonoma coast': 'Sonoma Coast AVA',
-  'dundee hills': 'Dundee Hills AVA',
-  'eola-amity hills': 'Eola-Amity Hills AVA',
-  'yamhill-carlton': 'Yamhill-Carlton AVA',
-  'ribbon ridge': 'Ribbon Ridge AVA',
-  'columbia valley': 'Columbia Valley AVA',
-  'walla walla valley': 'Walla Walla Valley AVA',
-  'red mountain': 'Red Mountain AVA',
-  'yakima valley': 'Yakima Valley AVA',
-  'châteauneuf-du-pape': 'Châteauneuf-du-Pape AOC',
-  'hermitage': 'Hermitage AOC',
-  'côte-rôtie': 'Côte-Rôtie AOC',
-  'gigondas': 'Gigondas AOC',
-  'condrieu': 'Condrieu AOC',
-  'pauillac': 'Pauillac AOC',
-  'margaux': 'Margaux AOC',
-  'saint-julien': 'Saint-Julien AOC',
-  'saint-estèphe': 'Saint-Estèphe AOC',
-  'pessac-léognan': 'Pessac-Léognan AOC',
-  'saint-émilion': 'Saint-Émilion AOC',
-  'pomerol': 'Pomerol AOC',
-  'sauternes': 'Sauternes AOC',
-  'gevrey-chambertin': 'Gevrey-Chambertin AOC',
-  'vosne-romanée': 'Vosne-Romanée AOC',
-  'meursault': 'Meursault AOC',
-  'puligny-montrachet': 'Puligny-Montrachet AOC',
-  'pommard': 'Pommard AOC',
-  'chablis': 'Chablis AOC',
-  'montalcino': 'Brunello di Montalcino DOCG',
-  'chianti classico': 'Chianti Classico DOCG',
-  'barolo': 'Barolo DOCG',
-  'barbaresco': 'Barbaresco DOCG',
-  'rioja alta': 'Rioja DOCa',
-  'rioja alavesa': 'Rioja DOCa',
-  'rioja oriental': 'Rioja DOCa',
-  'rioja': 'Rioja DOCa',
+// Region -> sub-region (or "" for the region itself) -> official appellation
+// designation string. Outer and inner keys are lowercase; lookups must
+// lowercase both the region and sub-region before indexing in.
+//
+// Deliberately a direct lookup rather than a generic "append AVA/AOC" suffix
+// rule — Italian DOCG names in particular bundle a wine name with the place
+// name (Brunello di Montalcino DOCG, not "Montalcino DOCG"), which a suffix
+// rule would get wrong.
+//
+// Montepulciano appears twice below under two unrelated entries — Tuscany's
+// "montepulciano" (the hill town, Vino Nobile di Montepulciano DOCG) and
+// Abruzzo's region-level "" entry (Montepulciano d'Abruzzo DOC, named for
+// the grape variety grown there). These are two different things that
+// happen to share a name — do not merge or alias them.
+//
+// The Abruzzo "" fallback is accurate for red wine only. White Abruzzo is
+// Trebbiano d'Abruzzo DOC and rosé is its own separate Cerasuolo d'Abruzzo
+// DOC (split out in 2010) — this table has no style-awareness today, so a
+// white/rosé Abruzzo wine with no sub-region will get the red DOC name here.
+// Known limitation, not a silent guess.
+//
+// Tuscany's "" fallback (Toscana IGT) is the only real region-wide blanket
+// designation, but most collectible Tuscan wine is DOCG, not IGT — treat
+// this as a last resort only, never preferred over a specific sub-region
+// match above it.
+export const APPELLATION_LOOKUP: Record<string, Record<string, string>> = {
+  'napa valley': {
+    'oakville': 'Oakville AVA',
+    'stags leap district': 'Stags Leap District AVA',
+    'rutherford': 'Rutherford AVA',
+    'st. helena': 'St. Helena AVA',
+    'howell mountain': 'Howell Mountain AVA',
+    'spring mountain district': 'Spring Mountain District AVA',
+    'diamond mountain district': 'Diamond Mountain District AVA',
+    'mount veeder': 'Mount Veeder AVA',
+    'yountville': 'Yountville AVA',
+    'coombsville': 'Coombsville AVA',
+    'calistoga': 'Calistoga AVA',
+    'atlas peak': 'Atlas Peak AVA',
+    'los carneros': 'Los Carneros AVA',
+    '': 'Napa Valley AVA',
+  },
+  'sonoma county': {
+    'russian river valley': 'Russian River Valley AVA',
+    'sonoma coast': 'Sonoma Coast AVA',
+    'alexander valley': 'Alexander Valley AVA',
+    'dry creek valley': 'Dry Creek Valley AVA',
+    '': 'Sonoma County',
+  },
+  'bordeaux': {
+    'pauillac': 'Pauillac AOC',
+    'saint-estèphe': 'Saint-Estèphe AOC',
+    'saint-julien': 'Saint-Julien AOC',
+    'margaux': 'Margaux AOC',
+    'pomerol': 'Pomerol AOC',
+    'saint-émilion': 'Saint-Émilion AOC',
+    'pessac-léognan': 'Pessac-Léognan AOC',
+    'moulis': 'Moulis-en-Médoc AOC',
+    'listrac': 'Listrac-Médoc AOC',
+    '': 'Bordeaux AOC',
+  },
+  'burgundy': {
+    'gevrey-chambertin': 'Gevrey-Chambertin AOC',
+    'chambolle-musigny': 'Chambolle-Musigny AOC',
+    'vosne-romanée': 'Vosne-Romanée AOC',
+    'nuits-saint-georges': 'Nuits-Saint-Georges AOC',
+    'pommard': 'Pommard AOC',
+    'volnay': 'Volnay AOC',
+    'meursault': 'Meursault AOC',
+    'puligny-montrachet': 'Puligny-Montrachet AOC',
+    'chassagne-montrachet': 'Chassagne-Montrachet AOC',
+    'chablis': 'Chablis AOC',
+    'mâcon': 'Mâcon AOC',
+    '': 'Bourgogne AOC',
+  },
+  'rhône valley': {
+    'châteauneuf-du-pape': 'Châteauneuf-du-Pape AOC',
+    'hermitage': 'Hermitage AOC',
+    'côte-rôtie': 'Côte-Rôtie AOC',
+    'gigondas': 'Gigondas AOC',
+    'vacqueyras': 'Vacqueyras AOC',
+    'crozes-hermitage': 'Crozes-Hermitage AOC',
+    '': 'Côtes du Rhône AOC',
+  },
+  'champagne': {
+    'montagne de reims': 'Champagne AOC',
+    'vallée de la marne': 'Champagne AOC',
+    'côte des blancs': 'Champagne AOC',
+    '': 'Champagne AOC',
+  },
+  'tuscany': {
+    'montalcino': 'Brunello di Montalcino DOCG',
+    'brunello di montalcino': 'Brunello di Montalcino DOCG',
+    'montepulciano': 'Vino Nobile di Montepulciano DOCG',
+    'chianti classico': 'Chianti Classico DOCG',
+    'bolgheri': 'Bolgheri DOC',
+    '': 'Toscana IGT',
+  },
+  'abruzzo': {
+    '': "Montepulciano d'Abruzzo DOC",
+  },
+  'piedmont': {
+    'barolo': 'Barolo DOCG',
+    'barbaresco': 'Barbaresco DOCG',
+    'asti': 'Asti DOCG',
+    '': 'Piemonte DOC',
+  },
+  'marlborough': {
+    'wairau valley': 'Marlborough GI',
+    'awatere valley': 'Marlborough GI',
+    '': 'Marlborough GI',
+  },
+  'western cape': {
+    'stellenbosch': 'Stellenbosch WO',
+    'franschhoek': 'Franschhoek WO',
+    'paarl': 'Paarl WO',
+    'swartland': 'Swartland WO',
+    'constantia': 'Constantia WO',
+    'walker bay': 'Walker Bay WO',
+    '': 'Western Cape WO',
+  },
+  'rioja': {
+    'rioja alta': 'Rioja DOCa',
+    'rioja alavesa': 'Rioja DOCa',
+    'rioja oriental': 'Rioja DOCa',
+    '': 'Rioja DOCa',
+  },
+  'mosel': {
+    'bernkastel': 'Mosel',
+    'piesport': 'Mosel',
+    '': 'Mosel',
+  },
 }
 
 // Sub-regions that legitimately mean different things depending on context
 // (e.g. Carneros straddles Napa and Sonoma) — normalizeRegionAndSubRegion
 // returns these unchanged with `ambiguous: true` rather than guessing.
 export const AMBIGUOUS_SUBREGIONS = new Set<string>(['carneros', 'los carneros', 'sonoma valley'])
+
+// Country -> region -> valid quality/classification tier values for that
+// region's own system. Keys are lowercase; used to tell a genuine quality
+// tier (Grand Cru, Reserva, ...) apart from a value that's actually an
+// appellation name that landed in the wrong field.
+//
+// France/Bordeaux mixes Saint-Émilion-only terms (Premier Grand Cru Classé
+// A/B) with Médoc-only terms (the Cru Bourgeois tiers) — this table only
+// keys down to region, not sub-appellation, so it can't express that a
+// given bottle should only ever show one family of these, not both.
+//
+// USA tiers (Reserve, Library) are producer-discretionary marketing terms
+// with no legal definition, unlike the regulated European terms elsewhere
+// in this table. "Estate" is the exception — that one is TTB-defined.
+export const QUALITY_TIER_LOOKUP: Record<string, Record<string, string[]>> = {
+  'france': {
+    'burgundy': ['Grand Cru', 'Premier Cru', 'Village', 'Régionale'],
+    'bordeaux': [
+      'Premier Grand Cru Classé A',
+      'Premier Grand Cru Classé B',
+      'Grand Cru Classé',
+      'Cru Bourgeois Exceptionnel',
+      'Cru Bourgeois Supérieur',
+      'Cru Bourgeois',
+    ],
+    'champagne': ['Non-Vintage', 'Vintage', 'Prestige Cuvée', 'Blanc de Blancs', 'Blanc de Noirs', 'Rosé'],
+    'rhône valley': ['Cru', 'Villages', 'Régionale'],
+  },
+  'italy': {
+    'tuscany': ['Riserva', 'Gran Selezione', 'Superiore'],
+    'piedmont': ['Riserva', 'Superiore'],
+  },
+  'spain': {
+    'rioja': ['Gran Reserva', 'Reserva', 'Crianza', 'Joven'],
+  },
+  'germany': {
+    'mosel': ['QbA', 'Kabinett', 'Spätlese', 'Auslese', 'Beerenauslese', 'Eiswein', 'Trockenbeerenauslese'],
+  },
+  'usa': {
+    'napa valley': ['Reserve', 'Estate', 'Single Vineyard', 'Library'],
+    'sonoma county': ['Reserve', 'Estate', 'Single Vineyard'],
+  },
+  'united states': {
+    'napa valley': ['Reserve', 'Estate', 'Single Vineyard', 'Library'],
+    'sonoma county': ['Reserve', 'Estate', 'Single Vineyard'],
+  },
+  'us': {
+    'napa valley': ['Reserve', 'Estate', 'Single Vineyard', 'Library'],
+    'sonoma county': ['Reserve', 'Estate', 'Single Vineyard'],
+  },
+}

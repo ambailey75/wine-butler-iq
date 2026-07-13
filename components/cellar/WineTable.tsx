@@ -18,7 +18,7 @@ import {
 import { ArrowUpDown, Check, Eye, GlassWater, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import type { SerializedWine } from '@/lib/wines/queries'
 import { getEstimatedValue } from '@/lib/wines/queries'
-import { normalizeRegionSpelling } from '@/lib/wines/normalize'
+import { getDisplayRegion, getDisplaySubRegion } from '@/lib/wines/normalize'
 import {
   Table,
   TableBody,
@@ -345,6 +345,7 @@ function DualFieldCell({
   onStart,
   onSave,
   onCancel,
+  boldTop = false,
 }: {
   topValue: string | null
   bottomValue: string | null
@@ -358,6 +359,7 @@ function DualFieldCell({
   onStart: (id: string, f: string) => void
   onSave: (id: string, updates: Record<string, unknown>) => void
   onCancel: () => void
+  boldTop?: boolean
 }) {
   const dualField = `${topField}_${bottomField}`
   const isEditing = editing?.wineId === wineId && editing?.field === dualField
@@ -408,10 +410,10 @@ function DualFieldCell({
       className="group relative cursor-pointer rounded px-1 py-0.5 hover:bg-amber-50/40 hover:ring-1 hover:ring-[rgba(201,168,76,0.45)]"
     >
       {isSaved && <Check className="mr-1 inline h-3 w-3 text-emerald-500" />}
-      <div className="text-xs leading-tight">
+      <div className={`text-xs leading-tight ${boldTop ? 'font-semibold' : ''}`}>
         {topValue || <span className="text-muted-foreground">—</span>}
       </div>
-      {bottomValue && (
+      {bottomValue && bottomValue !== topValue && (
         <div className="text-[10px] leading-tight text-muted-foreground">{bottomValue}</div>
       )}
       <Pencil className="absolute right-0.5 top-0.5 h-2.5 w-2.5 text-amber-500/50 opacity-0 group-hover:opacity-100" />
@@ -751,24 +753,25 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
       },
       {
         id: 'regionSubRegion',
-        accessorFn: (row) => row.region,
+        accessorFn: (row) => getDisplayRegion(row.region),
         header: ({ column }) => <SortHeader column={column} label="Region" />,
         cell: ({ row }) => (
           <DualFieldCell
-            topValue={row.original.region}
-            bottomValue={row.original.subRegion}
+            topValue={getDisplayRegion(row.original.region)}
+            bottomValue={getDisplaySubRegion(row.original.subRegion)}
             wineId={row.original.id}
             topField="region" bottomField="subRegion"
             topLabel="Region" bottomLabel="Sub-Region"
             editing={editing} savedCell={savedCell}
             onStart={startEditWithDismiss} onSave={saveField} onCancel={cancelEdit}
+            boldTop
           />
         ),
         filterFn: multiSelectFilter,
       },
       {
         id: 'subRegion',
-        accessorKey: 'subRegion',
+        accessorFn: (row) => getDisplaySubRegion(row.subRegion),
         filterFn: multiSelectFilter,
         enableSorting: false,
         header: () => null,
@@ -1069,9 +1072,11 @@ export function WineTable({ wines: initialWines }: { wines: SerializedWine[] }) 
       if (wine.producer) producers.add(wine.producer)
       // Safety net: data written before normalization shipped, or edited
       // directly via the inline TextEditCell (which bypasses the import
-      // pipeline), may still hold unnormalized spelling/casing.
-      if (wine.region) regions.add(normalizeRegionSpelling(wine.region))
-      if (wine.subRegion) subRegions.add(normalizeRegionSpelling(wine.subRegion))
+      // pipeline), may still hold unnormalized spelling/casing, or even a
+      // whole unsplit "Region > SubRegion" combined value — getDisplayRegion/
+      // getDisplaySubRegion re-split defensively rather than showing it raw.
+      if (wine.region) regions.add(getDisplayRegion(wine.region))
+      if (wine.subRegion) subRegions.add(getDisplaySubRegion(wine.subRegion))
       if (wine.varietal) varietals.add(wine.varietal)
       if (wine.vintage) vintages.add(wine.vintage)
     }

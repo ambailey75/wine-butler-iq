@@ -3,6 +3,8 @@ import {
   normalizeRegionSpelling,
   normalizeRegionAndSubRegion,
   normalizeWineData,
+  getDisplayRegion,
+  getDisplaySubRegion,
 } from '@/lib/wines/normalize'
 
 describe('normalizeVarietal', () => {
@@ -66,9 +68,82 @@ describe('normalizeRegionAndSubRegion', () => {
   it('splits a combined region value on ">"', () => {
     const result = normalizeRegionAndSubRegion('Napa Valley > Spring Mountain', undefined, 'United States')
     expect(result.region).toBe('Napa Valley')
-    expect(result.subRegion).toBe('Spring Mountain')
+    expect(result.subRegion).toBe('Spring Mountain District')
     expect(result.appellation).toBe('Spring Mountain District AVA')
     expect(result.ambiguous).toBe(false)
+  })
+
+  it('splits "Rhône > Châteauneuf-du-Pape" into region, subRegion, and appellation', () => {
+    const result = normalizeRegionAndSubRegion('Rhône > Châteauneuf-du-Pape', undefined, undefined)
+    expect(result.region).toBe('Rhône Valley')
+    expect(result.subRegion).toBe('Châteauneuf-du-Pape')
+    expect(result.appellation).toBe('Châteauneuf-du-Pape AOC')
+    expect(result.ambiguous).toBe(false)
+  })
+
+  it('splits "Napa valley, Stags Leap District" on a comma', () => {
+    const result = normalizeRegionAndSubRegion('Napa valley, Stags Leap District', undefined, undefined)
+    expect(result.region).toBe('Napa Valley')
+    expect(result.subRegion).toBe('Stags Leap District')
+    expect(result.appellation).toBe('Stags Leap District AVA')
+    expect(result.ambiguous).toBe(false)
+  })
+
+  it('splits "Marlborough - Wairau Valley" and finds the Marlborough GI', () => {
+    const result = normalizeRegionAndSubRegion('Marlborough - Wairau Valley', undefined, undefined)
+    expect(result.region).toBe('Marlborough')
+    expect(result.subRegion).toBe('Wairau Valley')
+    expect(result.appellation).toBe('Marlborough GI')
+    expect(result.ambiguous).toBe(false)
+  })
+
+  it('splits "Western Cape > Stellenbosch" and finds the Stellenbosch WO', () => {
+    const result = normalizeRegionAndSubRegion('Western Cape > Stellenbosch', undefined, undefined)
+    expect(result.region).toBe('Western Cape')
+    expect(result.subRegion).toBe('Stellenbosch')
+    expect(result.appellation).toBe('Stellenbosch WO')
+    expect(result.ambiguous).toBe(false)
+  })
+
+  it('splits "Tuscany | Montalcino" and finds the Brunello di Montalcino DOCG', () => {
+    const result = normalizeRegionAndSubRegion('Tuscany | Montalcino', undefined, undefined)
+    expect(result.region).toBe('Tuscany')
+    expect(result.subRegion).toBe('Montalcino')
+    expect(result.appellation).toBe('Brunello di Montalcino DOCG')
+    expect(result.ambiguous).toBe(false)
+  })
+
+  it('looks up an exact sub-region match (scenario A: Oakville)', () => {
+    const result = normalizeRegionAndSubRegion('Napa Valley', 'Oakville', 'United States')
+    expect(result.appellation).toBe('Oakville AVA')
+  })
+
+  it('falls back to the region-level appellation when subRegion is blank (scenario C: Champagne)', () => {
+    const result = normalizeRegionAndSubRegion('Champagne', undefined, 'France')
+    expect(result.region).toBe('Champagne')
+    expect(result.subRegion).toBe('')
+    expect(result.appellation).toBe('Champagne AOC')
+  })
+
+  it('strips a designation suffix already present on a raw subRegion value', () => {
+    const result = normalizeRegionAndSubRegion('Napa Valley', 'Stags Leap District AVA', 'United States')
+    expect(result.subRegion).toBe('Stags Leap District')
+    expect(result.appellation).toBe('Stags Leap District AVA')
+  })
+
+  it('resolves "Brunello di Montalcino" as a subRegion to the same DOCG as "Montalcino"', () => {
+    const result = normalizeRegionAndSubRegion('Tuscany', 'Brunello di Montalcino', 'Italy')
+    expect(result.appellation).toBe('Brunello di Montalcino DOCG')
+  })
+
+  it('disambiguates Montepulciano the Tuscan appellation from Montepulciano d\'Abruzzo the grape/DOC', () => {
+    const tuscanResult = normalizeRegionAndSubRegion('Tuscany', 'Montepulciano', 'Italy')
+    expect(tuscanResult.appellation).toBe('Vino Nobile di Montepulciano DOCG')
+
+    const abruzzoResult = normalizeRegionAndSubRegion('Abruzzo', undefined, 'Italy')
+    expect(abruzzoResult.appellation).toBe("Montepulciano d'Abruzzo DOC")
+
+    expect(tuscanResult.appellation).not.toBe(abruzzoResult.appellation)
   })
 
   it('splits a combined region value on a comma', () => {
@@ -173,5 +248,48 @@ describe('normalizeWineData', () => {
     const result = normalizeWineData({ producer: 'opus one', wineName: 'opus one' })
     expect(result.producer).toBe('opus one')
     expect(result.wineName).toBe('opus one')
+  })
+
+  it('moves a bare designation token out of classification and into appellation via the region-level fallback', () => {
+    const result = normalizeWineData({ region: 'Tuscany', classification: 'DOCG' })
+    expect(result.classification).toBeUndefined()
+    expect(result.appellation).toBe('Toscana IGT')
+  })
+
+  it('cleans a separator artifact before checking whether classification looks like an appellation', () => {
+    const result = normalizeWineData({ classification: '- Chablis' })
+    expect(result.classification).toBeUndefined()
+    expect(result.appellation).toBe('Chablis')
+  })
+
+  it('keeps a genuine quality tier in classification', () => {
+    const result = normalizeWineData({ country: 'France', region: 'Burgundy', classification: 'Grand Cru' })
+    expect(result.classification).toBe('Grand Cru')
+    // Burgundy with no subRegion always gets the region-level appellation
+    // fallback (Item 3, scenario C) regardless of classification handling —
+    // this confirms that fallback firing didn't clobber a valid tier value.
+    expect(result.appellation).toBe('Bourgogne AOC')
+  })
+})
+
+describe('getDisplayRegion / getDisplaySubRegion', () => {
+  it('defensively re-splits a raw combined region value instead of showing it verbatim', () => {
+    // Real shape of dirty data found in the live cellar database: the
+    // region column itself still holds the full unsplit string.
+    expect(getDisplayRegion('Rhône > Châteauneuf-du-Pape')).toBe('Rhône Valley')
+    expect(getDisplayRegion('Napa valley, Stags Leap District')).toBe('Napa Valley')
+  })
+
+  it('returns a clean region unchanged', () => {
+    expect(getDisplayRegion('Mosel')).toBe('Mosel')
+  })
+
+  it('strips a designation suffix from a subRegion value for display', () => {
+    expect(getDisplaySubRegion('Stags Leap District AVA')).toBe('Stags Leap District')
+  })
+
+  it('returns an empty string for blank input', () => {
+    expect(getDisplayRegion(null)).toBe('')
+    expect(getDisplaySubRegion(undefined)).toBe('')
   })
 })

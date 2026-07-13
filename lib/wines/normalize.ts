@@ -1,7 +1,13 @@
 import type { MappedWineData } from '../import/constants'
 import { cleanFieldValue } from '../import/clean-field-values'
 import { VARIETAL_MAP, PROTECTED_BLEND_NAMES } from './varietal-data'
-import { REGION_SUBREGION_PAIRS, REGION_SPELLING_CORRECTIONS, KNOWN_APPELLATIONS, AMBIGUOUS_SUBREGIONS } from './region-data'
+import {
+  REGION_SUBREGION_PAIRS,
+  REGION_SPELLING_CORRECTIONS,
+  APPELLATION_LOOKUP,
+  QUALITY_TIER_LOOKUP,
+  AMBIGUOUS_SUBREGIONS,
+} from './region-data'
 
 // Single source of truth for all wine data normalization — used at import
 // time, enrichment time, and by the retroactive migration script
@@ -64,7 +70,14 @@ export function normalizeRegionSpelling(raw: string): string {
 
 const REGION_SPLIT_SEPARATORS = [' > ', ' | ', ' / ', ', ', ' - ', ' . ']
 
-function splitCombinedValue(value: string): { first: string; second: string } | null {
+/**
+ * Splits a combined "Region > SubRegion"-style value on the first
+ * recognized separator. Exported so display-layer code (WineTable.tsx) can
+ * defensively re-split a value that should already be split but isn't —
+ * e.g. legacy rows written before normalization existed, or rows edited
+ * inline (which bypasses the import pipeline).
+ */
+export function splitCombinedValue(value: string): { first: string; second: string } | null {
   for (const sep of REGION_SPLIT_SEPARATORS) {
     const idx = value.indexOf(sep)
     if (idx > -1) {
@@ -72,6 +85,53 @@ function splitCombinedValue(value: string): { first: string; second: string } | 
     }
   }
   return null
+}
+
+// Trailing designation suffix on a sub-region value, e.g. "Stags Leap
+// District AVA" -> strip to subRegion "Stags Leap District", keep the full
+// string as appellation. Longest tokens first so DOCG/DOCa aren't shadowed
+// by a partial DOC match (moot given the trailing anchor, but kept explicit).
+const DESIGNATION_SUFFIX = /\s*,?\s*(DOCG|DOCa|DOC|AOC|AVA|WO|GI)\s*$/i
+
+// Same token set, unanchored — used to detect a designation suffix anywhere
+// in a classification value (e.g. a bare "DOCG" with no place name at all).
+const DESIGNATION_TOKEN_ANYWHERE = /\b(DOCG|DOCa|DOC|AOC|AVA|WO|GI)\b/i
+
+// Flattened set of every region and sub-region name known to
+// APPELLATION_LOOKUP, lowercase — used to catch a classification value that
+// is actually a place name with no designation suffix attached (e.g. a
+// stray "Chianti Classico" typed into the classification field).
+const KNOWN_PLACE_NAMES: Set<string> = (() => {
+  const names = new Set<string>()
+  for (const [region, subRegions] of Object.entries(APPELLATION_LOOKUP)) {
+    names.add(region)
+    for (const subRegion of Object.keys(subRegions)) {
+      if (subRegion) names.add(subRegion)
+    }
+  }
+  return names
+})()
+
+function looksLikeAppellation(value: string): boolean {
+  const trimmed = value.trim()
+  if (!trimmed) return false
+  if (DESIGNATION_TOKEN_ANYWHERE.test(trimmed)) return true
+  return KNOWN_PLACE_NAMES.has(trimmed.toLowerCase())
+}
+
+/**
+ * Region -> sub-region (or region-level "") appellation lookup chain.
+ * Covers all three population scenarios with one code path: an exact
+ * region+subRegion match, a subRegion that isn't in the table (falls back
+ * to the region-level entry), and a blank subRegion (same region-level
+ * entry, reached directly).
+ */
+function lookupAppellation(region: string, subRegion: string): string {
+  const regionTable = APPELLATION_LOOKUP[region.toLowerCase()]
+  if (!regionTable) return ''
+  const subRegionKey = subRegion.toLowerCase()
+  if (subRegionKey && regionTable[subRegionKey]) return regionTable[subRegionKey]
+  return regionTable[''] ?? ''
 }
 
 export interface RegionSplitResult {
@@ -83,12 +143,12 @@ export interface RegionSplitResult {
 
 /**
  * Splits a combined region value, corrects spelling on both halves, infers
- * a known legal appellation designation from the resulting sub-region, and
- * flags genuinely ambiguous sub-regions (e.g. Carneros, which spans Napa and
- * Sonoma) rather than guessing — ambiguous results are returned with the
- * original raw values untouched so a caller can defer to a human.
+ * the official appellation designation, and flags genuinely ambiguous
+ * sub-regions (e.g. Carneros, which spans Napa and Sonoma) rather than
+ * guessing — ambiguous results are returned with the original raw values
+ * untouched so a caller can defer to a human.
  *
- * `country` isn't currently load-bearing in the lookup logic (KNOWN_APPELLATIONS
+ * `country` isn't currently load-bearing in the lookup logic (APPELLATION_LOOKUP
  * and REGION_SUBREGION_PAIRS are keyed by place name, which is unambiguous
  * enough on its own for the regions covered here) but is kept in the
  * signature for future disambiguation and because callers usually have it
@@ -132,7 +192,14 @@ export function normalizeRegionAndSubRegion(
     }
   }
 
-  const appellation = subRegionKey ? KNOWN_APPELLATIONS[subRegionKey] ?? '' : ''
+  let appellation = ''
+  const suffixMatch = subRegion.match(DESIGNATION_SUFFIX)
+  if (suffixMatch) {
+    appellation = subRegion
+    subRegion = subRegion.slice(0, suffixMatch.index).trim()
+  } else {
+    appellation = lookupAppellation(region, subRegion)
+  }
 
   return { region, subRegion, appellation, ambiguous: false }
 }
@@ -169,6 +236,28 @@ export function normalizeWineData(wine: Partial<MappedWineData>): Partial<Mapped
     if (result.country) result.country = normalizeRegionSpelling(result.country)
     if (result.state) result.state = normalizeRegionSpelling(result.state)
 
+    if (result.classification) {
+      const countryKey = (result.country ?? '').toLowerCase()
+      const regionKey = (result.region ?? '').toLowerCase()
+      const validTiers = QUALITY_TIER_LOOKUP[countryKey]?.[regionKey]
+      // Cleaned (not just trimmed) so a stray leading/trailing separator
+      // artifact — e.g. "- Chablis" from an inline edit or import — doesn't
+      // fail the exact-match KNOWN_PLACE_NAMES check below and silently
+      // stay parked in classification.
+      const classificationValue = cleanFieldValue(result.classification)
+      const isValidTier = validTiers?.some((tier) => tier.toLowerCase() === classificationValue.toLowerCase())
+
+      if (!isValidTier && looksLikeAppellation(classificationValue)) {
+        if (!result.appellation) {
+          const remnant = classificationValue.replace(DESIGNATION_TOKEN_ANYWHERE, '').trim()
+          result.appellation = remnant
+            ? classificationValue
+            : lookupAppellation(result.region ?? '', '') || classificationValue
+        }
+        result.classification = undefined
+      }
+    }
+
     for (const field of SYMBOL_STRIP_FIELDS) {
       const value = result[field]
       if (typeof value === 'string') {
@@ -181,4 +270,36 @@ export function normalizeWineData(wine: Partial<MappedWineData>): Partial<Mapped
   } catch {
     return wine
   }
+}
+
+/**
+ * Display-safe region accessor for read paths (table cells, filter option
+ * building) that may see data written before normalization existed, or
+ * edited inline (which bypasses the import pipeline). Defensively re-splits
+ * a value that still contains a combined "Region > SubRegion"-style
+ * separator rather than showing it raw.
+ */
+export function getDisplayRegion(rawRegion: string | null | undefined): string {
+  if (!rawRegion) return ''
+  const trimmed = rawRegion.trim()
+  if (!trimmed) return ''
+  const split = splitCombinedValue(trimmed)
+  return normalizeRegionSpelling(split ? split.first : trimmed)
+}
+
+/**
+ * Display-safe sub-region accessor — same defensive re-split as
+ * getDisplayRegion, plus designation-suffix stripping (AVA/AOC/DOC/DOCG/
+ * DOCa/WO/GI) so a raw, never-normalized value never shows the suffix in a
+ * filter dropdown or table cell.
+ */
+export function getDisplaySubRegion(rawSubRegion: string | null | undefined): string {
+  if (!rawSubRegion) return ''
+  const trimmed = rawSubRegion.trim()
+  if (!trimmed) return ''
+  const split = splitCombinedValue(trimmed)
+  const base = split ? split.second : trimmed
+  const suffixMatch = base.match(DESIGNATION_SUFFIX)
+  const stripped = suffixMatch ? base.slice(0, suffixMatch.index).trim() : base
+  return normalizeRegionSpelling(stripped)
 }
