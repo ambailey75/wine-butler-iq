@@ -15,7 +15,7 @@ function layout(title: string, body: string) {
     ${body}
   </div>
   <p style="text-align:center;font-size:12px;color:#71717a;margin-top:16px">
-    Wine Butler AI &mdash; winebutlerai.com
+    Wine Butler IQ &mdash; winebutleriq.com
   </p>
 </div>
 </body>

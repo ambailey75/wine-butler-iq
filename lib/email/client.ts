@@ -12,4 +12,4 @@ if (process.env.NODE_ENV !== 'production') {
   globalForResend.resend = resend
 }
 
-export const FROM_EMAIL = 'Wine Butler AI <notifications@winebutlerai.com>'
+export const FROM_EMAIL = 'Wine Butler IQ <notifications@winebutleriq.com>'
