@@ -140,6 +140,26 @@ npx shadcn-ui@latest init
 npx prisma init
 ```
 
+## DEBUGGING PROTOCOL — use this process for every bug fix
+
+1. Pick one specific failing record from real data
+2. Trace it through the pipeline step by step:
+   - Show rawData (what came from CSV)
+   - Show mappedData (after column mapping)
+   - Show normalizeWineData() output
+   - Show what landed in the database
+3. Identify the exact file and line where the value goes wrong
+4. Write the smallest fix possible — touch only the file and lines identified
+5. Run all agents before committing, not after
+6. Delete test data and re-import real data after deploy
+7. Verify visually before moving to next task
+
+NEVER:
+- Write fix code before running the diagnostic
+- Change multiple systems in one pass without isolating root cause
+- Assert something works without running it against real data
+- Commit before agent QA passes
+
 ## Do Not
 - Commit `.env.local`, `.env`, or any file containing API keys
 - Use `curl` without `.exe` in PowerShell
