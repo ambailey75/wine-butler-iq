@@ -8,7 +8,7 @@ function layout(title: string, body: string) {
 <body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
 <div style="max-width:560px;margin:0 auto;padding:32px 16px">
   <div style="text-align:center;margin-bottom:24px">
-    <span style="font-size:20px;font-weight:700;color:${BRAND_BURGUNDY}">Wine Butler AI</span>
+    <span style="font-size:20px;font-weight:700;color:${BRAND_BURGUNDY}">Wine Butler IQ</span>
   </div>
   <div style="background:#ffffff;border-radius:8px;padding:24px;border:1px solid #e4e4e7">
     <h2 style="margin:0 0 16px;font-size:18px;color:#18181b">${title}</h2>

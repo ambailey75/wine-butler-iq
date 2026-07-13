@@ -22,7 +22,7 @@ const OPTIONS: {
   {
     value: 'MATCH_CONSUMED',
     label: 'Mark Cellar Wines Consumed',
-    description: 'Match and update wines already in Wine Butler AI',
+    description: 'Match and update wines already in Wine Butler IQ',
     icon: <Wine className="h-6 w-6" />,
   },
   {

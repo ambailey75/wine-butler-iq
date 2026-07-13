@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     const html = watchListReminderEmail(items)
 
     try {
-      await sendEmail(user.email, 'Watch List Reminder - Wine Butler AI', html)
+      await sendEmail(user.email, 'Watch List Reminder - Wine Butler IQ', html)
 
       await prisma.watchListItem.updateMany({
         where: { id: { in: items.map((i) => i.id) } },

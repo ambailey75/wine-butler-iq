@@ -42,7 +42,7 @@ export default function AuthLayout({
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Image
             src="/wine-butler-ai-logo.png"
-            alt="Wine Butler AI"
+            alt="Wine Butler IQ"
             width={200}
             height={200}
             style={{ margin: '0 auto 1rem' }}
@@ -58,7 +58,7 @@ export default function AuthLayout({
               margin: 0,
             }}
           >
-            Wine Butler AI
+            Wine Butler IQ
           </h1>
         </div>
         {children}

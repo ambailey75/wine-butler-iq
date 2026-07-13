@@ -75,13 +75,13 @@ export function Sidebar({ alertCount = 0 }: { alertCount?: number }) {
         <Link href="/dashboard" className="mb-4 flex flex-shrink-0 flex-col items-center px-3">
           <Image
             src="/wine-butler-ai-logo.png"
-            alt="Wine Butler AI"
+            alt="Wine Butler IQ"
             width={230}
             height={230}
             className="mb-1"
             priority
           />
-          <span className="text-xs text-muted-foreground">Wine Butler AI</span>
+          <span className="text-xs text-muted-foreground">Wine Butler IQ</span>
         </Link>
         <nav className="flex flex-shrink-0 flex-col gap-1">
           {NAV_ITEMS.map((item) => (

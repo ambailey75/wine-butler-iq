@@ -18,7 +18,7 @@ export default function Home() {
         <div className="absolute z-10 flex flex-col items-center px-6 text-center">
           <Image
             src="/wine-butler-ai-logo.png"
-            alt="Wine Butler AI"
+            alt="Wine Butler IQ"
             width={140}
             height={140}
             className="mb-4 drop-shadow-xl"
@@ -83,7 +83,7 @@ export default function Home() {
             <FeatureCard
               image="/images/grapes-vineyard.png"
               title="Import from Anything"
-              body="Upload a spreadsheet, a PDF invoice, or a photo of a wine label. Wine Butler AI extracts and maps every field automatically."
+              body="Upload a spreadsheet, a PDF invoice, or a photo of a wine label. Wine Butler IQ extracts and maps every field automatically."
             />
             <FeatureCard
               image="/images/wine-barrel-still.png"
@@ -96,7 +96,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-border bg-background px-6 py-8 text-center text-sm text-muted-foreground">
-        © 2026 Bailey Applied Intelligence · winebutlerai.com
+        © 2026 Bailey Applied Intelligence · winebutleriq.com
       </footer>
     </div>
   )

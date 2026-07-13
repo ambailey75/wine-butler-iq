@@ -3,7 +3,7 @@ import { getCurrentUser } from '@/lib/auth/current-user'
 import type { WineLookupResult } from '@/lib/wines/types'
 import { fetchWithTimeout, searchVivino } from '@/lib/wines/vivino'
 
-const USER_AGENT_OFF = 'WineButlerAI/1.0 (winebutlerai.com; contact: ambailey91406@gmail.com)'
+const USER_AGENT_OFF = 'WineButlerIQ/1.0 (winebutleriq.com; contact: ambailey91406@gmail.com)'
 
 async function searchOpenFoodFacts(query: string): Promise<WineLookupResult[]> {
   const params = new URLSearchParams({

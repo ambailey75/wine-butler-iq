@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     const html = drinkWindowDigestEmail(userWines)
 
     try {
-      await sendEmail(user.email, 'Wines to Enjoy Now - Wine Butler AI', html)
+      await sendEmail(user.email, 'Wines to Enjoy Now - Wine Butler IQ', html)
 
       for (const wine of userWines) {
         await prisma.cellarAlert.create({
