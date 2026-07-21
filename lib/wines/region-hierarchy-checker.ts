@@ -75,21 +75,46 @@ function buildSparqlUrl(query: string): string {
   return `${WIKIDATA_SPARQL_ENDPOINT}?format=json&query=${encodeURIComponent(query)}`;
 }
 
+const SPARQL_MAX_ATTEMPTS = 3;
+const SPARQL_RETRY_BASE_DELAY_MS = 2000;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Retries added 2026-07-20 after production runs hit transient failures
+// against Wikidata's public endpoint (a connection "terminated" on one run,
+// a real 502 Bad Gateway on the next) — consistent with an overloaded or
+// rate-limited public API, not a problem with the query itself. Retries
+// with a short exponential backoff before giving up.
 async function runSparql(query: string): Promise<any> {
-  const res = await fetch(buildSparqlUrl(query), {
-    headers: {
-      Accept: "application/sparql-results+json",
-      "User-Agent": WIKIDATA_USER_AGENT,
-    },
-  });
-  if (!res.ok) {
-    throw new Error(
-      `Wikidata SPARQL request failed: ${res.status} ${res.statusText}. ` +
-        `If this is happening in production (not the research sandbox), it is a new, ` +
-        `real finding — do not assume it is the same sandbox block seen during research.`
-    );
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= SPARQL_MAX_ATTEMPTS; attempt++) {
+    try {
+      const res = await fetch(buildSparqlUrl(query), {
+        headers: {
+          Accept: "application/sparql-results+json",
+          "User-Agent": WIKIDATA_USER_AGENT,
+        },
+      });
+      if (!res.ok) {
+        throw new Error(
+          `Wikidata SPARQL request failed: ${res.status} ${res.statusText}. ` +
+            `If this is happening in production (not the research sandbox), it is a new, ` +
+            `real finding — do not assume it is the same sandbox block seen during research.`
+        );
+      }
+      return await res.json();
+    } catch (e) {
+      lastError = e;
+      if (attempt < SPARQL_MAX_ATTEMPTS) {
+        await sleep(SPARQL_RETRY_BASE_DELAY_MS * attempt);
+      }
+    }
   }
-  return res.json();
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(String(lastError));
 }
 
 /**
