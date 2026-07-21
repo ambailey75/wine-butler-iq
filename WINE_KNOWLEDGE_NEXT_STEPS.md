@@ -31,16 +31,18 @@ Built `lib/wines/dedup-match.ts` (cleanup/accent-fold/abbreviation-expansion, th
 
 ---
 
-## 3. Import X-Wines catalog into `wine_knowledge` — HIGH PRIORITY, BLOCKED ON #2
+## 3. Import X-Wines catalog into `wine_knowledge` — IN PROGRESS, no DB writes yet
 
 Plan link: `WINE_KNOWLEDGE_DATABASE_PLAN.md` → Phase 2, Checklist #2.
 Why: this is the actual point of Phase 2 — real, searchable data instead of an empty table.
 
 Substeps:
-1. [ ] Wait for #2 sign-off
-2. [ ] Build import script applying agreed rules (exact-vintage match only, Quimera/Prosecco/Albinea Canali handling)
-3. [ ] Run against the real 100,646-row catalog
-4. [ ] Trace one real record through the full pipeline per the debugging protocol before calling it done
+1. [x] #2 sign-off — done, thresholds validated safe
+2. [x] Build import script (`scripts/import-xwines.ts`, `npm run import-xwines -- --dry-run`) — parses the real CSV, applies the confirmed Quimera exclusion (WineID 167488), splits `Vintages` into `known_vintages`/`has_non_vintage`
+3. [x] Dry-run against the real 100,646-row catalog — 100,645 transformed, 1 correctly skipped, zero crashes, sample output checked by hand
+4. [ ] **Region validation against `region_authority` — NOT wired in yet.** Real finding while testing: Albinea Canali's region problem is bigger than the plan doc describes — 5 of its 6 rows in the catalog say `RegionName: Piemonte` (wrong; it's an Emilia-Romagna producer), not just the one duplicate pair originally documented. This needs fixing before any live write, not after.
+5. [ ] Live write to `wine_knowledge` (script currently stops after dry-run validation, no write path built yet)
+6. [ ] Trace one real record through the full pipeline per the debugging protocol before calling it done
 
 ---
 

@@ -9,7 +9,7 @@ Status as of 2026-07-20. This supersedes the three-phase outline referenced in `
 | Phase | Status | Summary |
 |---|---|---|
 | **Phase 1** — Unified Reference File | SKIPPED (2026-07-16) | Confirmed not a prerequisite for Phase 2. Not worth the time now — see below. |
-| **Phase 2** — Real Wine Database | IN PROGRESS | The initiative's actual prerequisite-free starting point. Table is live; data import not yet built. |
+| **Phase 2** — Real Wine Database | IN PROGRESS | Table is live. Dedup matching built and validated. Import script parses all 100,646 real rows cleanly in dry-run; region validation still needed before any live write. |
 | **Phase 3** — Lock It In | NOT STARTED | Blocked on Phase 2. |
 
 **Phase 1 detail:** Phase 2 can be built on the original three-file setup just as easily — the `wine-knowledge.ts` reorg was confirmed not load-bearing for Phase 2. The uncommitted `wine-knowledge.ts` reorg is not being committed. Its two unfinished items (deriving dropdown lists from the hierarchy, the free-text-preservation test) plus the file-naming cleanup are not part of this initiative's critical path — they go at the end of Phase 3, or get spun out as their own separate, standalone project. Not renumbered as "Phase 1" of anything going forward.
@@ -115,7 +115,7 @@ Source-trust is a real Prisma enum column (`SourceTrust`) on `wine_knowledge`, n
 
 - [x] Download X-Wines Full catalog (2026-07-20) — `XWines_100K_wines.csv`, 100,646 rows / 17 columns, verified via `pandas` read (row count and column names matched the official README exactly). Sourced from the dataset author's own Google Drive folder. Downloaded and pushed entirely from a Google Colab session — never touched the local machine. Pushed to branch `add-xwines-catalog`, commit `f6a974d`.
 - [x] **Merged to `main` (2026-07-20).** Confirmed independently via `git merge-base --is-ancestor`, not just taken on your word — `data-imports/XWines_100K_wines.csv` is present on `main`.
-- [ ] Import X-Wines Full catalog into the live `wine_knowledge` table — not started. No longer blocked on the branch merge or schema (both done); still blocked on the dedup-matching logic and consistency checks below actually being built.
+- [ ] Import X-Wines Full catalog into the live `wine_knowledge` table — in progress, not live yet. Dedup logic is now built and validated (see Region-Hierarchy Source Evaluation section, dedup findings). Import script (`scripts/import-xwines.ts`) parses and transforms all 100,646 real rows cleanly in dry-run; still blocked on region validation before any live write. Detail: `WINE_KNOWLEDGE_NEXT_STEPS.md`, item 3.
 - [ ] Import winery + region tables (not started)
 
 **Data-quality findings — where these came from:** while reviewing 5 real duplicate producer/wine pairs from the X-Wines file together in chat on 2026-07-20 (not a general audit — a full audit of all 162 groups has not happened yet, see the new CSV export below), we found real errors and open questions. Each item below says what the rule is, in plain terms, a concrete example, and whether it's actually been built into any code yet.
@@ -141,7 +141,8 @@ Source-trust is a real Prisma enum column (`SourceTrust`) on `wine_knowledge`, n
   What we found: Albinea Canali's "Vigna di Monteleone Cabernet Sauvignon" is genuinely from Emilia-Romagna (the wine region), specifically a legally defined zone within it called Colli di Scandiano e di Canossa. One file entry lists something close to that correct zone; the other lists "Piemonte" — a totally different, wrong region.
   Decision: the import process needs to look up each wine's region against Wine Butler IQ's own verified, hand-built list of real regions (the Phase 1 reference file), instead of just trusting whatever text X-Wines provides. That lookup would have caught this error automatically.
   Where this came from: you identified this region mismatch directly on 2026-07-20; I initially described the geography terms incorrectly and corrected it after you flagged it.
-  Status: decided, not yet built.
+  **Scope correction, found while building the import script: this is bigger than one duplicate pair.** Albinea Canali has 6 rows total in the catalog; 5 of them say `RegionName: Piemonte` (wrong), and only 1 says something close to the correct region. Not an isolated duplicate-row glitch — most of this producer's catalog presence is mislabeled.
+  Status: decided, not yet built. Region-validation step is the next piece of work on the X-Wines import — tracked in `WINE_KNOWLEDGE_NEXT_STEPS.md`, item 3.
 
 - [x] **General rule for all duplicate pairs, not just these two examples: only auto-combine two entries when they actually agree on what the wine is.**
   What this means: if two file entries for the same producer and wine name agree on region, grapes, and type, and only differ on which years are listed, it's safe to combine them (keep both years). If they disagree on region or grapes (like the two examples above), don't guess which one is right — treat them as needing individual research, the same way we just did for these two.
@@ -177,10 +178,10 @@ Source-trust is a real Prisma enum column (`SourceTrust`) on `wine_knowledge`, n
 
 **Remaining open items in this sub-phase:** reshape the Adelaide `Detailed_regional_2016` sheet into a usable lookup; check WineSensed's actual license.
 
-#### 3. Dedup, privacy, and search (not started)
+#### 3. Dedup, privacy, and search (partially built)
 
-- [ ] Build cross-source dedup matching (new logic — accent-folding/punctuation cleanup, then a similarity-score match with a real review queue for anything uncertain; concrete thresholds and test cases specified in `PHASE2_READINESS.md`)
-- [ ] Validate dedup thresholds against the specified real tricky-name test cases before they're locked in
+- [x] Build cross-source dedup matching — `lib/wines/dedup-match.ts`, accent-fold/punctuation cleanup + Levenshtein similarity score, real review-queue classification (`AUTO_MATCH` / `REVIEW` / `DIFFERENT`).
+- [x] Validate dedup thresholds against real tricky-name test cases — 7 real cases run, including the named risky one (Domaine Leroy vs. Domaine Leflaive), signed off safe. Full results: `WINE_KNOWLEDGE_NEXT_STEPS.md`, item 2.
 - [ ] Build the privacy allow-list write-back function + the automated test that checks each forbidden field is absent by name
 - [ ] Build server-side search (Postgres `pg_trgm`, one combined index, concrete threshold/debounce/index design in `PHASE2_READINESS.md`)
 

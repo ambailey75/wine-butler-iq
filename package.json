@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "normalize-cellar": "ts-node --project scripts/tsconfig.json scripts/normalize-cellar.ts",
-    "populate-region-authority": "ts-node --project scripts/tsconfig.json scripts/populate-region-authority.ts"
+    "populate-region-authority": "ts-node --project scripts/tsconfig.json scripts/populate-region-authority.ts",
+    "import-xwines": "ts-node --project scripts/tsconfig.json scripts/import-xwines.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
