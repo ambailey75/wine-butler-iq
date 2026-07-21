@@ -62,9 +62,22 @@ export async function GET(request: NextRequest) {
   }
 
   // Idempotent refresh: clear only WIKIDATA-sourced rows, leave WINERYMAP alone.
-  const deleted = await prisma.regionAuthority.deleteMany({
-    where: { source: 'WIKIDATA' },
-  })
+  let deleted: Awaited<ReturnType<typeof prisma.regionAuthority.deleteMany>>
+  try {
+    deleted = await prisma.regionAuthority.deleteMany({
+      where: { source: 'WIKIDATA' },
+    })
+  } catch (e) {
+    return NextResponse.json(
+      {
+        step: 'delete',
+        error: e instanceof Error ? e.message : String(e),
+        fetchedRows: rows.length,
+        elapsedMs: Date.now() - startedAt,
+      },
+      { status: 502 }
+    )
+  }
 
   let inserted = 0
   const errors: string[] = []
