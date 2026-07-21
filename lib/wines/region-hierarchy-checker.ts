@@ -148,6 +148,75 @@ export async function checkRegion(
  * (that was specific to relaying text through a browser-automation chat
  * tool); a real Node fetch loop has no such constraint.
  */
+// --- WineryMap secondary cross-check -----------------------------------
+//
+// Added 2026-07-20. Confirmed real and usable by pulling the live file
+// directly: 2,077 regions, 34,178 vineyards, matching WineryMap's own
+// published numbers. Region keys are appellation-level, not country-level
+// buckets — confirmed by finding "Colli di Scandiano e di Canossa, Italy"
+// as a literal key, the same test case Wikidata was verified against.
+//
+// This is NOT wired in as the primary source: it has no per-source
+// external id, no explicit country/locatedIn split (region keys are a
+// single "{Name}, {Country}" string we split ourselves below), and no
+// stated update cadence. Used to corroborate a Wikidata MATCH/NO_MATCH,
+// not to replace it.
+const WINERYMAP_DATA_URL =
+  "https://raw.githubusercontent.com/oOo0oOo/winerymap/main/vineyards.json";
+
+interface WineryMapRegionEntry {
+  regionKey: string; // raw "{Name}, {Country}" key as stored in the source file
+  name: string;
+  country: string;
+  vineyardCount: number;
+}
+
+let wineryMapCache: WineryMapRegionEntry[] | null = null;
+
+async function loadWineryMapRegions(): Promise<WineryMapRegionEntry[]> {
+  if (wineryMapCache) return wineryMapCache;
+
+  const res = await fetch(WINERYMAP_DATA_URL);
+  if (!res.ok) {
+    throw new Error(`WineryMap fetch failed: ${res.status} ${res.statusText}`);
+  }
+  const data: Record<string, { vineyards: unknown[] }> = await res.json();
+
+  wineryMapCache = Object.entries(data)
+    .filter(([key]) => key !== "Unknown")
+    .map(([key, value]) => {
+      const lastComma = key.lastIndexOf(",");
+      const name = lastComma === -1 ? key : key.slice(0, lastComma).trim();
+      const country = lastComma === -1 ? "" : key.slice(lastComma + 1).trim();
+      return { regionKey: key, name, country, vineyardCount: value.vineyards.length };
+    });
+
+  return wineryMapCache;
+}
+
+/**
+ * Cross-check a checkRegion() result against WineryMap's region list.
+ * Returns a simple boolean rather than its own status enum — this is a
+ * corroboration signal for the Wikidata result, not an independent verdict.
+ */
+export async function crossCheckWineryMap(
+  appellationName: string,
+  expectedCountry?: string
+): Promise<{ found: boolean; matchedKey: string | null }> {
+  const regions = await loadWineryMapRegions();
+  const needle = appellationName.toLowerCase();
+
+  const match = regions.find((r) => {
+    const nameMatches = r.name.toLowerCase().includes(needle) || needle.includes(r.name.toLowerCase());
+    const countryMatches = expectedCountry
+      ? r.country.toLowerCase() === expectedCountry.toLowerCase()
+      : true;
+    return nameMatches && countryMatches;
+  });
+
+  return { found: !!match, matchedKey: match?.regionKey ?? null };
+}
+
 export async function fetchFullRegionAuthorityTable(): Promise<RegionAuthorityRow[]> {
   const pageSize = 3000;
   let offset = 0;

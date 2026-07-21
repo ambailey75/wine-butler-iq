@@ -57,6 +57,12 @@ model Wine {
   notes              String?
   tastingNotes       String?
   pairingNotes       String?
+  // Rule (added 2026-07-20): rating, and every manually-entered field below
+  // it on this model, is the user's own input. No sync, enrichment refresh,
+  // or wine_knowledge catalog update may ever overwrite a value the user
+  // entered themselves — catalog/enrichment data only fills fields the user
+  // left blank, same "fill blanks, never overwrite" rule used elsewhere in
+  // this design (see PHASE2_READINESS.md).
   rating             Decimal?  @db.Decimal(4, 1)
   drinkWindowStart   Int?
   drinkWindowEnd     Int?
@@ -262,7 +268,27 @@ model WineKnowledge {
   // Core identity — what wine this is
   producer String
   wineName String
-  vintage  Int? // null = non-vintage (NV)
+  vintage  Int? // a specific year — only ever set for a user-confirmed, bottle-specific
+  // entry. null = either non-vintage (NV), or a catalog-level entry (see
+  // known_vintages below) that isn't tied to one specific bottle.
+
+  // Added 2026-07-20. One row per wine, not per year: a catalog source like
+  // X-Wines lists the range of years a wine has been produced, with every
+  // other field identical across them — exploding that into one row per
+  // year would multiply ~100,646 wines into 800,000+ near-duplicates. This
+  // holds that year list on catalog-level rows. Never set alongside a
+  // populated `vintage` — a row is either a specific bottle (vintage set,
+  // this null) or a catalog entry spanning years (this set, vintage null).
+  known_vintages Int[]
+
+  // Added 2026-07-20: whether this wine is also/only sold as non-vintage
+  // (e.g. most Champagne blends). Separate from known_vintages because a
+  // wine can have both real years AND an NV bottling -- dropping the NV
+  // fact to fit it into a numeric-only years list was the wrong call
+  // (corrected same day). Default false, not null: every X-Wines row has
+  // a real answer to this (checked directly), so there's no "unknown" case
+  // for that source the way there is for a hand-entered user import.
+  has_non_vintage Boolean @default(false)
 
   // Geography — a real hierarchy (country > state > region > subRegion >
   // appellation), not independent facts. Kept as flat columns rather than a
@@ -293,6 +319,22 @@ model WineKnowledge {
   // Known limitation, not solved by this schema — documented so it's never
   // mistaken for a data-quality bug.
   varietal String?
+
+  // Wine type/style (Red, White, Rosé, Sparkling, Dessert, Fortified). Added
+  // 2026-07-20 — maps to X-Wines' "Type" column, which had nowhere to land
+  // without this. Nullable: not every source (LWIN, user imports,
+  // AI-estimate) will supply it, same as vineyard/classification above.
+  type_style String?
+
+  // Sensory/descriptive facts — added 2026-07-20, all from the same gap
+  // review as type_style above. All nullable, same reasoning throughout:
+  // not every source supplies every field.
+  abv               Decimal? @db.Decimal(4, 2) // alcohol by volume, e.g. 13.50
+  body              String? // e.g. Light-bodied / Medium-bodied / Full-bodied
+  acidity           String? // e.g. Low / Medium / High
+  website           String? // producer/winery's own site
+  pairing_notes     String? // renamed from X-Wines' "Harmonize" (food pairing suggestions)
+  blend_composition String? // renamed from X-Wines' "Elaborate" (e.g. "Varietal/100%", "Assemblage/Blend")
 
   // Dedup fields — computed at write time (accent-folded, punctuation
   // stripped, abbreviations expanded), never shown to a user directly.
@@ -339,6 +381,37 @@ model WineKnowledge {
   @@index([sourceTrust]) // conflict-resolution queries
   @@index([searchText(ops: raw("gin_trgm_ops"))], type: Gin) // fuzzy search
   @@map("wine_knowledge")
+}
+
+// Region/appellation hierarchy reference — added 2026-07-20 as part of the
+// region-validation checker (lib/wines/region-hierarchy-checker.ts). Deliberately
+// a separate table from wine_knowledge, not a patch to lib/wines/wine-knowledge.ts:
+// that file is a small, hand-curated TS object read for live autocomplete/spelling
+// correction; this is a bulk, sourced reference queried programmatically against
+// the ~100K-row X-Wines import. See WINE_KNOWLEDGE_DATABASE_PLAN.md,
+// "Region-Hierarchy Source Evaluation (2026-07-20)" for how each source below
+// was actually verified.
+enum RegionAuthoritySource {
+  WIKIDATA // primary — P131 (located in) / P17 (country) on items typed `instance of: wine` (Q282)
+  WINERYMAP // secondary cross-check — github.com/oOo0oOo/winerymap, MIT licensed
+}
+
+model RegionAuthority {
+  id String @id @default(cuid())
+
+  appellation String // e.g. "Colli di Scandiano e di Canossa DOC"
+  locatedIn   String? // e.g. "Province of Reggio Emilia" (Wikidata P131) — nullable, some source rows lack it
+  country     String? // e.g. "Italy"
+
+  source     RegionAuthoritySource
+  externalId String? // Wikidata Q-id when source = WIKIDATA; null for WineryMap (no stable per-region id in that source)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([appellation])
+  @@index([country])
+  @@map("region_authority")
 }
 
 model WatchListItem {
