@@ -17,15 +17,16 @@
 // confirmed live via query.wikidata.org on that date, queried through a
 // browser JS context (Chrome), not this project's own server.
 //
-// UNVERIFIED ASSUMPTION, FLAGGED NOT HIDDEN: this has not yet been run
-// from this project's actual Node/Vercel environment. The research
-// sandbox used to build this file has query.wikidata.org blocked at its
-// network proxy (confirmed: 403 blocked-by-allowlist), so the fetch()
-// calls below were never executed from a plain server-side Node process —
-// only proven reachable from an actual browser tab. Standard Vercel
-// serverless functions have normal outbound internet access, so this is
-// expected to work unchanged, but that is an expectation, not a test
-// result, until this runs for real in this repo's environment.
+// TESTED IN PRODUCTION 2026-07-20 via /api/debug/region-check: query.wikidata.org
+// returned 403 Forbidden from this project's real Vercel/Node runtime — a genuine
+// production block, not the research sandbox's proxy block. Root cause found by
+// reading runSparql() below: the request sent no User-Agent header at all.
+// Wikimedia's query-service usage policy documents that requests without a
+// proper, identifying User-Agent are rejected, especially from cloud/datacenter
+// IPs (which is what Vercel serverless functions are). Fix applied: a compliant
+// User-Agent is now sent on every request. NOT YET RE-VERIFIED against production
+// after this fix — that is the next concrete step, not an assumption that it's
+// resolved.
 //
 // KNOWN DATA NOISE: `instance of: wine` (Q282) is broader than "wine
 // appellation" — a small number of results are generic terms (e.g.
@@ -35,6 +36,12 @@
 
 const WIKIDATA_SPARQL_ENDPOINT = "https://query.wikidata.org/sparql";
 const WINE_CLASS_QID = "Q282"; // confirmed via the Colli di Scandiano e di Canossa DOC item page, 2026-07-20
+
+// Wikimedia's query-service policy requires a real, identifying User-Agent —
+// requests without one are documented to get rejected, which is the confirmed
+// root cause of the 403 seen from production on 2026-07-20 (see file header).
+const WIKIDATA_USER_AGENT =
+  "WineButlerIQ/1.0 (https://winebutleriq.com; contact: amandak.bailey@yahoo.com) Node-fetch";
 
 export interface RegionAuthorityRow {
   appellation: string;
@@ -70,7 +77,10 @@ function buildSparqlUrl(query: string): string {
 
 async function runSparql(query: string): Promise<any> {
   const res = await fetch(buildSparqlUrl(query), {
-    headers: { Accept: "application/sparql-results+json" },
+    headers: {
+      Accept: "application/sparql-results+json",
+      "User-Agent": WIKIDATA_USER_AGENT,
+    },
   });
   if (!res.ok) {
     throw new Error(
